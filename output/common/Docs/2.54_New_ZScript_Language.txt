@@ -1,0 +1,66 @@
+//////////////////////////
+///  ZScript Language  ///
+//////////////////////////
+
+ZScript now supports function pointers, using the following syntax:
+
+@ptr
+
+/************************************************************************************************************/
+
+ZScript now supports comment blocks, using the following syntax
+
+/*
+	COMMENT BLOCK
+	
+*/
+
+/************************************************************************************************************/
+
+Arrays now support being declared with a formula:
+
+int arr[10*4]; 
+
+This is now the same as int arr[40];
+
+/************************************************************************************************************/
+
+Nesting array calls should now work properly. (e.g. arrA[ arrB[ arrC[ arrd[4] ] ] ] )
+
+/************************************************************************************************************/
+
+/////////////////
+///  Example  ///
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+void test() {
+	Trace(-99);
+}
+
+void test(int x) {
+	Trace(x);
+}
+
+
+ffc script test{
+	void run(){
+		int arr[8*2]; //Declares an array with a size of 16.
+		/*
+			You can now place declarations on a single line, by type.
+			The following are all ints:
+		*/
+		int a = 6, b = 40, c = @test;
+		
+		/*
+			@test uses the new function pointers. 
+		*/
+
+		c(); //Because c was pointed at test(), it traces '-99'.
+
+		c = @test(int); //Now reassigned. 
+
+		c( a+b ); //Traces '46'.
+		arr[1] = c( a*b ); //Places the value '240' into index [1] of the array.
+	}
+}

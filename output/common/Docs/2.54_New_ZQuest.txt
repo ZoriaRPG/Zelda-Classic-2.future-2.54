@@ -1,0 +1,46 @@
+//b52
+
+////////////////
+///  ZQuest  ///
+////////////////
+
+The Enemy Editor now had an additional tab, 'Defenses 3'. In this tab, you will find settings for configuring
+enemy defences for each of the ten LW_SCRIPT* types. These otherwise work as normal weapon defences, and
+correspond to npc->ScriptDefense[] in ZScript. 
+
+Quests made in versions prior to 2.54 have no knowledge of these types, and will fall back on the generic 'Script'
+defence type. This type should no longer be used to configure enemies, as it will be ignored in quests saved in
+2.54. 
+
+Further, the following new defence outcomes exist:
+
+Trigger Secrets: Hitting the enemy with this weapon type will trigger all the secrets on the screen.
+Double Damage : Weapon inflicts 2x damage.
+Triple Damage : Weapon inflicts 3x damage.
+Quadruple Damage : Weapon inflicts 4x damage.
+Block if Damage < 10 : Blocks the weapon if its power is < 10. 
+Enemy Gains HP = Damage : The enemy gains HP equal to the damage of the weapon. Note that this is not capped!
+
+The other 'Block if < n' defence outcomes have been renamed to 'Block if Damage < n', for clarity. 
+
+Other new defence outcomes have been added to the enemy editor, but they do nothing.
+
+You may now export a quest to the old 2.50 format. To do this, go to the menu: File->Export->2.50.x Quest
+	!WARNING: All new featurs will be lost. Scripts may need to be recompiled, and may misbehave if the quest
+	is opened in 2.50.x ZC. Old enemy packfile variables are preserved, so this is not a concern, but 
+	enemies lose new properties when converting. 
+	THe intent of this is to allow a user to intentionally downgrad a quest saved in 2.54. 
+	
+The color selector used for palette editing now supports the following new hotkeys:
+
+	Shift+H: 	Increase Hue
+	Control+H: 	Decrease Hue
+	SHift+S: 	Increase Saturation
+	Control+S: 	Decrease Saturation
+	Shift+B: 	Increase Brightness
+	Control+B: 	Decrease Brightness
+	
+The Combo Editor now has many new flags that you may use in conjunction with scripts. 
+Some of these may later be implemented as internal flags with defined behaviour. 
+This includes flags for the most popular scripts, such as pits, and holes. 
+

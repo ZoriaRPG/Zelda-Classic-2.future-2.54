@@ -1,0 +1,218 @@
+//Add a new zscript instruction
+
+//! Note: A ZASM instruction may ave a label of no more than 15 chars.
+// LINKPLAYWARPSOUND will return an error wen compiling
+// PLAYWARPSOUND is fine. 
+
+When adding to ( script_command command_list[NUMCOMMANDS+1] ) list, in ffasm.cpp, the ORDER of listing
+any new parameter MUST MATCH the order in ( ASM_DEFINE ) in file ffscript.h! 
+This differs from script variables. 
+
+
+//Drawing
+
+Script_Drawing.cpp
+add function
+add opcode redirect with ZASM label
+
+GlobalSymbols.cpp
+
+Add table entry, with proper args values. The entry name should match the ZScript instruction. 
+Add function to bind the name in the table to the O-Register
+
+Bytecode.cpp
+
+Add ORegister redirect that returns the ZASM instruction
+
+Bytecode.h
+
+Add class ORegister entry tat returns the opcode entry in Bytecode.cpp
+
+ffasm.cpp
+
+Add entry to script command list, using the ZASM label
+
+ffscript.cpp
+
+add case statement to switch(script_command) and ensure the args value matches that in GlobalSymbols.c[[
+
+add case entry to switch(scommand), and ensure it is in the script commands case list
+Both of these use the ZASM label
+
+ffscript.h
+Add the ZASM label to the ASM_DEFINE table. 
+
+//Link
+
+Link.h
+
+Add a new public variable if needed, suc as:
+	int linkdointhing
+(or)
+Find a public variable to use
+Add an empty function set (getter, setter) with the identifier that you desire, such as
+	int getLinkDoingThing()
+	void setLinkDoingThing(int value)
+	
+Add a clear instruction in the Init function:
+	linkdointhing = 0;
+
+Link.cpp
+Create a pair of setter/getter functions tied to the link class, such as:
+
+	//Return the variable using a getter. 
+	int LinkClass::getLinkDoingThing()
+	{
+	    return linkdointhing;
+	}
+
+	//Set the variable using a setter
+	void LinkClass::setLinkDoingThing(int value)
+	{
+	    linkdointhing=value;
+		
+	}
+
+! You can constrain the min and max values written with: vbound(int value, int min, int max)
+
+	//Set the variable using a setter
+	void LinkClass::setLinkDoingThing(int value)
+	{
+	    linkdointhing=vbound(value,0,3);
+		
+	}
+	
+ffasm.cpp
+Add an entry to the ( variable_list[] ) table, and introduce your ZASM keyword:
+	{ "LINKDOTHING", LINKDOTHING, 0, 0 },
+	The first value is a string, that is matched wit the assembly, to the second value, called by GlobalSymbols.cpp.
+
+ffscript.h
+Define the ZASM label and give it a unique numeric value. This is used by the wordtable to look it up. 
+	#define LINKDOTHING           0x0300
+If you added something new, be sure to increase the value of NUMVARIABLES. 
+
+
+ffscript.cpp
+
+
+in the ( long get_register(const long arg) switch(arg) ) STATEMENT, under 'Link's Variables' add a GETTER instruction case:
+	case LINKDOTHING: 
+	ret=Link.getLinkDoingThing*10000; //THis points to the LinkClass::getWarpSound() function
+					//Be sure to work with the ZScript 10,000 multplier!
+	break;
+
+in the ( long set_register(const long arg) switch(arg) ) STATEMENT, under 'Link's Variables' add a SETTER instruction case:
+	case LINKDOTHING: 
+	Link.getLinkDoingThing(value/10000); //THis points to the LinkClass::getWarpSound() function
+					//Be sure to work with the ZScript 10,000 multplier!
+	break;
+
+/parser/ByteCode.h
+Add a new definition with a unique value using your ZASM label. 
+This DOES NOT need to match the word table ID tat you set earlier. 
+	#define LINKDOTHING 401
+	
+/parser/ByteCode.cpp
+
+in ( string VarArgument::toString() switch(ID) ) add a string redirect case for the ZASM label:
+
+	case LINKDOTHING: //We the word table looks up the ZASM instruction and finds this...
+		return "LINKDOTHING"; //it returns this string. 
+		
+/parser/GlobalSynbols.cpp
+in ( static AccessorTable LinkSTable[] ) add setter/getter entries.
+
+ { "getDoThing",            ScriptParser::TYPE_FLOAT,         GETTER,       PLAYWARPSOUND,         1,      {  ScriptParser::TYPE_LINK,         -1,                               -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1                           } },
+    { "setDoThing",            ScriptParser::TYPE_VOID,          SETTER,       PLAYWARPSOUND,         1,      {  ScriptParser::TYPE_LINK,          ScriptParser::TYPE_FLOAT,        -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1,                           -1                           } },
+   
+The first etry on each line is te ZScript command token. The chars 'set' or 'get' in lowercase are removed, so
+getDoThing / setDoThing i the Link table becomes Link->DoThing in ZScript. 
+
+The second entry on eac line is the TYPE. Getters are typed by their return. Setters are void typed, but you
+must define the input type later.
+The third entry is the instruction type: SETTER, GETTER, or FUNCTION. 
+The fourth, is the ZASM label.
+The fifth, is '1' unless you are creating a FUNCTION type. 
+Following these, is a ScriptParser::Type. For Link->, this is always ScriptParser::TYPE_LINK
+Followin this, is the input parameters. 
+For a return, these are always all -1.
+For a setter, the first is its value type (TYPE_FLOAT, or TYPE_BOOL).
+For a function, define each input parameter by its type.
+
+You're done. 
+
+// Adding a Function
+
+//From DarkDragon regarding the stack:
+	the ZScript calling convention is more or less equivalent to C's. 
+	The caller first pushes the return address onto the stack, then all of the function's explicit 
+	argument, and finally, if the function is a member function, the "this" pointer is implicitly 
+	pushed as the last argument.
+
+	The return value of the function is by convention stored in EXP1.
+
+	The callee, then, before it can return, must pop all of the arguments (including the "this" pointer) 
+	off of the stack. That's what the lines are doing that you've commented about. The ZASM instruction 
+	uses the top 4 entries of the stack, but leaves them untouched, so ZScript pops them off, then pops 
+	off the return address and jumps to it. You could use NUL instead of EXP2 for these pops if you wanted.
+
+	The reason EXP2 is used as scratch space instead of EXP1 is simply to avoid accidentally tampering 
+	with the return value of the function. 
+
+Addin a function requires some additional work, as follows:
+
+ffasm.cpp
+Add a new entry at the END of the table ( script_command command_list[NUMCOMMANDS+1] ) with the following format
+ZASMLABEL, number_of_args_for_the_assembler, has_arg_1, has_arg_2, more (?what's this now)
+
+These are used by the function: int set_argument(char *argbuf, ffscript **script, int com, int argument)
+
+Note that entries often have an 'R" and a 'V', meaning Register, and Value. These are effectively, ( ) and ( ). 
+
+Keep a careful eye on the position of the function in this table, as it must match the position of their counterparts 
+	in ( enum ASM_DEFINE ) inside ffscript.h. 
+
+ffscript.h
+
+Add an entry into the ( enum ASM_DEFINE ) table to match each entry that you added in ffasm.cpp. |
+These must be in the same sequence. 
+
+ffscript.cpp
+
+Add a function to which you wish to pair each entry that you created in ffasm.cpp/ffscript.h
+
+ByteCode.cpp
+
+Add a string redirect, ( string OIdentifier::toString() ) in the list after the ( switch(ID) ) statement 
+	in ( string VarArgument::toString() ) 
+
+ByteCode.h
+
+Add a class definition, setting its identifier, public type (UnaryCode, BinaryCode, OpCode) and
+	set its instructions. Return it new if desired. 
+
+GlobalSymbols.cpp
+Insert the function into the table to which you desire to link it, based on the class to which you are assigning it.
+	Set its type to ScriptParser::TYPE, its use to FUNCTION, its 'va' to '0' (this is for a script class variable, 
+	such as 'X' in 'Link->X'), its indices, its number_of_indices to -1 (these are for array script vars, such as
+	ComboD[]), its type/class association, then, one entry for each of its inputs by type.
+	Use -1 to fill in any unused inputs. 
+
+In the vector for its class (e.g. ScreenSymbols::addSymbolsCode), create a routine for it, using the existing entries as
+examples. This may require writing a new opcode, or you may be able to use stack registers directly, depending on how many 
+values you need to parse, and your return types. 
+
+//Global
+
+
+//NPCs
+
+//Weapons
+
+//FFCs
+
+//Items
+
+//itemdata
+ref->info /The current, selected object int he struct is identified by * 

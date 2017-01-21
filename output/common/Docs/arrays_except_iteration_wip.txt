@@ -1,0 +1,191 @@
+//////////////////////////
+/// Part II: For Loops ///
+/////////////////////////////////////////////////////////
+/// The 'for loop' is one of the most powerful tools at your disposal, particularly when dealing with arrays.
+/// In conrast to a while loop, that runs while a condition is evaluated as true, or false, a FOR LOOP runs
+/// **for** a specific duration, expressed as follows:
+
+for ( int i = 0; i < min; i++ )
+
+/// In this example, we create a for loop, starting at 0. It runs, increasing the value of 'i' each cycle
+/// until i == min.
+
+
+A for loop, has three components. The base declaration (int i = 0 above), followed by a separator ';'.
+Then, the operating limit, declared as i < min above, where min is an external variable, followed by the separator ';'.
+Finally, an operational factor (increment, or decrmement; stated above as i++, which increases the value of 'i'
+each pass. Thus, the loop will run through every index of the array, allowing you to perform batch operations.
+
+/// Note: If you have an external variable that you wish to use as the main variable in a for loop, you can do this:
+int i = 10;
+for (; i < 0; i--)
+
+/// The already-declared value of 'i' (10) us used here. Instead of declaring it in the for loop, you may just add a leading separator ';'
+/// and the rest of the instructions follow.
+
+/// This is useful when you are running multiple loops that operate on one main variable; but this is a rare occurence.
+
+// ! Iteration 
+
+Here is a practise routine, to learn, and practise making arrays for use
+with iterative for loops:
+
+First, a reminder: Many of the internal ZScript variables, are arrays. 
+In this example, we will make use of Link->Counter[], which is an array
+with a size of [32]. 
+
+Here is a list of the indices used by Game->Counter[32]:
+
+Game->Counter[32]=
+        {   CR_LIFE,        CR_RUPEES,      CR_BOMBS,       CR_ARROWS,      
+            CR_MAGIC,       CR_KEYS,        CR_SBOMBS,      CR_SCRIPT1,     
+            CR_SCRIPT2,     CR_SCRIPT3,     CR_SCRIPT4,     CR_SCRIPT5,  
+            CR_SCRIPT6,     CR_SCRIPT7,     CR_SCRIPT8,     CR_SCRIPT9, 
+            CR_SCRIPT10,    CR_SCRIPT11,    CR_SCRIPT12,    CR_SCRIPT13,
+            CR_SCRIPT14,    CR_SCRIPT15,    CR_SCRIPT16,    CR_SCRIPT17,    
+            CR_SCRIPT18,    CR_SCRIPT19,    CR_SCRIPT20,    CR_SCRIPT21,    
+            CR_SCRIPT22,    CR_SCRIPT23,    CR_SCRIPT24,    CR_SCRIPT25     };
+            
+Knowing that each player uses 32 indices to hold their stats, we will set a constant for that, so that we may call it in our loops.
+This is extremely prudent, as if we expand the size of any given set, we can simply update the value of this one consstant.
+rather than updating any instance sof a hardcoded value for it.
+
+const int PLAYER_STATS_INDICES_PER_CHAR = 32;
+
+For this example, let us presume that we will be making a quet with three player characters: Link, Marty, and Jennifer.
+
+in  doing, we have a function that sets the present character:
+    void SetPlayerChar(int character_id); //Sets the present (selected character) to character_id.
+...
+and a function to read the present player character:
+    int getPlayerChar(); //Returns the ID of the present (selected character)
+    
+    
+//Constant for the backup set of values 
+
+
+We know that we use 32 values to store the counters for Link, and as we will be needing a backup set for each character, 
+we'll be using a routine to store, and read the backup values. The number of these will be the same as the number of main
+values, so in addition to the 32 counter values, we'll need another 32 to hold backups.
+
+Therefore, we make a constant with the offset (the first index that wills tore a backup value). In this case, the offset is 
+'32', as we use indices 0 through 31 for the first set of values, and indices 32 through 63 for the backups. 
+
+In this way, we can make a function that calls : index+PLAYER_STATS_BAK 
+
+//Sets the backup value of a single stat in the array t a specified value.
+void SetStatBackup(int stat, int val){
+    PlayerStats[stat+PLAYER_STATS_BAK] = val;
+}
+
+
+In sl doig, we can easily modify the values stored in this subset of the main array, by using this OFFSET as an adjustment.
+
+const int PLAYER_STATS_BAK = 32; //32 attribs duplicated, = +32
+
+//! Constants for the characters
+const int CHARACTER_LINK = 0; //32 indices for stats, plus 32 backups = indices 0- through 63.
+const int CHARACTER_MARTY = 64; //Link's indices end at 63, so the next index becomes the FIRAT INDEX of the next character.
+                                //...thus, index 64 is the '0' index for character 2. THis means that we can reference in in for loops
+                                //without needing to make special adjustments tot he loop. The loop remains the same size, and calls
+                                //using the Marty's constant, so instead of starting at zero, the loop starts at 64.
+                                //Marty uses indices 64 through 127.
+const int CHARACTER_JENNIFER = 128; //Likeise, the next player starts at index 128. THe size used by any one of the characters is 64 indices.
+                                    //Therefore, our required array size is 64* ( number of characters ) 
+                                    //In this example, we have three characters, so the array size is 64 * 3, or 192.
+                                    
+float PlayerStats[192];
+
+
+
+//! Making an interation function using this array, and comstants.
+
+Now, let's use a for loop to make a function t store the present values of each counter, into the backup slots in the array.
+
+void BackupPlayerStats(int char_id){
+    for ( int q = 0; q <= PLAYER_STATS_INDICES_PER_CHAR; q++ ){
+        PlayerStats[char_id+q+PLAYER_STATS_BAK] = Game->Counter[q];
+    }
+}
+
+In this example, we use our offsets, tp copy the entire set of counters from Game->Counter[q] to the backup set
+for any character. 
+
+Let's break that down:
+
+The function uses char_id as an input to define what character to use, so let's consider that we're using marty.
+
+We assigned Marty an offset of 64, in the constant CHARACTER_MARTY, so we'll call the function as follows:
+
+BackupPlayerStats(CHARACTER_MARTY);
+
+As an instruction, this would become:
+
+for ( int q = 0; q <= PLAYER_STATS_INDICES_PER_CHAR; q++ ){
+        PlayerStats[CHARACTER_MARTY+q+PLAYER_STATS_BAK] = Game->Counter[q];
+}
+
+Let's further break this down,a nd see how these constants are doing our work for us:
+
+PLAYER_STATS_INDICES_PER_CHAR = 32
+CHARACTER_MARTY = 64
+PLAYER_STATS_BAK = 32
+
+Thus, our for loop would look like this, with hardcoded values:
+for ( int q = 0; q <= 32; q++ ){
+        PlayerStats[64+q+32] = Game->Counter[q];
+}
+
+Therefore, if we assume that q = 0l as it would on the first pass, the value of Game->Counter[CR_LIFE] will be copied into
+PlayerStats[64+0+32]
+...or
+PlayerStats[96]
+
+That's precisely where we want it, and the function will copy the values of ALL 32 COUNTERS  T THEIR RESPECTIVE POSITIONS
+in the array, in one stroke.
+
+Nnote however, hw useful our constants have become...
+
+If we need to change the number of total indixes, or the offsets, for anything, all it takes is adjusting one constant, rather
+than chasing down hardcoded values.
+
+Note also how the use of a constant for the character offset allows us to use the same function to back up the stata for any
+of our three chARACTERS, BY CALLING that function and using the named constant for the desired character as its argument:
+
+BackupPlayerStats(CHARACTER_LINK);
+
+That would do precisely the same backup, again, in one command, reading every counter, and backing the up, but for the Link character.
+No additional function is needed, all action is swift, and it is stored int he same array as Marty's information, in its own 
+block of indices.
+
+See how the maths change. using the Link constant... For Marty, the information was stored in indices 96 through 127, but
+for Lin, with a character ID offset of zero:
+
+for ( int q = 0; q <= PLAYER_STATS_INDICES_PER_CHAR; q++ ){
+        PlayerStats[CHARACTER_LINK+q+PLAYER_STATS_BAK] = Game->Counter[q];
+}
+
+PLAYER_STATS_INDICES_PER_CHAR = 32
+CHARACTER_LINK = 0
+PLAYER_STATS_BAK = 32
+
+Thus, our for loop would look like this, with hardcoded values:
+for ( int q = 0; q <= 32; q++ ){
+        PlayerStats[0+q+32] = Game->Counter[q];
+}
+
+This stores his datum in indices 32 through 63. 
+
+Thus, the table looks like this:
+
+Game->Counter[32]
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+-----> Copied into:
+
+//Playertats[192]                                                //Values                   ( Indices )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //Link Main Stats          ( 0 to 31 )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //Link Backup Stats        ( 32 to 63 )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //MARTY's Main Stats       ( 64 to 95 ) 
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //MARTY's BACKUP Stats     ( 96 to 127 ) 
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //Jennifer's Main Stats    ( 128 to 159 )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //jennifer's Backup Stats  ( 160 to 191 )

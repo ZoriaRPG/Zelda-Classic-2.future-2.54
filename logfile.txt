@@ -1,0 +1,5 @@
+Compiling Zelda Classic for Windows...
+g++    -c -o zc_icon.o zc_icon.c
+zc_icon.c:1:21: fatal error: allegro.h: No such file or directory
+compilation terminated.
+make: *** [zc_icon.o] Error 1

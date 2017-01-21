@@ -1,0 +1,738 @@
+//New for Beta 48
+
+///////////////////////
+///  Zelda Classic  ///
+///////////////////////
+
+You may not enable, or disable the Debug Console from the Misc menu. 
+
+////////////////
+///  ZQuest  ///
+////////////////
+
+The Enemy Editor now had an additional tab, 'Defenses 3'. In this tab, you will find settings for configuring
+enemy defences for each of the ten LW_SCRIPT* types. These otherwise work as normal weapon defences, and
+correspond to npc->ScriptDefense[] in ZScript. 
+
+Quests made in versions prior to 2.54 have no knowledge of these types, and will fall back on the generic 'Script'
+defence type. This type should no longer be used to configure enemies, as it will be ignored in quests saved in
+2.54. 
+
+Further, the following new defence outcomes exist:
+
+Trigger Secrets: Hitting the enemy with this weapon type will trigger all the secrets on the screen.
+Double Damage : Weapon inflicts 2x damage.
+Triple Damage : Weapon inflicts 3x damage.
+Quadruple Damage : Weapon inflicts 4x damage.
+Block if Damage < 10 : Blocks the weapon if its power is < 10. 
+Enemy Gains HP = Damage : The enemy gains HP equal to the damage of the weapon. Note that this is not capped!
+
+The other 'Block if < n' defence outcoms have been renamed to 'Block if Damage < n', for clarity. 
+
+Other new defence outcomes have been added to the enemy editor, but they do nothing.
+
+
+/////////////////
+///  ZScript  ///
+/////////////////
+
+The ZScript language now supports function pointers, using the AT_SIGN token (@) as a delimiter.
+
+The ZScript language now supports C-Style comment blocks using the traditional syntax of:
+
+/* 
+	COMMENT BLOCK
+	
+*/
+
+//! Temporarily disabled setting array size with a formula, and one-line multiple declarations. 
+
+
+//////////////
+///  GAME  ///
+//////////////
+
+void GreyscaleOn()			ZASM Instruction
+					GREYSCALEON
+
+/**
+* Renders the entire display in greyscale.
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void GreyscaleOff()			ZASM Instruction
+					GREYSCALEOFF
+
+/**
+* Returns the display rendering to colour. 
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int DMapPalette[];			ZASM Instruction: 
+					DMAPLEVELPAL
+/**
+* An array of 512 integers containing each DMap's Level Palette
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void SetMessage(int message, int buffer[]);
+	
+					ZASM Instruction: 
+					SETMESSAGE
+/**
+* Loads string 'buffer[]' into ZQ Message 'message'. 
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void SetDMapName(int dmap_id, int buffer[]);
+					
+					ZASM Instruction: 
+					SETDMAPNAME
+/**
+* Loads string 'buffer[]' to the DMap Name field for DMap with ID 'dmap_id'.
+* See std_constsnts.zh for appropriate buffer size.
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void SetDMapTitle(int DMap, int buffer[]);
+	
+					ZASM Instruction:
+					SETDMAPTITLE
+/**
+* Loads string 'buffer[]' to the DMap Title field for DMap with ID 'dmap_id'.
+* See std_constsnts.zh for appropriate buffer size.
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void SetDMapIntro(int DMap, int buffer[]);
+	
+					ZASM Instruction:
+					SETDMAPINTRO
+/**
+* Loads string 'buffer[]' to the DMap Intro field for DMap with ID 'dmap_id'.
+* See std_constsnts.zh for appropriate buffer size.
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Version;				ZASM Instruction: 
+					ZELDAVERSION
+					
+/**
+* Returns the version of ZC being used.  
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+			
+int Build;				ZASM Instruction: 
+					ZELDABUILD
+					
+/**
+* Returns the Build ID of the version of ZC being used.  
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+			
+int Beta;				ZASM Instruction: 
+					ZELDABETA
+					
+/**
+* Returns the Beta ID of the version of ZC being used. If the build is not a beta, this returns 0. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+			
+bool DisableActiveSubscreen;		ZASM Instruction: 
+					NOACTIVESUBSC
+					
+/**
+* If set true, the active subscreen will not fall into view ehen the player presses Start.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+
+/////////////
+///  FFC  ///
+/////////////
+
+int ID;				ZASM Instruction
+				FFCID
+
+/**
+* Returns the screen index of the FFC. 
+* Can be set, to change the index of a pointer, but this requires testing and may be unstable. 
+*
+*/
+
+/************************************************************************************************************/
+
+
+//////////////////
+///  Itemdata  ///
+//////////////////
+
+int Attributes[10];		ZASM Instruction: 
+				IDATAATTRIB
+
+/**
+* An array of ten integers containing the Attributes values.
+* These correspond to the text entry fields, in the item editor 'Data' tab. 
+*
+*/
+
+/************************************************************************************************************/
+
+int Sprites[10];		ZASM Instruction: 
+				IDATASPRITES
+
+/**
+* An array of ten integers containing the Sprites values. 
+* These correspond to the pull-down options in the item editor 'Action' tab.  .
+*
+*/
+
+/************************************************************************************************************/
+
+bool Flags[5];			ZASM Instruction: 
+				IDATAFLAGS
+
+/**
+* An array of five multipurpose boolean flags. The properties of this flag change based on the item class (family).
+* Flag[0] corresponds to the box directly below 'Equiment Item'. For swords, this is 'B.H. is Percent'.
+* Flag[1] corresponds to the box directly below 'Flag 1'. For swords, this is 'B.D. is Percent'.
+* Flag[2] corresponds to the box directly right of 'Equiment Item'. For swords, this is 'B.  Penetrates Enemies'.
+* Flag[3] corresponds to the box directly right of 'Flag 2'. For swords, this is 'Can Slash'.
+* Flag[4] corresponds to the box directly below 'Flag 4'.For swords, this is '<Unused>', and greyed out.
+*
+* Scripted item classes may make use of these as a general-purpose script flags. 
+* See 'zscript_itemdata.txt' for more information on what this flag does, based on the item class.
+*/
+
+/************************************************************************************************************/
+
+//////////////
+///  Item  ///
+/////////////
+
+int ACLock;				ZASM Instruction: 
+					ITEMACLC
+
+/**
+* Returns the present tick of the animation clock.
+*
+*/
+
+/************************************************************************************************************/
+
+
+/////////////
+///  NPC  ///
+/////////////
+
+int InvFrames;				ZASM Instruction: 
+					NPCINVINC
+/**
+* Returns if the enemy is temporarily invincible, from being hit, or otherwise. 
+* Returns the number of remaining invincibility frames if the enemy is invincible, otherwise 0. 
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+int Invincible;				ZASM Instruction: 
+					NPCSUPERMAN
+/**
+* Returns if the enemy is invincible, because of ( superman variable ). 
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+bool HasItem;				ZASM Instruction: 
+					NPCHASITEM
+/**
+* Returns if the enemy is holding the screen item.
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+bool Ringleader;			ZASM Instruction: 
+					NPCRINGLEAD
+/**
+* Returns if the enemy is a 'ringleader'.
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+int ScriptDefense[];		ZASM Instruction: 
+				NPCSCRDEFENSED
+/**
+* The npc's Script Weapon Defense values, as an array of 10 integers. Use the NPCSD_ and NPCDT_ constants
+* in std.zh to set or compare these values.
+* 
+* This corresponds to the 'Defenses 3' tab in the Enemy Editor. 
+*/
+
+/************************************************************************************************************/
+
+/////////////////
+///  LWeapon  ///
+/////////////////
+
+int Range;				ZASM Instruction: 
+					LWPNRANGE
+					
+/**
+* The range of the weapon in pixels. 
+* At present, this only affects boomerange class lweapons. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+//////////////
+///  Link  /// 
+//////////////
+
+
+int UsingItem;			ZASM Instruction: 
+				LINKUSINITEM
+				
+/**
+* Returns the ID of an item used when Link uses an item.
+* Setting this does nothing. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Attack;			ZASM Instruction: 
+				LINKUSINITEMA
+				
+/**
+* Returns LinkClass::attack (?) 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Animation;				ZASM Instruction: 
+					LINKANIMTYPE
+					
+/**
+* Link;s Animation style, as set in Quest->Graphics->Sprites->Link
+* Valid types are 0, 1, 2, and 3.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+					
+int WalkASpeed;				ZASM Instruction: 
+					LINKWALKANMSPD
+
+/**
+* Link's Walking Animation speed as set in Quest->Graphics->Sprites->Link
+* valid types are:
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int SwimASpeed;				ZASM Instruction: 
+					LINKSWIMSPD
+/**
+* Link's Swiming Animation speed as set in Quest->Graphics->Sprites->Link
+* valid types are: 
+*
+*/ Example Use: !#!					
+
+/************************************************************************************************************/
+
+int InvFrames;				ZASM Instruction: 
+					LINKINVFRAME
+
+/**
+* The number of frames for which Link is invincible, when hit by an enemy or weapon. 
+* This returns how long Link will remain invincible, or you may set it to a value between 0 and 214747. 
+* Returns 0 if Link is not invincible. 
+*
+*/ Example Use: !#!	
+
+/************************************************************************************************************/
+
+bool InvFlicker;			ZASM Instruction: 
+					LINKCANFLICKER
+				
+/**
+* Set true by default. If this is true, Link will either flicker, or flash when invincible, depending 
+* on your Quest rules settings. If set false, Link will neither flash, nor flicker when invincible. 
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+int HurtSound;				ZASM Instruction: 
+					LINKHURTSFX
+				
+/**
+* The sound that plays when Link is injured. By default this is '16', but you may change it at any time.  
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+int HitHeight;				ZASM Instruction: 
+					LINKHYSZ
+					
+/**
+* link's Hitbox height in pixels starting from his 0x,0y (upper-left) corner, going down. 
+* Note that this works on a per-sprite, per-direction basis. 
+* If you wish to extend Link's hitbox upwards on the Y-Axis, set this value, and adjust his HitYOffset. 
+* You can read a value that you assign to this (e.g. for custom collision functions). 
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+					
+int HitWidth;				ZASM Instruction: 
+					LINKHXSZ
+
+/**
+* Link's Hitbox width in pixels starting from his x0,y0 (upper-left) corner, going right. 
+* Note that this works on a per-sprite, per-direction basis. 
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+//Not implemented. Use Extend and Sprites. 
+int TileWidth;				ZASM Instruction: 
+					LINKTYSZ
+/**
+* Link's width, in tiles.
+* This is not usable, as Link->Extend cannot be set.
+* While setting it is not syntactically incorrect, it does nothing.
+* You can read a value that you assign to this (e.g. for custom/proxy sprite drawing).
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!					
+
+/************************************************************************************************************/
+//Not implemented. Use Extend and Sprites. 
+int TileHeight;				ZASM Instruction: 
+					LINKTXSZ
+
+/**
+* Link's height, in tiles.
+* This is not usable, as Link->Extend cannot be set.
+* While setting it is not syntactically incorrect, it does nothing.
+* You can read a value that you assign to this (e.g. for custom/proxy sprite drawing).
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!	
+
+/************************************************************************************************************/
+//Not implemented. 
+int HitZHeight;				ZASM Instruction: 
+					LINKHZSZ
+				
+/**
+* The Z-axis height of Link's hitbox, or collision rectangle.
+* The lower it is, the lower a flying or jumping enemy must fly in order to hit Link.
+* To jump over a sprite, you must be higher than its Z + HitZHeight.
+* The values of DrawZOffset and HitZHeight are linked. Setting one, also sets the other. 
+* Writing to this is ignored unless Extend is set to values >=3.
+* This is not usable, as Link->Extend cannot be set.
+* While setting it is not syntactically incorrect, it does nothing.
+* You can read a value that you assign to this (e.g. for custom collision functions).
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+int HitXOffset;				ZASM Instruction: 
+					LINKHXOFS
+				
+/**
+* The X offset of Link's hitbox, or collision rectangle.
+* Setting it to positive or negative values will move Link's hitbox left or right.
+* Writing to this is ignored unless Extend is set to values >=3.
+* Note that this works on a per-sprite, per-direction basis. 
+* You can read a value that you assign to this (e.g. for custom collision functions).
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+int HitYOffset;				ZASM Instruction: 
+					LINKHYOFS
+				
+/**
+* The Y offset of Link's hitbox, or collision rectangle.
+* Setting it to positive or negative values will move Link's hitbox up or down.
+* Writing to this is ignored unless Extend is set to values >=3.
+* Note that this works on a per-sprite, per-direction basis. 
+* You can read a value that you assign to this (e.g. for custom collision functions).
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+//Not yet implemented
+int DrawXOffset;			ZASM Instruction: 
+					LINKXOFS
+				
+/**
+* The X offset of Link's sprite.
+* Setting it to positive or negative values will move the sprite's tiles left or right relative to its position.
+* Writing to this is ignored unless Extend is set to values >=3.
+* This is not usable, as Link->Extend cannot be set.
+* While setting it is not syntactically incorrect, it does nothing.
+* You can read a value that you assign to this.
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+//Not yet implemented
+int DrawYOffset;			ZASM Instruction: 
+					LINKYOFS
+				
+/**
+* The Y offset of Link's sprite.
+* Setting it to positive or negative values will move the sprite's tiles up or down relative to its position.
+* Writing to this is ignored unless Extend is set to values >=3.
+* This is not usable, as Link->Extend cannot be set.
+* While setting it is not syntactically incorrect, it does nothing.
+* You can read a value that you assign to this.
+* This value is not preserved through sessions: Loading a saved game will reset it to the default. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+//! Link->Equipment is now read-write, and needs testing. 
+//! It is also a pain to write bitwise values, to test it. 
+
+int Equipment;				ZASM Instruction: 
+					LINKEQUIP
+				
+/**
+* Contains the item IDs of what is currently equiped to Link's A and B buttons.
+* The first 8 bits contain the A button item, and the second 8 bits contain the B button item.
+* If you are not comfortable with performing binary operations,
+* you can use the functions GetEquipmentA() or GetEquipmentB() in std.zh.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int ItemA;				ZASM Instruction: 
+					LINKITEMA
+				
+/**
+* Contains the item IDs of what is currently equiped to Link's A button.
+* Writing to this variable will set an item to the A-button. 
+* This will occur even if the item is not in inventory, and not on the subscreen.
+* This will ignore if you have B+A or B-only subscreens, and force-set the item.
+* The intent of this is to allow scriters to easily create scripted subscreens. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int ItemB;				ZASM Instruction: 
+					LINKITEMB
+				
+/**
+* Contains the item IDs of what is currently equiped to Link's B button.
+* Writing to this variable will set an item to the A-button. 
+* This will occur even if the item is not in inventory, and not on the subscreen.
+* The intent of this is to allow scriters to easily create scripted subscreens. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+//! Untested
+int SetItemSlot(int itm_id, bool a_button, bool force);				
+					ZASM Instruction: 
+					LINKITEMB
+				
+/**
+* This allows you to set Link's button items without binary operations, and to decide whether to 
+* obey quest rules, or inventory.
+*
+* When using this, 'itm_id' is the ID number of the item.
+* Set 'a_button' true to set this item to the A-button, false to set it to the B-button.
+* Set' force' true to set the item even if Link does not have it, or if the Quest Rules disallow it.
+* 	Otherwise, set 'force' false, and the item will only be set if Link has it. Furthermore
+* 	it will only set to slot A if either it is a sword, or the B+A quest rule is enabled. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Eaten;				ZASM Instruction: 
+					LINKEATEN
+				
+/**
+* This stores a counter for how long Link has been inside a LikeLike, or similar enemy.
+* It returns 0 if Link is not eaten, otherwise it returns the duration of him being eaten.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Extend;				ZASM Instruction: 
+					LINKEXTEND
+
+
+/**
+* Sets the extend value for all of Link's various actions for his current sprite, and direction.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting 
+* a tile, click on his sprites for any given action, and press the 'x' key.
+* The options are 16x16, 16x32, and 32x32; which correspond to Extend values of ( 0, 1, and 2 ) 
+* respectively. 
+*
+* This also returns the present extend value of Link's sprite for his current direction and sprite. 
+*
+* You may force-set all sprites, and directions to an extend value by assigning a negative number to
+* this variable, where -1 == 0 -2 == 1, -3 == 2, -4 == 3, and -5 == 4.
+*
+* See the 'LINKEXTEND_* values in std_constants for more details. 
+*/
+
+/************************************************************************************************************/
+ 
+int GetLinkExtend(int sprite, int dir);		ZASM Instruction: 
+						SETLINKEXTEND
+
+/**
+* Gets the extend value for one of Link's various actions based on a direction.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+ 
+void SetLinkExtend(int sprite, int dir, int extend);		
+						ZASM Instruction: 
+						SETLINKEXTEND
+
+/**
+* Sets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* 'sprite' is the 'action', 'dir' is the sprite direction, and 'extend' is a value between 1 and 3.
+* An extend value of '4' is reserved for future implementations of Link->Hit/DrawOffsets ad HitWidth/height.
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//Untested 
+void SetLinkTile(int sprite, int tile, int dir)			
+				ZASM Instruction: 
+				SETLINKTILE
+
+/**
+* Sets the tile for Link's various actions. This is intended to work as OTile for Link.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'tile is the base tile for the sequence. It uses the animation style set in the sprites editor.
+* 'dir' is the direction for the tile.
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+* 
+* See the 'LINKEXTEND_* values in std_constants for more details on possible extend values. 
+*/
+
+/************************************************************************************************************/
+//!Untested
+int GetLinkTile(int sprite, int dir)			
+				ZASM Instruction: 
+				LINKGETTILE
+
+/**
+* Returns the OTile for one of Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'dir' is the direction for the tile.
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+int WalkTile, SwimTile, DiveTile, SlashTile, JumpTile, ChargeTile, StabTile, CastingTile, PoundTile, FloatTile
+	Hold1LandTile, Hold2LandTile, Hold1WaterTile, Hold2WaterTile;				
+					
+					ZASM Instructions: 
+					LINKWALKTILE, LINKSWIMTILE, LINKDIVETILE, LINKSLASHTILE, LINKJUMPTILE
+					LINKCHARGETILE, LINKSTABTILE, LINKCASTTILE, LINKPOUNDTILE, LINKFLOATTILE, 
+					LINKHOLD1LTILE, LINKHOLD2LTILE, LINKHOLD1WTILE, LINKHOLD2WTILE
+	
+/**
+* A series of fourteen individual setter/getter ints to set or return the tile for all of Link's various actions.
+*
+* In future, setting this values of 0 through 4 will set Link->Extend based on Link's present drection and 
+* sprite and values of -1 through -5 will force Extend = 0 through Extend = 4 for all sprites and directions.
+*
+* Checking this will return the tile value for the desired sprite using Link's current direction. 
+* Setting this will set the tile for the sprite in Link's current direction. 
+*
+* These exist to manually test getting, and setting values to these sprites, and are scheduled to be removed
+* in a future build, supplanted by Link->SetLinkTile(int sprite, int dir, int tile)
+*/
+
+/************************************************************************************************************/
+ 
+
+String Control Codes
+
+These have been rearranged. Code 23 is likely to replace 19, and 19 may be removed to clear space. 
+We may reduce the number of warp codes from four, to two.
+
++-----------------------------+
+| WARP EFFECT CODES           |
++-----------------------------+
+
+\26\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID.
+\27\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+\28\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+\29\X\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+			 Argument 5 is a WARP EFFECT (see below).
+
+Warp Return Values: 0 = A, 1 = B, 2 = C, 3 = D.
+Warp Effect Types: 
+		0: None
+		1: Instant
+		2: Instant (Blackout)
+		3: Instant (Opening Wipe)
+		4: Instant (Zap Effects)
+		5: Instant (Wavy Effects)
+		6: Reset Room
+		7: Scrolling
+		
+
+
++-----------------------------+
+| MISC EFFECT CODES           |
++-----------------------------+
+
+\18\X\X - Set Screen->D[reg] on this screen, where Argument 1 is the [register] and Argument 2 is the value to set. 
+\19\X\X\X - Set Screen->D[reg] on another screen, where Argument 1 is the Screen (on this DMap), Argument 1 is
+		the [reg], and Argument 3 is the value.
+\23\X\X\X\X - Set Screen->D on any DMap, or screen in the game. Argument 1 is the DMap, Argument 1 is the screen,
+		Argument 3 is the [reg], and Argument 4 is the value. 

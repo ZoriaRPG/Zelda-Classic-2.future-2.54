@@ -1,0 +1,30 @@
+
+//This should allow any scripted object to easily mimic Link styled LOZ solidity collision
+//checking, be it Link, FFCs, or enemies.
+//Note - You should use full_tile=true if you don't want the upper eight pixels to overlap
+//solid combos as per LOZ1 behavior.
+bool CanWalk(int x, int y, int dir, int step, bool full_tile) {
+	int c=8;
+	int xx = x+15;
+	int yy = y+15;
+	if(full_tile) c=0;
+	if(dir==0) return !(y-step<0||Screen->isSolid(x,y+c-step)||Screen->isSolid(x+8,y+c-step)||Screen->isSolid(xx,y+c-step));
+	else if(dir==1) return !(yy+step>=176||Screen->isSolid(x,yy+step)||Screen->isSolid(x+8,yy+step)||Screen->isSolid(xx,yy+step));
+	else if(dir==2) return !(x-step<0||Screen->isSolid(x-step,y+c)||Screen->isSolid(x-step,y+c+7)||Screen->isSolid(x-step,yy));
+	else if(dir==3) return !(xx+step>=256||Screen->isSolid(xx+step,y+c)||Screen->isSolid(xx+step,y+c+7)||Screen->isSolid(xx+step,yy));
+	return false; //invalid direction
+}
+
+//Converts directions to go round in a circle rather than U, D, L, R
+int SpinDir(int dir) {
+	if(dir==0)
+		return DIR_UP;
+	else if(dir==1)
+		return DIR_RIGHT;
+	else if(dir==2)
+		return DIR_DOWN;
+	else if(dir==3)
+		return DIR_LEFT;
+	return -1;
+}
+

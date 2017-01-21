@@ -1,0 +1,77 @@
+//b15
+
+Added public link var zstringwarp , and an if(zstringwarp) statement to the Link class to support warping by string. -ZoriaRPG
+Added SCCs for Warp, Warp2, and SetScreenD to zstrings. -Dimentio
+Wrote functions for SCC cases MSGC_WARP, MSGC_WARPSQ, MSGC_SETSCRD. -ZoriaRPG
+
+Added Link->UseWarpReturn to ZScript. -ZoriaRPG
+Added handlers in the Link class: setWarpReturnSquare(int), getWarpReturnSquare(), getDirectItem(), getDirectItemA(), getDirectItemB(). -ZoriaRPG
+Added Link->UsingItem, Link->usingItemA, Link->UsingItemB to ZScript. -ZoriaRPG
+->These should return the item number being used, or -1. 
+->Setting these does nothing. 
+
+//b16
+
+Added Link->WarpSound : The user may set this, and if it is not 0, this sound plays during Link->Warp and Link->PitWarp.-ZoriaRPG
+Worked on do_warp()
+Added debug info to do_warp
+
+//b17
+Stopped side warps playing warp sfx. -ZoriaRPG
+Added Link->PlayWarpSound : This enables/prevents a sound from playing even if set. Should override for side warps, etc. 
+Fixed Link->PlayWarpSound. Now it returns properly.  -ZoriaRPG
+Added SCC for Warp without a return square. -ZoriaRPG
+How the hell do we set tmpscr->warpreturnc or why is wrindex=(tmpscr->warpreturnc>>(8+(index*2)))&3; not working?!
+
+New SCCs are:
+
+/23/dmap/screen - Warps to dmap, screen
+/24/dmap/screen/return - Warps to dmap, screen, using retur square 'return'; but the return square thing isn't working.
+/26/reg/value - Sets Screen->D[reg] = value. 
+
+Added bool isscriptedwarp and associated handlers to link.h and link.cpp. ( LinkClass::getScriptedWarp(), etc.)
+Modified do_warp() and dowarp() to use isscriptedwarp for how warps by script set wtSCROLL warpreturnx[] and warpreturny[], thus:
+	if(get_bit(quest_rules,qr_NOARRIVALPOINT))
+            {
+                if ( getScriptedWarp() ){
+			setScriptedWarp(false);
+			wrx=tmpscr->warpreturnx[wrindex];
+			wry=tmpscr->warpreturny[wrindex];
+		}
+		else{
+			wrx=tmpscr->warpreturnx[0];
+			wry=tmpscr->warpreturny[0];
+		}
+            }
+	    
+//b18
+Additional work on warping.
+The SCC warps are buged. If the present screen is a screen 8 cave, Link warps into unknown space. -ZoriaRPG
+Added checks for isscriptedwarp to LinkClass::dowarp(int,int)
+
+//b19
+
+Added Link->WarpEffect to set an in-built effect for Link->Warp -ZoriaRPG
+Added Screen->ZapIn(), Screen->ZapOut, Screen->WavyIn(), Screen->WavyOut, and Screen->OpeningWipe -ZoriaRPG
+	These replicate the animations from tilewarps, to call at any time (without warping).
+Fixed return squares for Link->Warp
+Added additional SCCs for warping, and rewrote some of the old ones.
+Renumbered SCCs for warping (31, 32, 33, 34) and Scren->D (40)
+
+//b20
+Partially rewrote LinkClass::dowarp() to fix sound and dest issues. 
+Renamed bool Link->PlayWarpSound to Link->SideWarpSounds
+Added ClearSCCWarpValues and used it to clean up SCC warps. 
+Added LinkClass::playpitwarpsfx and bool Link->PitWarpSounds to ZScript, to determine if pit warps play a sound
+Added bool LinkClass::ispit , LinkClass:: void getIsPitWarp, bool setIsPitWarp. 
+	These are used to determine if the warp is a ptwarp after all the other vars clear. 
+Why don't we rewrite PitWarp; eh?
+All new ZScript features, and warp sounds work.
+SCC Warp features still require testing, and debugging. 
+Updated zscript.txt and 2.54_New_Zscript.txt to reflect the changes and additions.
+Updated 'std_constants' with new WARPFX_* values. 
+
+PitWarpSound and SideWarpSound seem to be joined somehow. Check to see if any of the EVENTS in Link.cpp might
+be causing this, such as the event that calls dowarp().
+
+Discovered that zlaunch-w.exe will crash if zquest-w is not in its working path. -ZoriaRPG

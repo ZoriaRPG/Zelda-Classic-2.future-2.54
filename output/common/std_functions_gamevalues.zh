@@ -1,0 +1,195 @@
+//Returns the number of Triforce Pieces Link currently has
+int NumTriforcePieces(){
+	int ret = 0;
+	for(int i=1;i<=8;i++)
+		if(Game->LItems[i]&LI_TRIFORCE) ret++;
+	return ret;
+}
+
+//Get an NPC's name from an ID
+//.! might belong in std_functions_npcs
+void GetNPCName(int ID, int string) {
+	npc n = Screen->CreateNPC(ID);
+	n->GetName(string);
+	Remove(n);
+}
+
+
+//Returns true if Link has the level item 'itm' from level 'level'
+//Overloaded to use the current level if no 'level' arg is entered
+//Use the LI_ constants for the 'itm' argument
+bool GetLevelItem(int level, int itm) {
+	return (Game->LItems[level]&itm) != 0;
+}
+bool GetLevelItem(int itm) {
+	return (Game->LItems[Game->GetCurLevel()]&itm) != 0;
+}
+//Gives or removes a level item from Link's inventory
+void SetLevelItem(int level, int itm, bool state) {
+	if(state) Game->LItems[level] |= itm;
+	else Game->LItems[level] &= ~itm;
+}
+void SetLevelItem(int itm, bool state) {
+	if(state) Game->LItems[Game->GetCurLevel()] |= itm;
+	else Game->LItems[Game->GetCurLevel()] &= ~itm;
+}
+
+
+void GetMessage(int ID, int string) {
+	Game->GetMessage(ID, string);
+	int i;
+	for(i = MAX_MESSAGELENGTH-2; string[i] == ' '; i--);
+	string[i+1] = 0;
+}
+
+itemdata GetItemData(item i) {
+	return Game->LoadItemData(i->ID);
+}
+
+int GetHighestLevelItem(int itemclass) {
+	itemdata id;
+	int ret = -1;
+	int curlevel = -1000;
+	//143 is default max items, increase if you add lots of your own
+	for(int i = 0; i < 256; i++)
+	{
+		id = Game->LoadItemData(i);
+		if(id->Family != itemclass)
+			continue;
+		if(id->Level > curlevel)
+		{
+			curlevel = id->Level;
+			ret = i;
+		}
+	}
+	return ret;
+}
+
+int GetHighestLevelItem(item i) {
+	itemdata argid = GetItemData(i);
+	int ret = i->ID;
+	int curlevel = argid->Level;
+	itemdata id;
+	//143 is max items, decrease to improve speed if you need to
+	for(int i = 0; i < 256; i++)
+	{
+		id = Game->LoadItemData(i);
+		if(id->Family != argid->Family)
+			continue;
+		if(id->Level > curlevel)
+		{
+			curlevel = id->Level;
+			ret = i;
+		}
+	}
+	return ret;
+}
+
+// Convert between map and DMap screens
+int DMapToMap(int screen, int dmap) {
+	return screen+Game->DMapOffset[dmap];
+}
+
+int MapToDMap(int screen, int dmap) {
+	return screen-Game->DMapOffset[dmap];
+}
+
+
+
+//Returns true if Link is on a sideview screen
+bool IsSideview() {
+	return Screen->Flags[SF_ROOMTYPE] & 4;
+}
+
+//Returns true if Link is on a sideview screen
+//bool IsSideviewFlag() {
+//	return ScreenFlag(SF_ROOMTYPE, SFR_SIDEVIEW);
+//}
+
+//Returns true if Link is on a Dungeon (flagged) screen
+bool IsDungeonFlag() {
+	return Screen->Flags[SF_ROOMTYPE] & 1;
+}
+
+//Returns true if Link is on an Interior (flagged) screen
+bool IsInteriorFlag() {
+	return Screen->Flags[SF_ROOMTYPE] & 2;
+}
+
+//Returns true if Link is in a Dungeon Room
+//int IsDungeon(){
+//	return ScreenFlag(SF_ROOMTYPE, SFR_DUNGEON);
+//}
+
+//Returns true if Link is in an Interior Room
+//int IsInterior(){
+//	return ScreenFlag(SF_ROOMTYPE, SFR_INTERIOR);
+//}
+
+//Returns true if the sprite at (x,y) is standing on a sideview platform on a sideview screen, as worked out
+//by ZC's internal code.
+//For 16 pixel high sprites only.
+bool OnSidePlatform(int x, int y) {
+	return (Screen->isSolid(x+4,y+16) && Screen->isSolid(x+12,y+16) && Screen->Flags[SF_ROOMTYPE]&4);
+}
+
+//Returns true if a sprite of height 'h' at position (x,y) with an offset of (xOff,yOff) is standing
+//on a sideview platform on a sideview screen.
+bool OnSidePlatform(int x, int y, int xOff, int yOff, int h) {
+	return (Screen->isSolid((x+xOff)+4,(y+yOff)+h) && Screen->isSolid((x+xOff)+12,(y+yOff)+h) && Screen->Flags[SF_ROOMTYPE]&4);
+}
+
+
+
+//Returns if Link has the Triforce piece for a given level.
+int HasTriforce(int level){
+        if(Game->LItems[level]&LI_TRIFORCE) return 1;
+	return 0;
+}
+
+//Returns if Link has the compass for a given level.
+int HasCompass(int level){
+        if(Game->LItems[level]&LI_COMPASS) return 1;
+	return 0;
+}
+
+//Returns if Link has the map for a given level.
+int HasMap(int level){
+        if(Game->LItems[level]&LI_MAP) return 1;
+	return 0;
+}
+
+//Returns if Link has the map for a given level.
+int HasBossKey(int level){
+        if(Game->LItems[level]&LI_BOSSKEY) return 1;
+	return 0;
+}
+
+//Returns if Link has defeated the dungeon boss for a given level.
+int DefeatedLevelBoss(int level){
+        if(Game->LItems[level]&LI_BOSS) return 1;
+	return 0;
+}
+
+//Returns the item ID for the current screen, if there is one. 
+int ScreenItem(){
+	if ( Screen->RoomType == RT_SPECIALITEM ) return Screen->RoomData;
+	return -1;
+}
+
+//Returns the number of Level Keys Link currently has for a specific level
+//int NumTriforcePieces(int level){
+  //  int ret = 0;
+    //for(int i=1;i<=8;i++)
+      //  if(Game->LItems[level]&LI_TRIFORCE) ret++;
+    //return ret;
+//}
+
+//Returns the number of Triforce Pieces Link currently has.
+//Specify the highest level in your game with arg 'maxlevel'.
+int NumTriforcePieces(int maxlevel){
+    int ret = 0;
+    for(int i=1;i<=maxlevel;i++)
+        if(Game->LItems[i]&LI_TRIFORCE) ret++;
+    return ret;
+}

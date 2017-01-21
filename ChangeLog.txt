@@ -1,0 +1,739 @@
+//Beta 1
+
+Added new ZScript commands:
+    Game->CappedFPS
+    OverlayTile(int first, int second)
+    Game->GetDMapScreenDoor
+    Game->SetDMapScreenDoor
+    Game->GetDMapScreenState
+    Game->SetDMapScreenState
+Added using bitmaps to Screen->Quad as textures.
+Set header version to 0x254.
+Flaged as a beta in the header.
+
+//Beta 2
+Updated Build to 30, and set version as 254
+Fixed missing entry for THROTTLEFPS in the bytecode.
+Tried addin additional bitmap draw mode rotate_sprite_trans: This allegro function call would not compile. We need to udate allero.
+Added constant TEX_BITMAP to std_constants
+Created test quests for OverlayTile, and Game->CappedFPS
+
+//Beta 3
+Fixed build ID and changed to 31.
+Corrected OOverlayTile
+Updated some instructions.
+Fixed minor oversight in std_functions
+
+//Beta 4
+Added tilde key checking to CappedFPS
+
+//Beta 5
+Began implementing DrawBitmapEx
+
+//Beta 6
+Implemented DrawBitmapEX, with limited modes.
+
+//Beta 7
+Added additional modes to DrawBitmapEX; updated from 13 to 16 args.
+Modified Quad (bitmaps as textures), so it might work now.
+Updated ZScript docs to v0.7.6 to include these additions. 
+
+//Beta 8
+Tried merging the script drawing changes from Gleeok. This did not go well. (WHATNO8)
+
+//Beta 9
+This is forked from Beta 7, not Beta 8.
+Merged some drawing components from allegro 4.4.2 to our 4.2 build.
+This adds the ability to call draw_sprite_ex, which is not ordinarily in allegro 4.2.
+DrawBitmapEx now has some additional modes enabled. 
+Added BitmapQuad(), but it does not work rightly, and it may be unstable.
+Tried to permit reading the entire screen as a render source with DrawBitmapDX, but this did not work.
+Updated ZScript docs to v0.7.7 to include these additions. 
+
+//Beta 10
+Added Link->Diagonal and Link>BigHitbox
+Updated the ZScript docs to v0.7.8 to include these additions. 
+
+Beta 11
+Added ->ID to itemdata
+
+//Beta 12
+Added an entire list of variables to itemdata, as follows:
+//These correspond to the ten pulldown values on the 'data' page. 
+Misc1, Misc2, Misc3, Misc4, Misc5, Misc6, Misc7, Misc8, Misc9, Misc10	
+
+//These correspond to the ten pulldown values on the 'action' page. 
+Attribute1, Attribute2, Attribute3, Attribute4, Attribute5, Attribute6, Attribute7, Attribute8, Attribute9, Attribute10
+
+Modifier //The Link Tile Modifier
+Script //The Action Script
+PScript	 //The Pickup Script
+MagicCost //The MP Cost of the item
+MinHearts //The minimum hearts to pick up the item (e.g. swords in Z1)
+Tile //The tile used by the item
+Flash //Flash, and two-hand. 
+CSet //The item CSet
+AFrames //The number of animation frames
+ASpeed //The animation speed
+Delay //The animation delay
+Updated the ZScript docs to v0.7.9 to include these additions. 
+
+//Beta 13
+Added the missing itemdata flags: Combine, Downgrade, KeepOld, RupeeCost, Edible, GainLower, Flag1, lag2, Flag3, Flag4, Flag5, and 'Unused'.
+Updated the ZScript docs to v0.8.0 to include these additions. 
+
+//Beta 14
+Expanded Link->Misc[16] to Link->Misc[32]
+Expanded lweapon->Misc[16] to lweapon->Misc[32]
+Expanded eweapon->Misc[16] to eweapon->Misc[32]
+Expanded item->Misc[16] to item->Misc[32]
+Expanded npc->Misc[16] to npc->Misc[32]
+
+Modified the ZQuest 'Item Editor' so that no options are greyed out (disabled), allowing the user to set values to work in conjunction with the new itemdata entries, in scripts. 
+Updated zscript.txt to v0.8.1 to reflect these changes.
+
+//Beta 15
+Added public link var zstringwarp , and an if(zstringwarp) statement to the Link class to support warping by string. -ZoriaRPG
+Added SCCs for Warp, Warp2, and SetScreenD to zstrings. -Dimentio
+Wrote functions for SCC cases MSGC_WARP, MSGC_WARPSQ, MSGC_SETSCRD. -ZoriaRPG
+
+Added Link->UseWarpReturn to ZScript. -ZoriaRPG
+Added handlers in the Link class: setWarpReturnSquare(int), getWarpReturnSquare(), getDirectItem(), getDirectItemA(), getDirectItemB(). -ZoriaRPG
+Added Link->UsingItem, Link->usingItemA, Link->UsingItemB to ZScript. -ZoriaRPG
+->These should return the item number being used, or -1. 
+->Setting these does nothing at present. The internal variables appear to never be set?! 
+
+//Beta 16
+Added Link->WarpSound : The user may set this, and if it is not 0, this sound plays during Link->Warp and Link->PitWarp.-ZoriaRPG
+Worked on do_warp()
+Added debug info to do_warp
+
+//Beta 17
+Stopped side warps playing warp sfx. -ZoriaRPG
+Added Link->PlayWarpSound : This enables/prevents a sound from playing even if set. Should override for side warps, etc. 
+Fixed Link->PlayWarpSound. Now it returns properly.  -ZoriaRPG
+Added SCC for Warp without a return square. -ZoriaRPG
+How the hell do we set tmpscr->warpreturnc or why is wrindex=(tmpscr->warpreturnc>>(8+(index*2)))&3; not working?!
+
+New SCCs are:
+
+/23/dmap/screen - Warps to dmap, screen
+/24/dmap/screen/return - Warps to dmap, screen, using return square 'return'; but the return square thing is not working.
+/26/reg/value - Sets Screen->D[reg] = value. 
+
+Added bool isscriptedwarp and associated handlers to link.h and link.cpp. ( LinkClass::getScriptedWarp(), etc.)
+Modified do_warp() and dowarp() to use isscriptedwarp for how warps by script set wtSCROLL warpreturnx[] and warpreturny[], thus:
+	if(get_bit(quest_rules,qr_NOARRIVALPOINT))
+            {
+                if ( getScriptedWarp() ){
+			setScriptedWarp(false);
+			wrx=tmpscr->warpreturnx[wrindex];
+			wry=tmpscr->warpreturny[wrindex];
+		}
+		else{
+			wrx=tmpscr->warpreturnx[0];
+			wry=tmpscr->warpreturny[0];
+		}
+            }
+	    
+//Beta 18
+Additional work on warping.
+The SCC warps are buged. If the present screen is a screen 8 cave, Link warps into unknown space. -ZoriaRPG
+Added checks for isscriptedwarp to LinkClass::dowarp(int,int)
+
+//Beta 19
+Added Link->WarpEffect to set an in-built effect for Link->Warp -ZoriaRPG
+Added Screen->ZapIn(), Screen->ZapOut, Screen->WavyIn(), Screen->WavyOut, and Screen->OpeningWipe -ZoriaRPG
+	These replicate the animations from tilewarps, to call at any time (without warping).
+Fixed return squares for Link->Warp
+Added additional SCCs for warping, and rewrote some of the old ones.
+Renumbered SCCs for warping (31, 32, 33, 34) and Scren->D (40)
+
+//Beta 20
+Partially rewrote LinkClass::dowarp() to fix sound and dest issues. 
+Renamed bool Link->PlayWarpSound to Link->SideWarpSounds
+Added ClearSCCWarpValues and used it to clean up SCC warps. 
+Added LinkClass::playpitwarpsfx and bool Link->PitWarpSounds to ZScript, to determine if pit warps play a sound
+Added bool LinkClass::ispit , LinkClass:: void getIsPitWarp, bool setIsPitWarp. 
+	These are used to determine if the warp is a ptwarp after all the other vars clear. 
+We need to rewrite PitWarp; eh?
+All new ZScript features, and warp sounds work.
+SCC Warp features still require testing, and debugging. 
+Updated zscript.txt and 2.54_New_Zscript.txt to reflect the changes and additions.
+Updated 'std_constants' with new WARPFX_* values. 
+
+PitWarpSound and SideWarpSound seem to be joined somehow. Check to see if any of the EVENTS in Link.cpp might
+be causing this, such as the event that calls dowarp().
+
+Discovered that zlaunch-w.exe will crash if zquest-w is not in its working path. -ZoriaRPG
+
+//Beta 21
+I appear to have fixed all of the warp sound conflicts, so we shall see what happens. -ZoriaRPG -ZoriaRPG 14/Dec/2016
+New public build. 
+
+//Beta 22
+Saffith pointed out that SCC numbering was overflowing into ASCII escape char space. 
+Fixed new SCC numbering, and rearranged.-Z 15/Dec/2016
+	Changed the SCC IDs for new SCCs as follows:
+	\18 Screen->D
+	\19 SetScreenD(screen,reg,value)
+	\23 SetDmapScreenD(dmap,screen,reg,value)
+
+	\26 Warp(dmap,screen)
+	\27 Warp(dmap,screen,return)
+	\28 Warp(dmap,screen,return,sound)
+	\29 Warp(dmap,screen,return,sound,effect)
+Added Link->Eaten, Link->Extend, Link->SetTile(int,int,int,int) -Z 15/Dec/2016
+Added constants for LSPRITE_* (Link Sprite) and cleaned some things in std_constants.
+
+
+//Beta 23
+Added temporary stuff for Link->SetExtend(int,in6t,int), Link->GetExtend(int,int) -Z
+Fixed Link->Extend not setting all dirs. -Z 15/Dec/2016
+I suggest droping the SCC for GetScreenD, as Screen->D and DMapScreenD should suffice. -Z
+I would also cut two of the warp functions to save space. -Z
+Link->SetTile(i,i,i.i) isn't workin. Saffith says it's because of how Link is drawn. This may be true,
+	but I suspect that my stack functions are also rubbish. -Z 16/Dec/2016
+	These may need to wait until 2.55, as there are more important facets to worry about, when I'm wasting
+	30+ hours recompiling to test changes. -Z 16/Dec/2016
+	I'd still like to partially rewrite pit and side warps, and give each a unique sound var, so that I can
+	dispose of this boolean flag and shared soud silliness. -Z
+Disabled the ability to call Link->GetExtend(i,i) and Link->SetExtend(i,i,i). -Z 16/Dec/2016
+	These were returning errors: 
+		Couldn't find function label #1820
+		Couldn't find function label #1821
+Link->SetTile started generating a SP error. Calling it would hang ZC. Tried a new fix.-Z 16/Dec/2016
+Updated docs. 
+
+
+//Beta 24
+Worked on Link->SetTile, Link->GetExtend, Link->SetExtend -Z
+
+//Beta 25
+Chaned Link->SetExtend() to Link->GetLinkExtend() and Link->GetExtend() to Link->SetLinkExtend().
+	This should prevent issues with internal labels. -Z
+	
+//Beta 26
+Some minor opcode revisions for GetLinkExtend and SetLinkExtend. Note that they still are not correct, 
+	but they no longer do *nothing at all*. -Z
+Updated docs. 
+Public release. 
+
+//Beta 27
+Worked on Set/GetExtend opcodes and entries. Revised get_link_extend to be a binary opcode function. -Z
+Started working on ten script weapon defs. Added enedata_defense3_list, and editor panels to zq_custom.cpp and expanded the 
+	edefd enum for all ten in addition to generic script in zdefs.h. Nothing should be different about guys./h/cpp/. 
+	Edited the jproc dialogue boxes, and spacing for the third defs tab is less than the other two. 
+		-->This is because the other pages fit only nine types per tab. 
+		I should just enlarge the window. -Z
+		Note: I have no updated the weapon damage checking to *do anything with* these new fields, but the user should
+		be able to set the values. 
+		!Adding 'Double Damage' to the list of defense effects would also be nice. 
+		
+		Added scriptdefense[] to npcs, and the related ZScript stuff as n->ScriptDefense[10].
+		Fixed npc->Misc, *weapon->Misc, item->Misc, and Link->Misc in GlobalSymbols.cpp.
+			->I forgot to set their size to 32 there. Fixed now. -Z
+		Added a bunch of stuff to zq_custom.cpp. Might work now. 
+		Modified zq_class.cpp, zdefs.h, guys.h, 
+		Added extra define and enum to zdefs.h for script weapon types. 
+		Added for loops to write to the new array. 
+		-ZoriaRPG 18-Dec-2016
+		
+		For some reason, int writeguys(PACKFILE *f, zquestheader *Header) is preventing npcs from spawning
+		with the new scriptdefense[] values?
+		
+		Something is clearly amiss in either zq_class.cpp or zq_custom.cpp, where the values are set. 
+
+//Beta 28
+Disabled writing scriptdefense[] to the packfile, to allow NPCs to spawn, while we figure out why this is happening. -Z
+Updated docs. 
+
+//beta 29
+
+Added the script defs to the packfile. Saving/Reading them caused massive corruption. -Z
+
+//Beta 30
+Disabled saving script defs set from the editor. 
+	They still work when set by script, but they are not retained with the quest (yet),.. -Z
+Implemented enemy weapon checks for script types in guys.cpp with new functions checking them. -Z
+Setting n->ScriptDefense[] works perfectly, although we will need to add a quest version check
+	to prevent older quests that used the generic defense from obeying segregated defense rules. -Z
+Tested npc->ScriptDefense[] and verified that it works. -Z
+Fixed the item editor field for 'Sound' to display properly. -Z
+
+//Beta 31
+Began adding Link->Action(LA_CASTING)
+Worked on enemy editor stuff.
+
+//Beta 32
+Reverted the enemy editor changes. 
+Trying again.
+
+//Beta 33
+//Based on Beta 30 (Stable)
+Added some casting routines, but these freeze Link, so I disabled them for the present. -Z
+Updated zquest.txt to fix a typo in Misc. Colours. -Z
+
+//Beta 34
+Added new definitions for reading the packfile. if V_GUYS is > 24. 
+Updated V_GUYS to 25
+Fixed the packfile issues in qst.cpp, zq_class.cpp, and finished adding the scrit defences to the ZQ Editor. -Z
+Setting the ten script type defences now works as intended, both from the editor, and from scripts.
+	Requires testing old quests, to see if anything broke. -Z 19/Dec/2016
+Added a method of checking if an old quest is running to deferr the script type defence checks to the generic edefsSCRIPT.
+	THis requires testing. -Z 19/Dec/2016
+Merged the 2.50.3 RC1 allegro config files and such into 2.54. -Z 19/Dec/2016
+New public build candidate.
+Updated docs: Updated zquest.txt with enemy editor changes. -Z
+
+//Beta 35
+Modified the packfile reading so that enemies from older quests will forward their defense[edefSCRIPT] 
+	setting to each of the ten scripdefense[n] indices. This means that in the enemy editor, loading an old
+	quest will push the old values to the new indices. -Z 19/Dec/2016
+Renamed std_constants_2.50.2.zh to std_constants_2.54.zh -Z
+Renamed std_f_2.50unctions.2.zh to std_functions_2.54.zh -Z
+Added setting to std.cfg to disable mods to OnSidePlatform(), despite that the revised function isn't in this build. 
+Fixed AdjacentCombo(int,int,int) in std_functions. -Z
+New public build candidate. 
+SetComboSolid is choosing the wrong combos. -Mitsuukara 20/Dec/2016
+	Verified that this also occurs in 2.50.3RC1 - Mitsukara
+	
+//Beta 36
+Rewrote Link->SetTile(), Link->SetLinkExtend(), Link->GeLinkExtend() -Z 20/Dec/2016
+Removed GETLINKEXTEND and LINKSETTILE from ZASM . The getter for Link*Extend now uses the same reg
+	as the setter; both are SETLINKEXTEND. Likewise, LINKSETTILE is now SETLINKTILE and the ZScript
+	function is now Link->SetLinkTile(). -Z
+	I might move these from Link-> to Game->, if they ever work.
+	
+//Beta 37
+Finished implementin Link->SetLinkExtend(int sprite, int dir, int extend) and Link->GetLinkExtend(int sprite, int dir)
+Started revising Lnk->Extend , and added a function to Link.cpp (disabled at present) to convert an action to a sprite.
+	See 'ZScript.txt' for more details. -Z
+Revised Link->SetLinkTile(), and started adding Link->GetLinkTile(). 
+	These are related to the tile used by sprites, not Link->Tile clones. SetLinkTile still does nothing. -Z
+I might expand the D# script args from 8 to 16 next. The stak registers were reserved for that many. -Z
+Completed Allegro 4.4.2 migration for Linux. There was a missing 'optional' audio lib that should fix
+	the sound issues. -Grayswandir. 20/Dec/2016
+The Windows ag442 stuff is nearly done, too. -Z 20/Dev/2016
+
+
+//Beta 38 (uncompiled as of these entries)
+//Added all this nonsense to the Link class for handling sounds, and for handling extend
+//Note that as of b38, the pit and side warp sound variables do nothing.
+//I need to set them up in the warp functions, when I go over them again. 
+
+int getSprite()
+void setSprite(int action)
+int pitwarpsfx; //SFX for pit warps, separate from tile, side
+int sidewarpsfx; //SFX for side warps, separate from tile, pit.
+int pitwarpeffect; //Visual effect
+int sidewarpeffect; //Visual effect
+int getSideWarpSound(); //Link->SideWarpSound
+void setSideWarpSound(int sound);
+int getPitWarpSound(); //Link->PitWarpSound
+void setPitWarpSound(int sound);
+int getPitWarpEffect();
+void setPitWarpEffect(int fx);
+int getSideWarpEffect();
+void setSideWarpEffect(int fx);
+
+These are for:
+
+Link->PitWarpSound	PITWARPSFX
+Link->PitWarpEffect	PITWARPVISUAL
+Link->SideWarpSound	SIDEWARPSFX
+Link->SideWarpEffect	SIDEWARPVISUAL
+
+Plus their ZScript accessors and GLobalSymbols.cpp Link table entries. 
+
+Added to link.cpp and link.h:
+
+//Set the button items by brute force
+    void setAButtonItem(int itm);
+    void setBButtonItem(int itm);
+
+ Addedto ZScript::
+
+Link->SetItemSlot(int item, bool setA)	SETITEMSLOT
+This attempts to force-set the item in a button slot to 'item'. 
+If bool setA is true, it tries to set item A, otherwise itwm B
+
+Link->SetItemA(int item)	GAMESETA
+This attempts to force-set the item in Slot A to 'item'
+
+Link->SetItemB(int item)	GAMESETB
+This attempts to force-set the item in Slot A to 'item'
+
+All the SetItem* functions cause stack overflows. -Z 20/Dec/2016
+Updated docs. New public build candidate. 
+
+//Beta 39
+Startedadding additional definitions for defence categories/effects:
+	ed2x, //Double damage
+	ed3x, //Triple Damage
+	ed4x, //4x damage
+	edLEVELDAMAGE, //Damage * item level
+	edLEVELREDUCTION, //Damage / item level
+	edFREEZE, //Freeze solid
+	edSPLIT, //causes the enemy to split if it has a split attribute
+	edREPLACE, //replaced by next in list?
+	edLEVELCHINK2, //If item level is < 2: This needs a weapon variable that is set by 
+	edLEVELCHINK3, //If item level is < 3: the item that generates it (itemdata::level stored to
+	edLEVELCHINK4, //If item level is < 4: weapon::level, or something similar; then a check to
+	edLEVELCHINK5, //If item level is < 5: read weapon::level in hit detection. 
+	edCHINK10, //If damage is less than 10
+	edTRIGGERSECRET, //Triggers screen secrets. 
+I may add more, and I'm uncertain if some of these are truly feasible. -Z 21/Dec/2016
+
+//Beta 39.2 
+Tried migratin to allegro 4.4.3 (that is a 3, not 4.4.2; this exists). I was able to get ZC and ZQ to compile.
+ZQuest ran, but ZC crashed. I suspect this is to do with the audio libs, as it crashed just as it was trying to load 
+the opening theme music. 
+	Skipping the opening logo prevented it from crashing. 
+	
+This was a test of ZC in allegro 4.4.3 
+	Building this worked, but produced a new crtical ug. Playing any audio other then MIDIs or WAvs seems to crash ZC.
+	Loading a custom quest worked, but 1st.qst crashed ZC.
+	The keyboard bug in ZQ is now fixed, by allegro 4.4.3. 
+	The blue flicker bug in ZC fullscreen is fixed by allegro 4.4.3.
+	Alt-tabbing out of fullscreen ZC distorts the resolution. 
+	Note: Allegro 4.4.3 uses DirectX 8.
+	
+//Beta 40
+This is a build using allegro 4.2.x, branched from beta 38! -Z
+Added new script weapon defence outcomes:
+	-Z 22/Dec/2016
+	These are known to work:
+	
+	edTRIGGERSECRETS, //Triggers screen secrets. (verified to work)
+	edCHINKL10, //If damage is less than 10 (verified to work)
+	
+	These are untested:
+	
+	ed2x, //Double damage 
+	ed3x, //Triple Damage
+	ed4x, //4x damage
+	edHEAL, //recover the weapon damage in HP
+	
+	These do nothing at present:
+	
+	edLEVELDAMAGE, //Damage * item level
+	edLEVELREDUCTION, //Damage / item level
+	edFREEZE, //Freeze solid
+	edSPLIT, //causes the enemy to split if it has a split attribute
+	edREPLACE, //replaced by next in list?
+	edLEVELCHINK2, //If item level is < 2: This needs a weapon variable that is set by 
+	edLEVELCHINK3, //If item level is < 3: the item that generates it (itemdata::level stored to
+	edLEVELCHINK4, //If item level is < 4: weapon::level, or something similar; then a check to
+	edLEVELCHINK5, //If item level is < 5: read weapon::level in hit detection. 
+	edSHOCK, //buzz blob
+	edEXPLODESMALL, //ew bombblast
+	edEXPLODELARGE, //super bomb blast
+	edSTONE, //deadrock
+	edBREAKSHIELD, //break the enemy shield
+	edRESTORESHIELD, //if the enemy had a shield, reset it
+	edSPECIALDROP, //but where to define it?
+	edINCREASECOUNTER, //but where to define the counter
+	edREDUCECOUNTER, //same problem
+	edEXPLODEHARMLESS, //boss death explosion
+	edKILLNOSPLIT, //If sufficient damage to kill it, a splitting enemy just dies.
+	
+Added Link->ItemA, and Link->ItemB
+	Checking these willr eturn the item in either slot. 
+	Setting them will force-set the item for either slot, ignoring if it is in inventory or on the subscreen.
+	Setting this will also ignore the A-button quest rule. 
+	These are intentional effects. 
+	
+Fixed Link->Equipment -Z 23/Dec/2016
+	It should now be possible to write to this field. This DOES NOT IGNORE if an item is in inventory.
+	This obeys the quest rule regarding A-button items. 
+	
+Modified Link->SetItemSlot() -Z 23/Dec/2016
+	The args are: 
+		Link->SetItemSlot(int itm_id, bool a_button, bool force)
+		where 'itm_id' is the item, bool a_button is true if setting button a, false for b, and 'force' 
+			determines if we override the quest rule, or check if the item is in inventory.
+		This is still not quite behaving. Are the values wrong, coming off the stack? -Z 23/Dec/2016
+			
+Link->SetItemA() and Link->SetItemB() from Beta 38 are to be removed. -Z
+
+Reserved 16 registers so that Grayswandir has room to insert new script commands and variables. 
+Updated the Beta ID to 40. -Z 23/Dec/2016
+
+Began adding function pointers to ZScript. -Grayswandir (not implemented). 23/Dec/2016
+
+TO-DO:
+* Change info window to report the Beta ID instead of the Build ID.  -Changed -Z. 
+* Add a function to read V_FFSCRIPT from he quest header.
+* Add a version check to COMBOSDM that reads the header.  -Used the ZC version in the header, for now. -Z
+
+Updated docs. -Z 24/Dec/2016
+New public build candidate. -Z 24/Dec/2016
+
+Trigger Secrets and Block if < 10 work. -Mitsukara 22/Dec/2016
+2x, 3x, and 4x def results do not work. -ywkls 24/Dec/2016
+
+WarpEffect broke betweenb19 and b20, and we just now noticed ?! -Z
+Wedon';t have a fliping archive of b19 either !!!!!!!!!!!!!!?
+That does it.. I just need to rewrite dowarp() -Z 24/Dec/2016
+
+//Beta 41
+Restored warp effects. This likely broke pit warp andside warp sounds, but we need to rewrite those anyway. -Z
+Warp returns verified to work. Warp effects verified to work. -Z
+All is fixed now, or so it seems. The problem was an if statement, where an else if was needed. -Z 24/Dec/2016
+
+Might have found a bug with Screen Freeze ( Except FFCs ) combos. Warping while they are on the screen (as ffc->Data)
+seems to cause memory corruption of some sort. This may also be true in 2.50.3, or earlier. I'm not even certain what 
+is happening.  -Z 24/Dec/2016
+
+We need to add a zscript global boolean 'Prevent Subscreen from Falling'. -Z
+
+//Beta 42
+Fixed label for SIDEWARPVISUAL in ffasm.cpp -Z
+Added Link->WalkSprite : THis is a testing setter to check the effects of writing to the sprite values. -Z
+Added function pointers using @identifier to the parser. -Grayswandir 24/Dec/2016
+Added comment blocks to the parser, using the book method. -Grayswandir 24/Dec/2016
+Worked on Link->SetLinkTile() ...it might work.
+Added 14 total setters to manually set each sprite for Link. They are:
+ Link->WalkTile, SwimTile, DiveTile, SlashTile, JumpTile, ChargeTile, StabTile, CastingTile, PoundTile, FLoatTile, 
+	Hold1LandTile, Hold2LandTile, Hold1WaterTile, Hold2WaterTile -Z 25/Dec/2016
+THese otherwise work like Link->Extend, in that they set the tile for a given sprite based on Link's present direction.
+I have yet to add getters, those will coe after I retest this nonsense. Let's see if that function works, first.  -Z 25/Dec/2016
+We need to be able to set the animation style, too. -Z 25/Dec/2016
+Added getters for the 14 Link Tile testing variables. -Z 25/Dec/2016
+
+//Beta 43
+Implemented Link->HitWidth, Link->HitHeight, Link->HitXOffset, Link->HitYOffset -Z 25/Dec/2016
+Added Link->InvFrames: This returns if Link was hit, the number of inv frames remaining, and can be set from 0 to 214747 
+	to grant, edit, remove, increase, or reduce the number of frames. -Z 25/Dec/2016
+Added Link->Animation: THis sets the animation style for Links sprites, and will return the present setting. -Z 25/Dec/2016
+Added Link->WalkASPeed and Link->SwimASpeed: These return or set the animation speed for Link's walking, or swim sprites. -Z 25/Dec/2016 -Z 
+Still need to add a way to prevent the subscreen from falling on PressStart. -Z 25/Dec/2016
+
+* ( Done ) Need to add a way to prevent invincible link from flickering/flashing. -Z 26/Dec/2016
+Added int Link->HurtSound : Set to a SFX to use for Link being hurt. -Z 26/Dec/2016
+	Defaults to the internal SFX_OUCH if never set, but does not reset. -Z 26/Dec/2016
+Added bool Link->InvFlicker : Set false to disable flickering/flashing for invincible Link. -Z 26/Dec/2016
+
+Link->HitWidth works perfectly. -Z 26/Dec/2016
+Link->HitHeight is still not right. t is possible to adjust with HitYoffset, but not fun. -Z 26/Dec/2016
+Link->HitXOffset should work. -Z 27/Dec/2016
+Added muple declarations to the parser ( int a, b = 30, d = 16 ). -G 27/Dec/2016
+	This crashes ZC if done at a global scope. -Z 22/Dec/2016
+More work on function pointers, and types. -G 27/Dec/2016
+Need to add n->Misc[], and i->Misc[] values to the enemy and item editor, to allow setting the zscript->Misc[indxes] 
+	from the editor in advance. -Z 27/Dec/2016
+Need to expand InitD[8] to [16]. -Z 27/Dec/2016
+Need to add / implement ZOffsets -Z 27/Dec/2016
+
+//Beta 44
+Added Game->DisableActiveSubscreen -Z 27/Dec/2016
+Array sizes can now be declared with maths. -G 27/Dec/2016
+Added lweapon->Range ; only for boomerangs. -Z 27/Dec/2016
+Added  Game->Version, Game->Build, and Game->Beta to return version IDs in ZScript. -Z 27/Dec/2016
+Fixed array scoping issues when nesting array calls: int b = arr1[ arr2[ arr3[0] ] ] ) -G 27/Dec/2016
+	This crashes ZC if done at a global scope. -Z 27/Dec/2016
+Bug: Link flickers perpetually if Link->InvFlicker is set true. -Z 27/Dec/2016
+Parser changes seem to cash ZC whenever a value is assigned to a gd register. :( -G 27/Dec/2016
+Fixed Link flickering. -Z 27/Dec/2016
+Updated docs. -Z 26/Dec/2016
+Updated std_constants -Z 27/Dec/2016
+May have fixed parser issues for the next build. -G 27/Dec/2016
+
+//Beta 45
+Fixed global declarations and global var usage with the parser changes. -G 28/Dec/2016
+	Would be nice to be able to reference array pointers at a global scope. 
+	e.g. int arr[20]; int arr2[]={arr}; -Z
+Added int npc->Invincible (superman), int npc->InvFrames (hclk) , bool npc->HasItem, and bool npc->Ringleader. -Z
+THe parser changes are bugged. Attempting to compile a simple script flooded the parser window with:
+	'INTERNAL ERROR: COULDN'T FIND STACK OFFSET FOR VARIABLE'. -Z 28/Dec/2016
+	I reverted the parser to that of beta 42, prior to adding in the array and var declaration changes. -Z
+	--> This means that declaring array sizes with maths, and declaring vars on one line, are both disabled. -Z
+Fixed enemy defence results: Double Damage, Triple Damage, Quadruple Damage. -Z 28/Dec/2016
+Added 'Debug Console' menu option to the Misc menu in ZC. -Z 28/Dec/2016
+Fixed enemy defence outcome 'Heal', and changed it to 'Enemy gains HP = weaon damage. It does not obey MaxHP! -Z 28/Dec/2016
+Removed Link->UsingItemA, Link->UsingItemB. Only the last weapon used is preserved, so these are pointless. -Z 28/Dec/2016
+Fixed Link->UsingItem. Works. -Z 28/Dec/2016
+Added Link->Attack : I thought this would show the sprite ID of the weapon, but IDK what this value is at present. -Z
+Link->SetLinkTile seems to still be off. i sets a tile, but the value is wrong. -Z 28/Dec/2016
+Link->GetLinkTile() seems to be right and proper now. -Z 28/Dec/2016
+ZC should now run in windowed mode by default, and not fullscreen. -Z 28/Dec/2016
+Fixed itemdata->CSet -Z 28/Dec/2016
+Created Subscreen Demo
+Setting Link->ItemA and Link->ItemB works, however the weapons will not activate (cannot be used) unless they
+	are assigned in init data, or picked up by touching them. Setting Link->Item[n] = true is insufficient. 
+Item->Frame does not do what ZScipt.txt claims that it does. This does not appear to be a new bug. 
+
+//Beta 46
+Added int current_item_level(int id) and int LinkClass::weaponattacklevel()
+	* These will later be used to do weapon defence returns based on weapon level. 
+Modified Link->ItemA and Link->ItemB to hopefully bypass the issue with not being able to use them once set if
+	they were not assigned in init data, or picked up manually. 
+	* This seems to have worked. 
+Added item->ACLock t return the present tick of the animation. 
+
+//Beta 47
+Discarded merge attempt tp build with ag4.4.3 29/DEC/16
+
+//Beta 48
+Added ffc->ID, to check this->ID and get the screen ref of an ffc from an ffc script. -Z 1/JAN/17
+Added itemdata->Flags[5], itemdata->Atributes[10], and itemdata->Sprites[10]. 
+	These are mean to replace the individual vars for each of these groups. -Z 1/Jan/2017
+* Updated entries for these new values in zscript.txt. -Z 1/Jan/2017
+Updated beta ID, and fixed reporting of beta ID in zquest 'About' menu option. -Z 1/Jan/2017
+Updated version ID in zquest.txt. -Z 1/Jan/2017
+Updated docs. -Z 1/Jan/2017
+
+//Beta 49
+Fixed how some item editor values are displayed in ZQuest. -Z 3/Jan/17
+Added Game->DMapPalette[512] : Allows reading, or setting the level palette. -Z 4/Jan/17
+Added Game->SetMessage(int id, int str[]) -Z 4/Jan/17
+Added Game->SetDMapName(int dmap, int str[]) -Z 4/Jan/17
+Added Game->SetDMapTitle(int dmap, int str[]) -Z 4/Jan/17
+Added Game->SetDMapIntro(int dmap, int str[]) -Z 4/Jan/17
+
+//Beta 50
+Added Game->GreyscaleOn() and Game->GreyscaleOff() -Z 4/Jan/17
+	These convert the entire display to greyscale, including the subscreens, and all drawn effects, to 
+	replicate Gameboy graphics on demand, do dream sequences, or otherwise provide a greyscale display
+	without needing to set up palettes for it. 
+--> This has two bugs: 
+	Bug 1: If greyscale is repeatedly enabled, it can fade the screeen to white, and setting
+		GreyscaleOff does not reverse it. -Z
+		--> THis can be fixed by adding a boolean that must be false in order to toggle it on. -Z
+	Bug 2: If the level alette changes, the data for sprite colours can become incorrect, permanently. -Z
+		--> This can be fixed by unsetting greyscale mode whenever a palette change otherwise occurs. -Z
+--> I would ultimately like to do Game->Monochrome(int base_colour, bool enabled) to do greyscale, plus green, red
+	and blue monochrome effects. 
+	
+//Beta 51
+Added Game->EndSound(int sfx), Game->PauseSound(int sfx), Game->ResumeSound(int sfx), Game->PauseMusic()
+	and Game->ResumeMusic(). -Z 6/Jan/17
+Fixed infinite fade-out with Monochrome. -Z
+This fixes perpetual sprite corruption too, but if monochrome is enabled and the game LPal is changed, monochrome
+is not disabled for sprites until disabled entirely. Loading a sprite pal into sprites would probably fix it though.-Z
+Urgh. Changing LPals when in greyscale, now doesn;t retain when greyscale is disabled. We need to save the latest
+pal into the greyscale scratch pal. 
+
+Now it isn;t possible to change the lpal when greyscale is enabled. 
+	This is the result of adding a greyscale refresh into pal.cpp
+	Need to find a better solution. 
+	
+Fixed all known issues with Game->GreyScale*() -Z 7/Jan/17
+
+//Beta 52
+Tried to add Screen->Polygon(), but this isn't possible the way that class ArrayH is set up in the 2.50.x branch.
+	..well, it is *possible*, but I need to do it quite differently to how I would do it.
+	The main issue, is that the zscript array can be of any varying size, and C++ does not permit variable
+	sized arrays, despite that gcc could compile it with msys. i do not know the best solution to this.
+	After various attempts, i abandoned the changes and reverted to b51 before doing anything else. 
+After early b52 abandonment: 
+Worked on SetLinkTile().
+	-->Worse than before. The stack is being offset and instructions aren't enqueued propetly when involking this. 
+Added reservations for ZScript functions, and defined Gleeok's new drawing functions in ffasm.cpp and ffscript.h
+	so that they are reserved. 
+Fixed lw->Range. it now works properly for boomerangs, hookshots, and arrows. It does however, require more testing. 
+Fixed script parser types for itemdata->Flags[], -.Attributres[], and ->Sprites[] -Z 8-Jan-17
+
+Added Game->RefFFC, Game->RefItem, Game->RefItemdata, Game->RefLWeapon, Game->RefEWeapon, 
+	Game->RefNPC, Game->SP for the purpose of testing.debugging. 
+	I may add a Debug-> namespace for these, later.
+
+Added getters for npc->UID, lweapon->UID, eweapon->UID, and item->UID
+Added int Game->GetPointer(bool), bool Game->SetPointer(int)
+	int ffc->GetPointer(ffc), ffc ffc->SetPointer(int)
+	int lweapon->GetPointer(lweapon), lweapon lweapon->SetPointer(int)
+	int eweapon->GetPointer(eweapon), eweapon eweapon->SetPointer(int)
+	int npc->GetPointer(npc), npc npc>SetPointer(int)
+	int item->GetPointer(item), item item->SetPointer(int)
+	int itemdata->GetPointer(itemdata), itemdata itemdata->SetPointer(int)
+Split std_functions int separate files. -Z
+Game->GDR is in there, but not enabled as it needs to work diffferently. -Z 10-Jan-17
+Added Game->SizeOfArrayBool(), SizeOfArrayFFC(), SizeOfArrayNPC(), SizeOfArrayItem(), SizeOfArrayItemdata()
+	SizeOfArrayLWeapon(), SizeOfArrayEWeapon() -Z 10-Jan-17
+Added ZQuest menu: File->Export->2.50.x Quest. This saves a quest so that 2.50.x ZQuest can open it for editing
+	in qsu format. -Z 12-Jan-17
+	!WARNING: All new featurs will be lost. Scripts may need to be recompiled, and may misbehave if the quest
+	is opened in 2.50.x ZC. Old enemy packfile variables are preserved, so this is not a concern, but 
+	enemies lose new properties when converting. 
+Began working on A string import commend to import an exported string table, with writing starting at a
+	string index that the user specifies. -Z 12-Jan-17
+Changed the load quest dialogue, so that after selecting a sile, the 'OK' button is in focus instead of the load
+	button. -Z 12-Jan-17
+Changed some handling for Link's hitbox to fix a bug with it not being set properly. -Z
+Modified the ffscript setters for Link's hitbox and tile size properties to prevent them setting them if extend is not >= 3. -Z
+Changed the minimum extend to '1' and defined it. -Z
+
+Modified hookshot and did some work on weapons.cpp:
+	Attempted a fix at hookshot->Range -Z 13-Jan-17
+	Attempted fix of hookshot not grabbing if set to a diagonal direction in ZScript. -Z 13-Jan-17
+Preliminary implementation of ffscriptRules[] and related instructions. -Z 13-Jan-17 (rev 52-Later)
+Modified guys.cpp to further respect Link hit offsets and eweapons should now do likewise. -Z 14-Jan-17 (rev 52-Later2)
+eweapons may still need to respect Link->HitHeight and HitWidth -Z
+Tried (twice) to integrate solidity checks and damage combo checks for a custom Link hitbox. -Z
+	Stopped writing both partway through. I particularly detest how the engine functions for this read. -Z
+	I may want to make new functions tha check some user values and then call the system functions, adjusting the values.
+	-Z 14-Jan-17
+Added hotkeys to the colour selector in ZQuest:
+	Shift+H/Ctl+H : Adjust Hue
+	Shift+S/Ctl+S : Adjust Saturation
+	Shift+B/Ctl+B : Adjust Brightness -Z 14/Jan/17
+	
+
+Implemented Game->GetScreenDoor(int map, int screen, int door) -Z 16jAN2017
+Implemented Game->GetScreenEnemy(int map, int screen, int index) -Z 16jAN2017
+Started implementing SetScreenDoor and SetScreenEnemy
+Added untested implementation of Screen->CreateLWeaponDx
+Added Game->SetScreenDoor(int map, int screen, int door, int value) -Z 16jAN2017
+Added Game->SetScreenEnemy(int map, int screen, int index, int value) -Z 16jAN2017
+These all seem to work. Enemies do not however, physically change until the screen is reloaded. -Z 16jAN2017
+	Game->ReloadNPCs() might be useful.  
+Link->SetLinkTile(int sprite, int dir, int tile) now works -Z 16jAN2017
+Link->GetLinkTile(int sprite, int dir) now works. -Z 16jAN2017
+Link->SetLinkExtend(int sprite, int dir, int extend) now works. -Z 16jAN2017
+Link->GetLinkExtend(int sprite, int dir, int extend) now works. -Z 16jAN2017
+Added Game->GetMaxMaps() to return the map count, listed also as Game->MapCount() -Z 16jAN2017
+CreateLWeaponDx() is bugged. Reworking. FIXED. -Z 16Jan2017
+Fixed Link->SetItemSlot(int itm, int slot, int force) -Z 16JAN2017
+Added a huge list of new flags to the combo editor. 
+	For the present, these are all script-controlled. We may define these internally, later. -Z 17JAN2017
+	
+Added: Game-> ContinueSound(int sfx)
+	AdjustSound(int sfx, int pan, bool loop)
+	SetScreenFlag(int map, int screen, int flag, bool state)
+	ButtonPress[18]
+	ButtonInput[18]
+	ButtonHeld[18]
+	KeyPress[127]
+	ReadKey[127]
+	JoypadPress[18] -Z 18-Jan-2017
+	
+	Link->DisableItem[256] -Z
+	
+Added std_keyboard.zh - Has keyboard key constants. Will try to add functions, and a timer, later.  -Z 18-Jan-18
+Tried to add piercing atrribute to boomerangs, but I'm not sure where to place it in the codebase. -Z
+Added 'Fire Damage:' atribute (attributes[0]) to the books class in the item editor. if non-zero, the fire made by wands
+	using books will be given this power. -Z 18-Jan-17
+	
+Added definitions for diagonal hookshot chains. It may be possible to set a diagonal direction
+	but it is equally possible that it is broken as hell and  needs to be disabled.
+		
+
+		
+// To-Do:
+//? Set Screen-D in ZQuest?
+//? ZScript set colour of palette index
+//Should add a misc colour that is used to determine what colour 'black' will be rendered as, for fades. 
+//Need to add n->SpritePal to load an ESP into a script generated npc. 
+//Stun duration property to item editor and lweapons
+//Link->Stun?
+//Magic cost bool per second
+
+Updated std_keyboard.zh and included it in std.zh. -Z 20JAN17
+Fixed some diagonal hookshot code. it works now, although ti needs hooking adjustments, and it needs adjustments  -Z 20JAN17
+	tot he head, and rod drawing.  -Z 20JAN17
+Added ZQuest item editor flag 'Allow Diagonal' for the hookshot.   -Z 20JAN17
+	The user may now enable diagonal hookshots without scripts.  -Z 20JAN17
+Attempted a fix for the 2.10 bait sprite bug. -Z 20JAN17
+
+Added Quest reports to favourite commands. -Z

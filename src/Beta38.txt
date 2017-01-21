@@ -1,0 +1,69 @@
+//Added all this nonsense to the Link class for handling sounds, and for handling extend
+//Note that as of b38, the pit and side warp sound variables do nothing.
+//I need to set them up in the warp functions, when I go over them again. 
+
+int getSprite()
+void setSprite(int action)
+
+int pitwarpsfx; //SFX for pit warps, separate from tile, side
+    int sidewarpsfx; //SFX for side warps, separate from tile, pit.
+    int pitwarpeffect; //Visual effect
+    int sidewarpeffect; //Visual effect
+    
+    
+    int getSideWarpSound(); //Link->SideWarpSound
+    void setSideWarpSound(int sound);
+    
+    int getPitWarpSound(); //Link->PitWarpSound
+    void setPitWarpSound(int sound);
+    
+    
+    int getPitWarpEffect();
+    void setPitWarpEffect(int fx);
+    
+    int getSideWarpEffect();
+    void setSideWarpEffect(int fx);
+    
+    setPlayLinkWarpSound
+    void LinkClass::setPlayLinkWarpSound(bool v)\
+    
+    SIDEWARPSFX
+    PITWARPSFX
+    SIDEWARPVISUAL
+    PITWARPVISUAL
+    
+    Link->PitWarpSound
+    Link->PitWarpEffect
+    Link->SideWarpSound
+    Link->SideWarpEffect
+    
+    
+    
+     case SIDEWARPSFX: 
+	Link.setSideWarpSound(value/10000);
+	break;
+      case PITWARPSFX: 
+	Link.setPitWarpSound(value/10000);
+	break;
+       case SIDEWARPVISUAL: 
+	Link.setSideWarpEffect(value/10000);
+	break;
+        case PITWARPVISUAL: 
+	Link.getPitWarpEffect(value/10000);
+	break;
+    
+    case SIDEWARPSFX: 
+	ret=(int)Link.getSideWarpSound()*10000;
+	break;
+    
+    case PITWARPSFX: 
+	ret=(int)Link.getPitWarpSound()*10000;
+	break;
+    
+    case SIDEWARPVISUAL: 
+	ret=(int)Link.getSideWarpEffect()*10000;
+	break;
+    
+    case PITWARPVISUAL: 
+	ret=(int)Link.getPitWarpEffect()*10000;
+	break;

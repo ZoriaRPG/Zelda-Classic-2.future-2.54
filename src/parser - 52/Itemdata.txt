@@ -1,0 +1,40 @@
+//New Vars for itemdata
+
+int ID	ZASM ITEMCLASSID
+
+//The ten values on the 'data' page.
+Misc1	ZASM IDATAMISC1 //For a sword, this is 'Beam Hearts
+Misc2	ZASM IDATAMISC2 //For a sword, this is 'Beam Damage'
+Misc3	ZASM IDATAMISC3
+Misc4	ZASM IDATAMISC4
+Misc4	ZASM IDATAMISC5
+Misc6	ZASM IDATAMISC6
+Misc7	ZASM IDATAMISC7
+Misc8	ZASM IDATAMISC8
+Misc9	ZASM IDATAMISC9
+Misc10	ZASM IDATAMISC10
+
+//The ten values on the 'action' page. 
+Attribute1	ZASM IDATAWPN //For a sword, this is the normal sprite.
+Attribute3	ZASM IDATAWPN3 //For a sword, this is the slash sprite.
+Attribute4	ZASM IDATAWPN4 //For a sword, this is the beam sprite. 
+Attribute5	ZASM IDATAWPN5
+Attribute6	ZASM IDATAWPN6
+Attribute7	ZASM IDATAWPN7
+Attribute8	ZASM IDATAWPN8
+Attribute9	ZASM IDATAWPN9
+Attribute10	ZASM IDATAWPN10
+
+Modifier	ZASM IDATALTM	//The Link Tile Modifier
+Script		ZASM IDATASCRIPT //The Action Script
+PScript		ZASM IDATAPSCRIPT //The Pickup Script
+MagicCost	ZASM IDATAMAGICCOST //The MP Cost of the item
+MinHearts	ZASM IDATAMINHEARTS //The minimum hearts to pick up the item (e.g. swords in Z1)
+Tile		ZASM IDATATILE //The tile used by the item
+Flash		ZASM IDATAFLASH //Flash, and two-hand. 
+CSet		ZASM IDATACSET //The item CSet
+AFrames		ZASM IDATAFRAMES //The number of animation frames
+ASpeed		ZASM IDATAASPEED //The animation speed
+Delay		ZASM IDATADELAY //The animation delay
+
+

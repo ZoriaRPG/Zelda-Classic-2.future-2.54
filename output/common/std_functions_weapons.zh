@@ -1,0 +1,569 @@
+//Create an LWeapon and set its X and Y position in one command
+lweapon CreateLWeaponAt(int id, int x, int y) {
+	lweapon lw = Screen->CreateLWeapon(id);
+	if(lw->isValid()) {
+		lw->X = x;
+		lw->Y = y;
+	}
+	return lw;
+}
+
+//Create an EWeapon and set its X and Y position in one command
+eweapon CreateEWeaponAt(int id, int x, int y) {
+	eweapon ew = Screen->CreateEWeapon(id);
+	if(ew->isValid()) {
+		ew->X = x;
+		ew->Y = y;
+	}
+	return ew;
+}
+
+
+//Creates an lweapon at 'distx,disty' away from where Link is facing
+lweapon NextToLink(int id, int distx, int disty) {
+	lweapon l = CreateLWeaponAt(id, Link->X+InFrontX(Link->Dir, distx), Link->Y+InFrontY(Link->Dir, disty));
+	if(l->isValid()) {
+    	l->Dir = Link->Dir;
+	}
+	return l;
+}
+
+//Creates an lweapon 'dist' pixels away from the front of Link
+lweapon NextToLink(int id, int dist) {
+	return NextToLink(id, dist, dist);
+}
+
+eweapon NextToNPC(npc n, int id, int distx, int disty) {
+	eweapon e = CreateEWeaponAt(id, n->X+InFrontX(n->Dir, distx), n->Y+InFrontY(n->Dir, disty));
+	if(e->isValid()) {
+    	e->Dir = n->Dir;
+	}
+	return e;
+}
+eweapon NextToNPC(npc n, int id, int dist) {
+	return NextToNPC(n, id, dist, dist);
+}
+
+//Aim-type constants, for use with AimEWeapon
+//**Moved** to std_constants.zh
+
+//Various methods for shooting at Link and at random
+void AimEWeapon(eweapon e, int aimtype)
+{
+	int angle = RadianAngle(e->X, e->Y, Link->X, Link->Y);
+	if(aimtype == AT_4DIR)
+	{
+		e->Dir = RadianAngleDir4(angle);
+	}
+	else if(aimtype == AT_8DIR)
+	{
+		e->Dir = RadianAngleDir8(angle);
+	}
+	else if(aimtype == AT_ANGULAR)
+	{
+		e->Angular = true;
+		e->Angle = angle;
+		e->Dir = RadianAngleDir8(angle);
+	}
+	else if(aimtype == AT_RAND4DIR)
+	{
+		e->Dir = Rand(4);
+	}
+	else if(aimtype == AT_RAND8DIR)
+	{
+		e->Dir = Rand(8);
+	}
+	else if(aimtype == AT_RANDANGULAR)
+	{
+		e->Angular = true;
+		e->Angle = Randf(PI2);
+		e->Dir = RadianAngleDir8(e->Angle);
+	}
+}
+
+//Aiming at enemies and at random
+void AimLWeapon(lweapon l, npc n, int aimtype)
+{
+	int angle = RadianAngle(l->X, l->Y, n->X, n->Y);
+	if(aimtype == AT_4DIR)
+	{
+		l->Dir = RadianAngleDir4(angle);
+	}
+	else if(aimtype == AT_8DIR)
+	{
+		l->Dir = RadianAngleDir8(angle);
+	}
+	else if(aimtype == AT_ANGULAR)
+	{
+		l->Angular = true;
+		l->Angle = angle;
+		l->Dir = RadianAngleDir8(angle);
+	}
+	else
+		AimLWeapon(l, aimtype);
+}
+void AimLWeapon(lweapon l, int aimtype)
+{
+	if(aimtype == AT_RAND4DIR)
+	{
+		l->Dir = Rand(4);
+	}
+	else if(aimtype == AT_RAND8DIR)
+	{
+		l->Dir = Rand(8);
+	}
+	else if(aimtype == AT_RANDANGULAR)
+	{
+		l->Angular = true;
+		l->Angle = Randf(PI2);
+		l->Dir = RadianAngleDir8(l->Angle);
+	}
+}
+
+//Turns a WPN_ constant to an EW_ constant
+int WeaponTypeToID(int wpnt)
+{
+	if(wpnt == WPN_ENEMYFLAME) 		return EW_FIRE;
+	else if(wpnt == WPN_ENEMYWIND)		return EW_WIND;
+	else if(wpnt == WPN_ENEMYFIREBALL)	return EW_FIREBALL;
+	else if(wpnt == WPN_ENEMYARROW)		return EW_ARROW;
+	else if(wpnt == WPN_ENEMYBRANG)		return EW_BRANG;
+	else if(wpnt == WPN_ENEMYSWORD)		return EW_BEAM;
+	else if(wpnt == WPN_ENEMYROCK)		return EW_ROCK;
+	else if(wpnt == WPN_ENEMYMAGIC)		return EW_MAGIC;
+	else if(wpnt == WPN_ENEMYBOMB)		return EW_BOMB;
+	else if(wpnt == WPN_ENEMYSBOMB)		return EW_SBOMB;
+	else if(wpnt == WPN_ENEMYLITBOMB)	return EW_BOMBBLAST;
+	else if(wpnt == WPN_ENEMYLITSBOMB)	return EW_SBOMBBLAST;
+	else if(wpnt == WPN_ENEMYFIRETRAIL)	return EW_FIRETRAIL;
+	else if(wpnt == WPN_ENEMYFLAME2)	return EW_FIRE2;
+	else if(wpnt == WPN_ENEMYFIREBALL2)	return EW_FIREBALL2;
+	return -1;
+}
+
+// Use the LW_ constants.
+// Warning: these iterate over every onscreen lweapon.
+// Iterating over every onscreen lweapon multiple times per frame may
+// cause slowdown in Zelda Classic.
+int NumLWeaponsOf(int type) {
+	int ret = 0;
+	lweapon w;
+	for (int i = Screen->NumLWeapons(); i > 0; i--) {
+		w = Screen->LoadLWeapon(i);
+		if (w->ID == type)
+		ret++;
+	}
+	return ret;
+}
+
+int NumEWeaponsOf(int type) {
+	int ret = 0;
+	eweapon w;
+	for (int i = Screen->NumEWeapons(); i > 0; i--) {
+		w = Screen->LoadEWeapon(i);
+		if (w->ID == type)
+		ret++;
+	}
+	return ret;
+}
+// Returns the first LWeapon of the given type. Use the LW_ constants.
+// If none exist, it returns an uninitialised pointer.
+lweapon LoadLWeaponOf(int type) {
+	lweapon w;
+	for (int i=1; i <= Screen->NumLWeapons(); i++) {
+		w = Screen->LoadLWeapon(i);
+		if (w->ID == type) return w;
+	}
+	lweapon w2;
+	return w2;
+}
+
+// Returns the first EWeapon of the given type. Use the EW_ constants.
+// If none exist, it returns an uninitialised pointer.
+eweapon LoadEWeaponOf(int type) {
+	eweapon w;
+	for (int i=1; i <= Screen->NumEWeapons(); i++) {
+		w = Screen->LoadEWeapon(i);
+		if (w->ID == type) return w;
+	}
+	eweapon w2;
+	return w2;
+}
+
+
+
+//Converts the ID (type) of a given weapon to its opposite class. 
+//Returns -1 if the type is illegal.
+int EWeaponToLWeaponID(int type){
+	if ( type == EW_ARROW ) return LW_ARROW;
+	if ( type == EW_BRANG ) return LW_BRANG;
+	if ( type == EW_BEAM ) return LW_BEAM;
+	if ( type == EW_MAGIC ) return LW_MAGIC;
+	if ( type == EW_BOMB ) return LW_BOMB;
+	if ( type == EW_BOMBBLAST ) return LW_BOMBBLAST;
+	if ( type == EW_SBOMB ) return LW_SBOMB;
+	if ( type == EW_SBOMBBLAST ) return LW_SBOMBBLAST;
+	if ( type == EW_WIND ) return LW_WIND;
+	if ( type >= 31 && type <= 40 ) return type;
+	else return -1;
+}
+
+//Converts the ID (type) of a given weapon to its opposite class. 
+//Returns -1 if the type is illegal.
+int LWeaponToEWeaponID(int type){
+	if ( type == LW_ARROW ) return EW_ARROW;
+	if ( type == LW_BRANG ) return EW_BRANG;
+	if ( type == LW_BEAM ) return EW_BEAM;
+	if ( type == LW_MAGIC ) return EW_MAGIC;
+	if ( type == LW_BOMB ) return EW_BOMB;
+	if ( type == LW_BOMBBLAST ) return EW_BOMBBLAST;
+	if ( type == LW_SBOMB ) return EW_SBOMB;
+	if ( type == LW_SBOMBBLAST ) return EW_SBOMBBLAST;
+	if ( type == LW_WIND ) return EW_WIND;
+	if ( type >= 31 && type <= 40 ) return type;
+	else return -1;
+}
+
+
+//Copy the attributes of a given lweapon to an eweapon.
+//Returns -1 on error, including if the type (weap->ID) conversion is illegal.
+eweapon LWeaponToEWeapon(lweapon a, eweapon b){
+	int type = LWeaponToEWeaponID(a->ID);
+	//if ( type == -1 ) return type;
+	b->ID = type;
+	b->X = a->X;
+	b->Y = a->Y;
+	b->Z = a->Z;
+	b->Jump = a->Jump;
+	b->Extend = a->Extend;
+	b->TileWidth = a->TileWidth;
+	b->TileHeight = a->TileHeight;
+	b->HitWidth = a->HitWidth;
+	b->HitHeight = a->HitHeight;
+	b->HitZHeight = a->HitZHeight;
+	b->HitXOffset = a->HitXOffset;
+	b->HitYOffset = a->HitYOffset;
+	b->DrawXOffset = a->DrawXOffset;
+	b->DrawYOffset = a->DrawYOffset;
+	b->DrawZOffset = a->DrawZOffset;
+	b->Tile = a->Tile;
+	b->CSet = a->CSet;
+	b->DrawStyle = a->DrawStyle;
+	b->Dir = a->Dir;
+	b->OriginalTile = a->OriginalTile;
+	b->OriginalCSet = a->OriginalCSet;
+	b->FlashCSet = a->FlashCSet;
+	b->NumFrames = a->NumFrames;
+	b->Frame = a->Frame;
+	b->ASpeed = a->ASpeed;
+	b->Damage = a->Damage;
+	b->Step = a->Step;
+	b->Angle = a->Angle;
+	b->Angular = a->Angular;
+	b->CollDetection = a->CollDetection;
+	b->DeadState = a->DeadState;
+	b->Flash = a->Flash;
+	b->Flip = a->Flip;
+	for (int i = 0; i < 16; i++)
+		b->Misc[i] = a->Misc[i];
+	return b;
+}
+
+
+
+//Copy the attributes of a given lweapon to a new eweapon.
+//Returns -1 on error, including if the type (weap->ID) conversion is illegal.
+eweapon LWeaponToEWeapon(lweapon a){
+	int type = LWeaponToEWeaponID(a->ID);
+//	if ( type == -1 ) return type;
+	eweapon b = Screen->CreateEWeapon(type);
+	b->X = a->X;
+	b->Y = a->Y;
+	b->Z = a->Z;
+	b->Jump = a->Jump;
+	b->Extend = a->Extend;
+	b->TileWidth = a->TileWidth;
+	b->TileHeight = a->TileHeight;
+	b->HitWidth = a->HitWidth;
+	b->HitHeight = a->HitHeight;
+	b->HitZHeight = a->HitZHeight;
+	b->HitXOffset = a->HitXOffset;
+	b->HitYOffset = a->HitYOffset;
+	b->DrawXOffset = a->DrawXOffset;
+	b->DrawYOffset = a->DrawYOffset;
+	b->DrawZOffset = a->DrawZOffset;
+	b->Tile = a->Tile;
+	b->CSet = a->CSet;
+	b->DrawStyle = a->DrawStyle;
+	b->Dir = a->Dir;
+	b->OriginalTile = a->OriginalTile;
+	b->OriginalCSet = a->OriginalCSet;
+	b->FlashCSet = a->FlashCSet;
+	b->NumFrames = a->NumFrames;
+	b->Frame = a->Frame;
+	b->ASpeed = a->ASpeed;
+	b->Damage = a->Damage;
+	b->Step = a->Step;
+	b->Angle = a->Angle;
+	b->Angular = a->Angular;
+	b->CollDetection = a->CollDetection;
+	b->DeadState = a->DeadState;
+	b->Flash = a->Flash;
+	b->Flip = a->Flip;
+	for (int i = 0; i < 16; i++)
+		b->Misc[i] = a->Misc[i];
+	return b;
+}
+
+lweapon EWeaponToLWeapon(lweapon b, eweapon a) { return EWeaponToLWeapon(a,b);}
+eweapon LWeaponToEWeapon(eweapon b, lweapon a) { return LWeaponToEWeapon(a,b);}
+lweapon EToLWeapon(lweapon b, eweapon a) { return EWeaponToLWeapon(a,b);}
+eweapon LtoEWeapon(eweapon b, lweapon a) { return LWeaponToEWeapon(a,b);}
+
+lweapon EToLWeapon(eweapon a, lweapon b) { return EWeaponToLWeapon(a,b);}
+eweapon LtoEWeapon(lweapon a, eweapon b) { return LWeaponToEWeapon(a,b);}
+
+
+eweapon LtoEWeapon(lweapon a){return LtoEWeapon(a);}
+lweapon EtoLWeapon(eweapon a){return EtoLWeapon(a);}
+
+//Copy the attributes of a given eweapon to a new lweapon.
+//Returns -1 on error, including if the type (weap->ID) conversion is illegal.
+lweapon EWeaponToLWeapon(eweapon a){
+	int type = EWeaponToLWeaponID(a->ID);
+	//if ( type == -1 ) return type;
+	lweapon b = Screen->CreateLWeapon(type);
+	b->X = a->X;
+	b->Y = a->Y;
+	b->Z = a->Z;
+	b->Jump = a->Jump;
+	b->Extend = a->Extend;
+	b->TileWidth = a->TileWidth;
+	b->TileHeight = a->TileHeight;
+	b->HitWidth = a->HitWidth;
+	b->HitHeight = a->HitHeight;
+	b->HitZHeight = a->HitZHeight;
+	b->HitXOffset = a->HitXOffset;
+	b->HitYOffset = a->HitYOffset;
+	b->DrawXOffset = a->DrawXOffset;
+	b->DrawYOffset = a->DrawYOffset;
+	b->DrawZOffset = a->DrawZOffset;
+	b->Tile = a->Tile;
+	b->CSet = a->CSet;
+	b->DrawStyle = a->DrawStyle;
+	b->Dir = a->Dir;
+	b->OriginalTile = a->OriginalTile;
+	b->OriginalCSet = a->OriginalCSet;
+	b->FlashCSet = a->FlashCSet;
+	b->NumFrames = a->NumFrames;
+	b->Frame = a->Frame;
+	b->ASpeed = a->ASpeed;
+	b->Damage = a->Damage;
+	b->Step = a->Step;
+	b->Angle = a->Angle;
+	b->Angular = a->Angular;
+	b->CollDetection = a->CollDetection;
+	b->DeadState = a->DeadState;
+	b->Flash = a->Flash;
+	b->Flip = a->Flip;
+	for (int i = 0; i < 16; i++)
+		b->Misc[i] = a->Misc[i];
+	return b;
+}
+
+
+//Copy the attributes of a given eweapon to an lweapon.
+//Returns -1 on error, including if the type (weap->ID) conversion is illegal.
+lweapon EWeaponToLWeapon(eweapon a, lweapon b){
+	int type = EWeaponToLWeaponID(a->ID);
+	//if ( type == -1 ) return type;
+	b->ID = type;
+	b->X = a->X;
+	b->Y = a->Y;
+	b->Z = a->Z;
+	b->Jump = a->Jump;
+	b->Extend = a->Extend;
+	b->TileWidth = a->TileWidth;
+	b->TileHeight = a->TileHeight;
+	b->HitWidth = a->HitWidth;
+	b->HitHeight = a->HitHeight;
+	b->HitZHeight = a->HitZHeight;
+	b->HitXOffset = a->HitXOffset;
+	b->HitYOffset = a->HitYOffset;
+	b->DrawXOffset = a->DrawXOffset;
+	b->DrawYOffset = a->DrawYOffset;
+	b->DrawZOffset = a->DrawZOffset;
+	b->Tile = a->Tile;
+	b->CSet = a->CSet;
+	b->DrawStyle = a->DrawStyle;
+	b->Dir = a->Dir;
+	b->OriginalTile = a->OriginalTile;
+	b->OriginalCSet = a->OriginalCSet;
+	b->FlashCSet = a->FlashCSet;
+	b->NumFrames = a->NumFrames;
+	b->Frame = a->Frame;
+	b->ASpeed = a->ASpeed;
+	b->Damage = a->Damage;
+	b->Step = a->Step;
+	b->Angle = a->Angle;
+	b->Angular = a->Angular;
+	b->CollDetection = a->CollDetection;
+	b->DeadState = a->DeadState;
+	b->Flash = a->Flash;
+	b->Flip = a->Flip;
+	for (int i = 0; i < 16; i++)
+		b->Misc[i] = a->Misc[i];
+	return b;
+}
+
+
+int EtoLWeaponID(int type){
+	return EWeaponToLWeaponID(type);
+}
+
+int LtoEWeaponID(int type){
+	return LWeaponToEWeaponID(type);
+}
+	
+//Creates and returns an exact copy of the passed LWeapon. Assumes that the passed pointer is valid.
+lweapon Duplicate(lweapon a) {
+	lweapon b = Screen->CreateLWeapon(a->ID);
+	b->X = a->X;
+	b->Y = a->Y;
+	b->Z = a->Z;
+	b->Jump = a->Jump;
+	b->Extend = a->Extend;
+	b->TileWidth = a->TileWidth;
+	b->TileHeight = a->TileHeight;
+	b->HitWidth = a->HitWidth;
+	b->HitHeight = a->HitHeight;
+	b->HitZHeight = a->HitZHeight;
+	b->HitXOffset = a->HitXOffset;
+	b->HitYOffset = a->HitYOffset;
+	b->DrawXOffset = a->DrawXOffset;
+	b->DrawYOffset = a->DrawYOffset;
+	b->DrawZOffset = a->DrawZOffset;
+	b->Tile = a->Tile;
+	b->CSet = a->CSet;
+	b->DrawStyle = a->DrawStyle;
+	b->Dir = a->Dir;
+	b->OriginalTile = a->OriginalTile;
+	b->OriginalCSet = a->OriginalCSet;
+	b->FlashCSet = a->FlashCSet;
+	b->NumFrames = a->NumFrames;
+	b->Frame = a->Frame;
+	b->ASpeed = a->ASpeed;
+	b->Damage = a->Damage;
+	b->Step = a->Step;
+	b->Angle = a->Angle;
+	b->Angular = a->Angular;
+	b->CollDetection = a->CollDetection;
+	b->DeadState = a->DeadState;
+	b->Flash = a->Flash;
+	b->Flip = a->Flip;
+	for (int i = 0; i < 16; i++)
+		b->Misc[i] = a->Misc[i];
+	return b;
+}
+
+//Creates and returns an exact copy of the passed EWeapon. Assumes that the passed pointer is valid.
+eweapon Duplicate(eweapon a) {
+	eweapon b = Screen->CreateEWeapon(a->ID);
+	b->X = a->X;
+	b->Y = a->Y;
+	b->Z = a->Z;
+	b->Jump = a->Jump;
+	b->Extend = a->Extend;
+	b->TileWidth = a->TileWidth;
+	b->TileHeight = a->TileHeight;
+	b->HitWidth = a->HitWidth;
+	b->HitHeight = a->HitHeight;
+	b->HitZHeight = a->HitZHeight;
+	b->HitXOffset = a->HitXOffset;
+	b->HitYOffset = a->HitYOffset;
+	b->DrawXOffset = a->DrawXOffset;
+	b->DrawYOffset = a->DrawYOffset;
+	b->DrawZOffset = a->DrawZOffset;
+	b->Tile = a->Tile;
+	b->CSet = a->CSet;
+	b->DrawStyle = a->DrawStyle;
+	b->Dir = a->Dir;
+	b->OriginalTile = a->OriginalTile;
+	b->OriginalCSet = a->OriginalCSet;
+	b->FlashCSet = a->FlashCSet;
+	b->NumFrames = a->NumFrames;
+	b->Frame = a->Frame;
+	b->ASpeed = a->ASpeed;
+	b->Damage = a->Damage;
+	b->Step = a->Step;
+	b->Angle = a->Angle;
+	b->Angular = a->Angular;
+	b->CollDetection = a->CollDetection;
+	b->DeadState = a->DeadState;
+	b->Flash = a->Flash;
+	b->Flip = a->Flip;
+	for (int i = 0; i < 16; i++)
+		b->Misc[i] = a->Misc[i];
+	return b;
+}
+
+//Reflect weapons / tennis / mirror / prism
+lweapon ReflectWeapon(lweapon l, bool angular, int random_factor){
+	l->Dir = DirRev(l->Dir);
+	l->Flip = FlipRev(l);
+	l->Angular = angular;
+	if ( angular ) {
+		if (l->Angle >= 180 ) l->Angle -= (180 - Rand(random_factor));
+		else l->Angle += (180 + Rand(random_factor));
+	}
+}
+lweapon ReflectWeapon(lweapon l, bool angular){
+	l->Dir = DirRev(l->Dir);
+	l->Flip = FlipRev(l);
+	l->Angular = angular;
+	if ( angular ) {
+		if (l->Angle >= 180 ) l->Angle -= 180;
+		else l->Angle += 180;
+	}
+}
+
+lweapon ReflectWeapon(lweapon l){
+	l->Dir = DirRev(l->Dir);
+	l->Flip = FlipRev(l);
+}
+	
+eweapon ReflectWeapon(eweapon l, bool angular, int random_factor){
+	l->Dir = DirRev(l->Dir);
+	l->Flip = FlipRev(l);
+	l->Angular = angular;
+	if ( angular ) {
+		if (l->Angle >= 180 ) l->Angle -= (180 - Rand(random_factor));
+		else l->Angle += (180 + Rand(random_factor));
+	}
+}
+
+eweapon ReflectWeapon(eweapon l, bool angular){
+	l->Dir = DirRev(l->Dir);
+	l->Flip = FlipRev(l);
+	l->Angular = angular;
+	if ( angular ) {
+		if (l->Angle >= 180 ) l->Angle -= 180;
+		else l->Angle += 180;
+	}
+}
+
+int FlipRev(lweapon l){
+	if ( l->Dir == DIR_DOWN || l->Dir == DIR_UP && !l->Flip ) return 2;
+	if ( l->Dir == DIR_DOWN || l->Dir == DIR_UP && l->Flip ) return 0; 
+	if ( l->Dir == DIR_LEFT || l->Dir == DIR_RIGHT && !l->Flip ) return 1;
+	if ( l->Dir == DIR_LEFT || l->Dir == DIR_RIGHT && l->Flip ) return 0;
+	return -1;
+}
+
+int FlipRev(eweapon l){
+	if ( l->Dir == DIR_DOWN || l->Dir == DIR_UP && !l->Flip ) return 2;
+	if ( l->Dir == DIR_DOWN || l->Dir == DIR_UP && l->Flip ) return 0; 
+	if ( l->Dir == DIR_LEFT || l->Dir == DIR_RIGHT && !l->Flip ) return 1;
+	if ( l->Dir == DIR_LEFT || l->Dir == DIR_RIGHT && l->Flip ) return 0;
+	return -1;
+}

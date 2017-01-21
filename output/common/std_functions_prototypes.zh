@@ -1,0 +1,720 @@
+//Wait for n frames
+void Waitframes(int n) {
+	while(n-- > 0) Waitframe();
+}
+
+
+int vbound(int a, int b, int c) { return VBound(a,b,c);}
+
+//Returns a if cond is true, else b. Overloaded.
+float Cond(bool cond, float a, float b) {
+	if (cond) return a;
+	else return b;
+}
+
+bool Cond(bool cond, bool a, bool b) {
+	if (cond) return a;
+	else return b;
+}
+
+npc Cond(bool cond, npc a, npc b) {
+	if (cond) return a;
+	else return b;
+}
+
+item Cond(bool cond, item a, item b) {
+	if (cond) return a;
+	else return b;
+}
+
+lweapon Cond(bool cond, lweapon a, lweapon b) {
+	if (cond) return a;
+	else return b;
+}
+
+eweapon Cond(bool cond, eweapon a, eweapon b) {
+	if (cond) return a;
+	else return b;
+}
+
+ffc Cond(bool cond, ffc a, ffc b) {
+	if (cond) return a;
+	else return b;
+}
+
+itemdata Cond(bool cond, itemdata a, itemdata b) {
+	if (cond) return a;
+	else return b;
+}
+
+// Chooses one of the options randomly and fairly.
+float Choose(float a, float b) {
+	if (Rand(0,1)==0) return a;
+	else return b;
+}
+
+float Choose(float a, float b, float c) {
+	int r = Rand(0,2);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else return c;
+}
+
+float Choose(float a, float b, float c, float d) {
+	int r = Rand(0,3);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else return d;
+}
+
+float Choose(float a, float b, float c, float d, float e) {
+	int r = Rand(0,4);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else return e;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f) {
+	int r = Rand(0,5);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else return f;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g) {
+	int r = Rand(0,6);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else return g;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h) {
+	int r = Rand(0,7);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else return h;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i) {
+	int r = Rand(0,8);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else return i;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i,
+		float j) {
+	int r = Rand(0,9);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else if (r==8) return i;
+	else return j;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i,
+		float j, float k) {
+	int r = Rand(0,10);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else if (r==8) return i;
+	else if (r==9) return j;
+	else return k;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i,
+		float j, float k, float l) {
+	int r = Rand(0,11);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else if (r==8) return i;
+	else if (r==9) return j;
+	else if (r==10) return k;
+	else return l;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i,
+		float j, float k, float l, float m) {
+	int r = Rand(0,12);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else if (r==8) return i;
+	else if (r==9) return j;
+	else if (r==10) return k;
+	else if (r==11) return l;
+	else return m;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i,
+		float j, float k, float l, float m, float n) {
+	int r = Rand(0,13);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else if (r==8) return i;
+	else if (r==9) return j;
+	else if (r==10) return k;
+	else if (r==11) return l;
+	else if (r==12) return m;
+	else return n;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i,
+		float j, float k, float l, float m, float n, float o) {
+	int r = Rand(0,14);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else if (r==8) return i;
+	else if (r==9) return j;
+	else if (r==10) return k;
+	else if (r==11) return l;
+	else if (r==12) return m;
+	else if (r==13) return n;
+	else return o;
+}
+
+float Choose(float a, float b, float c, float d, float e, float f, float g, float h, float i,
+		float j, float k, float l, float m, float n, float o, float p) {
+	int r = Rand(0,15);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else if (r==5) return f;
+	else if (r==6) return g;
+	else if (r==7) return h;
+	else if (r==8) return i;
+	else if (r==9) return j;
+	else if (r==10) return k;
+	else if (r==11) return l;
+	else if (r==12) return m;
+	else if (r==13) return n;
+	else if (r==14) return o;
+	else return p;
+}
+
+//Clamps x to the range of low, high.
+int Clamp(int x, int low, int high) {
+	if(x<low) x=low;
+	else if(x>high) x=high;
+	return x;
+}
+
+//same as Clamp, but with reversed values.
+int VBound(int x, int high, int low) {
+	if(x<low) x=low;
+	else if(x>high) x=high;
+	return x;
+}
+
+
+//Returns a random integer in the bounds of min and max
+//Permits reversed args. 
+int Rand(int min, int max) {
+    if ( max < min ) return max+(Rand((1+min)-max));
+	else return min+(Rand((1+max)-min));
+}
+
+//Returns a random floating point number up to n
+float Randf(float n) {
+	return (Rand(0x7fff)/0x7fff)*n;
+}
+
+//Returns a random floating point number between min and max
+//Updated to allow reversed args
+float Randf(float n1, float n2) {
+	if ( n2 < n1 ) return n2 + (Rand(0x7fff)/(0x7fff))*(n1-n2);
+    else return n1 + (Rand(0x7fff)/(0x7fff))*(n2-n1);
+}
+
+
+	
+float ChangeIntegerValue(float n, int newval){
+	newval = newval << 0;
+	int high = (n << 0);
+	int low = n - ( n << 0);
+	return newval+low;
+}
+
+float ChangeDecimalValue(float n, float newval){
+	newval = newval - ( newval << 0);
+	int high = (n << 0);
+	int low = n - ( n << 0);
+	return newval+high;
+}
+
+float AddIntegerValue(float n, int newval){
+	newval = newval << 0;
+	int high = (n << 0) + newval;
+	int low = n - ( n << 0);
+	return high+low;
+}
+
+float AddDecimalValue(float n, float newval){
+	newval = newval - ( newval << 0);
+	int high = (n << 0);
+	int low = ( n - ( n << 0)  ) +newval;
+	return low+high;
+}
+
+
+//Xor comparison of two calculations. ( e.g. Xor(n-x, n+y) ) 
+//Returns true if they do not match. 
+bool Xor(float calcA, float calcB){
+	if ( calcA != calcB ) return true;
+	return false;
+}
+
+
+
+//Returns a multiplication factor for ->Step based on direction.
+// Specifically, return the x component of a line with a length of 1 extending
+// in the given direction from origin.
+//Step = step * DirX(dir);
+//Valid only if dir is 0 to 7.
+
+int DirX(int dir) {
+	// Is a diagonal.
+	if (dir & 100b) return Cond(dir & 001b, Sin(45), Sin(45)*-1);
+	// Is horizontal.
+	if (dir & 010b) return Cond(dir & 001b, 1, -1);
+	return 0;
+}
+
+//Returns a multiplication factor for ->Step based on direction.
+//Step = step * DirY(dir);
+//Valid only if dir is 0 to 7.
+// Specifically, return the y component of a line with a length of 1 extending
+// in the given direction from origin.
+int DirY(int dir) {
+	// Is a diagonal.
+	if (dir & 100b) return Cond(dir & 010b, Sin(45), Sin(45)*-1);
+	// Is vertical.
+	if (!(dir & 010b)) return Cond(dir & 001b, 1, -1);
+	return 0;
+}
+
+//Accepts two inputs, and returns a float where the integer portion
+//is the first inout, and the decimal portion is the second.
+//Inputs will be automatically truncated, and scaled, as needed. 
+int SetHighLowFloat(int integer_side, int decimal_side){
+	if ( decimal_side >= 0 )
+		decimal_side = (decimal_side << 0)/10000;
+	if ( integer_side < 0 ) integer_side = integer_side*10000;
+	else integer_side = integer_side << 0;
+	return integer_side+decimal_side;
+}
+
+//Accepts a variable, and a value as input, and returns the variable 
+//with the decimal portion replaced with 'value'.
+//If value is an integer, it will be divided by 10000. 
+//If it is a decimal, it will be translated directly. 
+int SetLowFloat(int variable, int value){
+	int n = variable << 0;
+	if ( value >= 0 )
+		value = (value << 0)/10000;
+	return n+value;
+}
+
+//Accepts a variable and a value and returns the variable with its integer
+//portion replaced with 'value'. 
+//If value is an integer, it will be truncated automatically. 
+//If 'value' is a decimal, it will be multipied by 10000. 
+int SetHighFloat(int variable, int value){
+	int n = variable - ( variable << 0 );
+	if ( value < 0 ) value = value*10000;
+	else value = value << 0;
+	return n+value;
+}
+
+//Takes a float as input 'n', and returns the integer portion as int. 
+int GetHighFloat(int n) {
+	return n >> 0;
+}
+
+//Takes a float as input 'n', and returns the decimal portion as int. 
+int GetLowFloat(int n) {
+	return (n - (n >> 0)) * 10000;
+}
+
+//Converts floating point value 'v', after the decimal, to an integer.
+int DecimalToInt(int v) {
+	int r = (v - (v << 0)) * 10000;
+	return r;
+}
+
+//Truncates decimal off floating point value 'v'.
+int Truncate(int v) {
+	return ( v << 0 );
+}
+
+//Truncates decimal off floating point value 'v'.
+int Truncate(int v) {
+	return ( v << 0 );
+}
+
+//Returns the number of valid integer places in a value. 
+int NumPlacesInt(int var){
+	int q; int num; int numzero; int n;
+	for ( q = 0; q <= 4; q++ ) {
+		n = GetDigit(var, q);
+		if ( n == 0 ) numzero++;
+		if ( n != 0 ) {
+			num++;
+			num+=numzero;
+			numzero=0;
+		}
+	}
+	return num;
+}
+
+
+//Returns the number of valid decimal places in a value. 
+int NumPlacesDec(int var){
+	int q; int num; int numzero; int n;
+	for ( q = -1; q >= -4; q-- ) {
+		n = GetDigit(var, q);
+		if ( n == 0 ) numzero++;
+		if ( n != 0 ) {
+			num++;
+			num+=numzero;
+			numzero=0;
+		}
+	}
+	return num;
+}
+
+
+int GetDigit(int n, int place){ return GetDigitValue(n,place);}
+
+//Stores a single-sigit value into a specified place in a variable. 
+//n is the variable input, place is the place, from a range of 4 to -4
+//Storing a value that is larger than can fit in the specified number of places will return an error and -1.
+int SetDigit(int v, int place, int value){
+	int err[]="Error: The value specified to SetDigit() may only be one place wide.";
+	value = value>>0; 
+	if ( NumPlacesInt(value) > 1 ) {
+		TraceS(err);
+		return -1;
+	}
+	place = Clamp(place, -4, 4);
+	int n; int q; 
+	for ( q = -4; q <= 4; q++ ) {
+		if ( q != place ) {
+			n += GetDigit(v, q); //Store the individual values, except what we want to replace. 
+		}
+		if ( q == place ) { 
+			n += (value * Pow(10,place)); //Store what we want to replace. 
+		}
+	}
+	return n;
+}
+
+int SetDigitValue(int v, int place, int value){ return SetDigit(v, place, value); }
+
+//Stores a value into a specified number of places in a variable. 
+//n is the variable input, place is the initial place, from a range of 4 to -4
+//num is the number of places, and 'value' is the value to store in those places.
+//The maximum value is 214747' and decimals will be truncated. 
+//Passing 99999.9999 will be truncated to 99999.
+//Storing a value that is larger than can fit in the specified number of places will return an error and -1.
+int SetPartialValue(int n, int place, int num, int value){
+	place = Clamp(place, -4, 4);
+	int r; int r2 = value << 0;
+	
+	int err[]="Error: The value specified to SetPartialValue() is wider than the specified value of 'num_places'.";
+	//int err2[]="Error: The maximum input value for SetPartialValue(n, place, 
+	if ( NumPlacesInt(r2) > num ) {
+		TraceS(err);
+		return -1;
+	}
+	
+	int err2[]="Error: The value specified to SetPartialValue() is narrower than the specified value of 'num_places'.";
+	//int err2[]="Error: The maximum input value for SetPartialValue(n, place, 
+	if ( NumPlacesInt(r2) > num ) {
+		TraceS(err2);
+		num = NumPlacesInt(r2);
+	}
+	
+	int err3[]="Error: You specified a floating point input 'value' to SetPartialValue() that was truncated.";
+	if ( NumPlacesDec(value) > 0 ) {
+		TraceS(err3);
+	}
+	
+	int p = 0; int q; int minplace = place-num;
+	minplace = Clamp(minplace-4,4);
+	int maxplace; int temp;
+	
+	//populate r with the values that we want
+	for ( q = place; q >= minplace; q-- ) {
+		temp = GetDigit(r2, p);
+		SetDigit(r, q, temp); 
+		p++;
+	}
+	//then setDigit the rest of its places using n
+	for ( q = minplace; q >= -4; q++ ) {
+		SetDigit(r, q, n);
+	}
+	for ( q = place+1; q <= 4; q++ ) {
+		SetDigit(r, q, n);
+	}
+	return r;
+	
+	
+}
+
+//Extracts a single digit from n at the place specified. 
+//-4 is the ten-thousandTHs place, 0 is the ones spot, and 4 is the ten-thousanDs spot. 
+int GetDigitValue(int n, int place){
+	place = Clamp(place, -4, 4);
+	if( place < 0 ){
+		n = DecimalToInt(n);
+		place += 4;
+	}
+
+	int r = ((n / Pow(10, place)) % 10) << 0;
+	return r;
+}
+
+//Extracts an integer using specific places of any value 'n', from position 'place' plus a number of places 'num'.
+int GetPartialValue(int n, int place, int num){
+	place = Clamp(place, -4, 4);
+	int r;
+	int adj = 1;
+	for(int i = num-1; i > -1; i--){
+		if(place - i < -4) continue;
+		r += GetDigitValue(n, place - i) * adj;
+		adj *= 10;
+	}
+	return r;
+}
+
+//Xor comparison of two boolean values. 
+bool Xor(bool valA, bool valB){
+	if ( !valA && valB ) return true;
+	else if ( valA && !valB ) return true;
+	return false;
+}
+
+//Randomly returns true, or false. 
+bool RandB(){
+	int a = Rand(0,1);
+	if ( a == 0 ) return false;
+	else return true;
+}
+
+
+//Randomly returns true, or false, using input percentTrue to determine the percentage change of a 'true return'
+bool RandB(int percentTrue){
+	int a = Rand(1,100);
+	if ( a <= percentTrue ) return true;
+	else return false;
+}
+
+//Fairly select between true or false.
+int ChooseB(){
+	return Rand(0,1);
+}
+
+// Chooses one of the boolean options randomly and fairly.
+bool ChooseB(bool a, bool b) {
+	if (Rand(0,1)==0) return a;
+	else return b;
+}
+
+bool ChooseB(bool a, bool b, bool c) {
+	int r = Rand(0,2);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else return c;
+}
+
+bool ChooseB(bool a, bool b, bool c, bool d) {
+	int r = Rand(0,3);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else return d;
+}
+
+bool ChooseB(bool a, bool b, bool c, bool d, bool e) {
+	int r = Rand(0,4);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else return e;
+}
+
+bool ChooseB(bool a, bool b, bool c, bool d, bool e, bool f) {
+	int r = Rand(0,5);
+	if (r==0) return a;
+	else if (r==1) return b;
+	else if (r==2) return c;
+	else if (r==3) return d;
+	else if (r==4) return e;
+	else return f;
+}
+
+//NoAction, then Waitframe or (equivalent of) Waitframes
+void WaitNoAction() {
+	NoAction();
+	Waitframe();
+}
+
+void WaitNoAction(int frames) {
+	for(int i = 0; i < frames; i++)
+		WaitNoAction();
+}
+
+//Kills all of Link's inputs
+void NoAction() {
+	Link->InputUp = false; Link->PressUp = false;
+	Link->InputDown = false; Link->PressDown = false;
+	Link->InputLeft = false; Link->PressLeft = false;
+	Link->InputRight = false; Link->PressRight = false;
+	Link->InputR = false; Link->PressR = false;
+	Link->InputL = false; Link->PressL = false;
+	Link->InputA = false; Link->PressA = false;
+	Link->InputB = false; Link->PressB = false;
+	Link->InputEx1 = false; Link->PressEx1 = false;
+	Link->InputEx2 = false; Link->PressEx2 = false;
+	Link->InputEx3 = false; Link->PressEx3 = false;
+	Link->InputEx4 = false; Link->PressEx4 = false;
+}
+
+//Kills all of Link's inputs
+void NoAction(bool analogueStick) {
+	Link->InputUp = false; Link->PressUp = false;
+	Link->InputDown = false; Link->PressDown = false;
+	Link->InputLeft = false; Link->PressLeft = false;
+	Link->InputRight = false; Link->PressRight = false;
+	Link->InputR = false; Link->PressR = false;
+	Link->InputL = false; Link->PressL = false;
+	Link->InputA = false; Link->PressA = false;
+	Link->InputB = false; Link->PressB = false;
+	Link->InputEx1 = false; Link->PressEx1 = false;
+	Link->InputEx2 = false; Link->PressEx2 = false;
+	Link->InputEx3 = false; Link->PressEx3 = false;
+	Link->InputEx4 = false; Link->PressEx4 = false;
+	
+	if ( analogueStick ) {
+		Link->InputAxisUp = false; Link->InputAxisRight = false; 
+		Link->InputAxisDown = false; Link->InputAxisLeft = false; 
+		Link->PressAxisUp = false; Link->PressAxisRight = false; 
+		Link->PressAxisDown = false; Link->PressAxisLeft = false; 
+	}
+}
+
+//Removes LWeapon 'l' from the screen
+void Remove(lweapon l){
+	if(!l->isValid()) return;
+	l->DeadState = WDS_DEAD;
+	l->X = 32768;
+}
+
+//Removes EWeapon 'e' from the screen
+void Remove(eweapon e){
+	if(!e->isValid()) return;
+	e->DeadState = WDS_DEAD;
+	e->X = 32768;
+}
+
+//Removes Item 'i' from the screen
+void Remove(item i){
+	if(!i->isValid()) return;
+	i->X = 32768;
+}
+
+//Removes NPC 'n' from the screen
+void Remove(npc n){
+	if(!n->isValid()) return;
+	n->X = 32768;
+	n->HP = -1000;
+}
+
+//Remove an FFC by zeroing out all of its attributes, and freeing it for other use. 
+void Remove(ffc f){
+	if ( f->Data == 0 && f->Script == 0 ) return;
+	else {
+		f->Data = 0;
+		f->Script = 0;
+		f->Script = 0;
+		f->CSet = 0;
+		f->Delay = 0;
+		f->X = 0;
+		f->Y = 0;
+		f->Vx = 0;
+		f->Vy = 0;
+		f->Ax = 0;
+		f->Ay = 0;
+		for ( int q = 0; q < 10; q++ ) f->Flags[q] = 0;
+		f->TileWidth = 0;
+		f->TileHeight = 0;
+		f->EffectWidth = 0;
+		f->EffectHeight = 0;
+		f->Link = 0;
+		for ( int q = 0; q < 15; q++ ) f->Misc[q] = 0;
+	}
+}
+
+//Returns the opposite direction to angle 'dir'
+int OppositeDir(int dir) {
+	return Cond(dir < 4, dir^1b, dir^11b);
+}

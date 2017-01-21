@@ -1,0 +1,35 @@
+//Implemented, but does nothing. The opcodes are unfinished.  
+void SetTile(int sprite, int dir, int flip, int tile)			
+				ZASM Instruction: 
+				LINKSETTILE
+
+/**
+* Sets the tile for Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'tile is the base tile for the sequence. It uses the animation style set in the sprites editor.
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Implemented, but the opcodes are unfinished, so it does not yet work as intended. 
+int GetLinkExtend(int sprite, int dir);		ZASM Instruction: 
+					LINKGETEXTEND
+
+/**
+* Gets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Implemented, but the opcodes are unfinished, so it does not yet work as intended. 
+void SetLinkExtend(int sprite, int dir, int extend);		ZASM Instruction: 
+					LINKSETEXTEND
+
+/**
+* Sets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/

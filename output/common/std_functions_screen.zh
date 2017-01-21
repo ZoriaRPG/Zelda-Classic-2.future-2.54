@@ -1,0 +1,47 @@
+
+//Returns 1 if Screen Flag 'flag' is set from category 'category', 0 if it's not and -1 if an invalid flag is passed
+//Flags are numbered starting from 0
+int ScreenFlag(int category, int flag) {
+	int catsizes[] = {3,7,5,3,2,4,4,2,3,7};
+	if(flag < 0 || flag >= catsizes[category]) return -1;
+	return Screen->Flags[category]&(1<<flag);
+}
+
+//Returns 1 if Screen Enemy Flag 'flag' is set from category 'category', 0 if it's not and -1 if an invalid flag is passed
+//Flags are numbered starting from 0
+int ScreenEFlag(int category, int flag) {
+	int catsizes[] = {6,6,5};
+	if(flag < 0 || flag >= catsizes[category]) return -1;
+	return Screen->EFlags[category]&(1<<flag);
+}
+
+//Sets bit 'bit' of Screen->D[] register 'd' to 'state'
+void SetScreenDBit(int dmap, int screen, int d, int bit, bool state){
+	int curstate = Game->GetDMapScreenD(dmap, screen, d);
+	if(state)	Game->SetDMapScreenD(dmap, screen, d, curstate |  (1 << bit));
+	else 		Game->SetDMapScreenD(dmap, screen, d, curstate & ~(1 << bit));
+}
+
+void SetScreenDBit(int screen, int d, int bit, bool state){
+	int curstate = Game->GetScreenD(screen, d);
+	if(state)	Game->SetScreenD(screen, d, curstate |  (1 << bit));
+	else 		Game->SetScreenD(screen, d, curstate & ~(1 << bit));
+}
+
+void SetScreenDBit(int d, int bit, bool state){
+    if(state)	Screen->D[d] |= (1 << bit);
+    else		Screen->D[d] &= ~(1 << bit);
+}
+
+//Returns the state of bit 'bit' of Screen->D[] register 'd'
+bool GetScreenDBit(int dmap, int screen, int d, int bit){
+	return ( Game->GetDMapScreenD(dmap, screen, d) & (1 << bit) ) != 0;
+}
+
+bool GetScreenDBit(int screen, int d, int bit){
+	return ( Game->GetScreenD(screen, d) & (1 << bit) ) != 0;
+}
+
+bool GetScreenDBit(int d, int bit){
+    return (Screen->D[d] & (1 << bit)) != 0;
+}

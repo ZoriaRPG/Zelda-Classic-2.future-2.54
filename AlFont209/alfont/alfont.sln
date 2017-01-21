@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "alfont_dll", "alfont_dll.vcproj", "{100AFCE0-3DE3-424A-8B7A-CBB3328C68D3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "alfont_static", "alfont_static.vcproj", "{132C204B-8825-4D2B-8B88-8C4650F8C6F7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example1", "examples\example1.vcproj", "{BE1CA738-1104-4DF9-84E8-6855AC183B06}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		MD|Win32 = MD|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{100AFCE0-3DE3-424A-8B7A-CBB3328C68D3}.MD|Win32.ActiveCfg = MD|Win32
+		{100AFCE0-3DE3-424A-8B7A-CBB3328C68D3}.MD|Win32.Build.0 = MD|Win32
+		{100AFCE0-3DE3-424A-8B7A-CBB3328C68D3}.Release|Win32.ActiveCfg = MD|Win32
+		{100AFCE0-3DE3-424A-8B7A-CBB3328C68D3}.Release|Win32.Build.0 = MD|Win32
+		{132C204B-8825-4D2B-8B88-8C4650F8C6F7}.MD|Win32.ActiveCfg = MD|Win32
+		{132C204B-8825-4D2B-8B88-8C4650F8C6F7}.MD|Win32.Build.0 = MD|Win32
+		{132C204B-8825-4D2B-8B88-8C4650F8C6F7}.Release|Win32.ActiveCfg = MD|Win32
+		{132C204B-8825-4D2B-8B88-8C4650F8C6F7}.Release|Win32.Build.0 = MD|Win32
+		{BE1CA738-1104-4DF9-84E8-6855AC183B06}.MD|Win32.ActiveCfg = Release|Win32
+		{BE1CA738-1104-4DF9-84E8-6855AC183B06}.MD|Win32.Build.0 = Release|Win32
+		{BE1CA738-1104-4DF9-84E8-6855AC183B06}.Release|Win32.ActiveCfg = Release|Win32
+		{BE1CA738-1104-4DF9-84E8-6855AC183B06}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,476 @@
+/*
+ use this file to generate lex.yy.c
+command: flex -B -olex.yy.cpp ffscript.lpp
+
+Rev 2016-v24 : 18JUNE2016
+This file needs reorganisation, to structure the proposed additions into chapters. 
+*/
+
+//We need GetPointer() as a function to return the internal pointer ID of any type.
+//used as int x = n->GetPointer(); to typecast the pointer from a custom type to x.
+
+%option yylineno
+%option noyywrap
+%option never-interactive
+WS	[ \t\n\r]
+
+%{
+#include <stdlib.h>
+#include "AST.h"
+#include "../zsyssimple.h"
+#include "y.tab.hpp"
+YYLTYPE noloc = {0,0,0,0};
+void doLines();
+%}
+
+%%
+
+script                    { doLines();return SCRIPT; }
+float				  { doLines(); return FLOAT; }
+int					  { doLines(); return FLOAT; }
+
+for				  { doLines(); return FOR; }
+bool				  { doLines();return BOOL; }
+void				  { doLines();return VOID; }
+if				  { doLines();return IF; }
+else				  { doLines();return ELSE; }
+return			  { doLines();return RETURN; }
+c
+true				  { doLines();return TRUE; }
+false				  { doLines();return FALSE; }
+while				{doLines(); return WHILE;}
+ffc					{doLines(); return FFC;}
+itemdata			{doLines(); return ITEMCLASS;}
+item				{doLines(); return ITEM;}
+global				{doLines(); return GLOBAL;}
+break				{doLines(); return BREAK;}
+continue			{doLines(); return CONTINUE;}
+const				{doLines(); return CONST;}
+do					{doLines(); return DO;}
+npc					{doLines(); return NPC;}
+lweapon					{doLines(); return LWEAPON;}
+eweapon					{doLines(); return EWEAPON;}
+case	{doLines(); return CASE;}
+switch	{doLines(); return SWITCH;}
+
+/*
+[/*].*			{ commentblock(); }
+*/
+
+"/*"            { BEGIN(C_COMMENT); }
+<C_COMMENT>"*/" { BEGIN(INITIAL); }
+<C_COMMENT>.    { }
+<C_COMMENT>\n   { }
+. { printf("%s", yytext); }
+
+\:		{ doLieas(); return COLON; }
+\-\>		{ doLines(); return ARROW;}
+\<\<=		{ doLines(); return LSHIFTASSIGN; }
+\>\>=		{ doLines(); return RSHIFTASSIGN; }
+\<\<		{ doLines(); return LSHIFT; }
+\>\>		{ doLines(); return RSHIFT; }
+\<=			{ doLines();return LE; }
+\<			{ doLines();return LT; }
+\>=			{ doLines();return GE; }
+\>			{ doLines();return GT; }
+==			{ doLines();return EQ; }
+
+\!=			{ doLines();return NE; }
+\=			{ doLines();return ASSIGN; }
+
+\+=			{ doLines();return PLUSASSIGN; }
+\-=			{ doLines();return MINUSASSIGN; }
+\*=			{ doLines();return TIMESASSIGN; }
+\/=			{ doLines();return DIVIDEASSIGN; }
+\&\&=		{ doLines();return ANDASSIGN; }
+\|\|=		{ doLines();return ORASSIGN; }
+\&=			{ doLines();return BITANDASSIGN; }
+\|=			{ doLines();return BITORASSIGN; }
+\^=			{ doLines();return BITXORASSIGN; }
+\%=			{ doLines();return MODULOASSIGN; }
+\;			{ doLines();return SEMICOLON; }
+\,			{ doLines();return COMMA; }
+\[			{ doLines();return LBRACKET; }
+\]			{ doLines();return RBRACKET; }
+\(			{ doLines();return LPAREN; }
+\)			{ doLines();return RPAREN; }
+\+\+		{ doLines();return INCREMENT; }
+\-\-		{ doLines();return DECREMENT; }
+\.          { doLines();return DOT; }
+\+			{ doLines();return PLUS; }
+\-                { doLines();return MINUS; }
+\*			{ doLines();return TIMES; }
+(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|(//.*)            { ; }
+\/                { doLines();return DIVIDE; }
+\{                { doLines();return LBRACE; }
+\}                { doLines();return RBRACE; }
+\&\&			{ doLines();return AND; }
+\|\|			{ doLines();return OR; }
+
+\&				{ doLines(); return BITAND; }
+\|				{ doLines(); return BITOR; }
+\~				{ doLines(); return BITNOT; }
+\^				{ doLines(); return BITXOR; }
+\!			{ doLines();return NOT; }
+\%			{ doLines(); return MODULO; }
+
+
+
+
+// Additions to the symbol table that are usable:
+
+\<\>			{ doLines();return EQ; }
+\:\-        { doLines();return ASSIGN; }
+// \:\-\   { doLines(); return ARROW;}  //Deprecated to use as ASSIGN
+\:\:		{ doLines(); return ARROW;} //This is to be replaced by RESCOPE
+
+
+//Token additions that should work.
+
+SCRIPT                    { doLines();return SCRIPT; }
+FLOAT				  { doLines(); return FLOAT; }
+INT					  { doLines(); return FLOAT; }
+
+FOR				  { doLines(); return FOR; }
+BOOL				  { doLines();return BOOL; }
+VOID				  { doLines();return VOID; }
+IF				  { doLines();return IF; }
+ELSE				  { doLines();return ELSE; }
+RETURN			  { doLines();return RETURN; }
+IMPORT			  { doLines();return IMPORT; }
+\#\i\m\p\o\r\t			  { doLines();return IMPORT; }
+\#\I\M\P\O\R\T			  { doLines();return IMPORT; }
+TRUE				  { doLines();return TRUE; }
+FALSE				  { doLines();return FALSE; }
+WHILE				{doLines(); return WHILE;}
+FFC					{doLines(); return FFC;}
+ITEMDATA			{doLines(); return ITEMCLASS;}
+ITEM				{doLines(); return ITEM;}
+GLOBAL				{doLines(); return GLOBAL;}
+BREAK				{doLines(); return BREAK;}
+CONTINUE			{doLines(); return CONTINUE;}
+CONST				{doLines(); return CONST;}
+DO					{doLines(); return DO;}
+NPC					{doLines(); return NPC;}
+LWEAPON					{doLines(); return LWEAPON;}
+EWEAPON					{doLines(); return EWEAPON;}
+
+and			{ doLines();return AND; }
+or			{ doLines();return OR; }
+
+AND			{ doLines();return AND; }
+OR			{ doLines();return OR; }
+
+//These may conflict with identifiers, and become useless, so we probably won;t use them
+not			{ doLines();return NOT; }
+NOT			{ doLines();return NOT; }
+
+
+
+\#\i\n\c\l\u\d\e { doLines();return IMPORT; } //We need an actual include directive.
+
+
+/* Additions by ZoriaRPG
+
+Note: New definitions need to be added to lex.yy.cpp
+The comments with line number refs in that file that ref lines in this
+file are now incorrect!
+We likely need to expand YY_NUM_RULES 79 to whatever number we eventually have as well.
+This is on line 293 of lex.yy.cpp
+
+THe real 'fun' is modifying: static yyconst short int yy_acclist[276]
+yy_accept[174] =[174]
+etc.
+These hold yy_current_state and other values, I think, as redirects?
+I need to read more of the flex manual.
+*/
+
+/* These do not have a peroper case statement at present, or any handlers.
+
+\!\<    {doLines(); return NOTLESS; }
+\!\>    {doLines(); return NOTGREATER; }
+
+\!\<\=    {doLines(); return NOTLESSOREQUAL; }
+\!\>\=    {doLines(); return NOTGREATEROREQUAL; }
+
+npcdata { doLines(); return NPCDATA; }
+NPCDATA { doLines(); return NPCDATA; }
+
+setflag         { doLines();return SETFLAG; }
+setflagfalse    { doLines();return SETFLAGFALSE; }
+setflagtrue     { doLines();return SETFLAGTRUE; }
+setflagmore     { doLines();return SETFLAGMORE; }
+setflagless     { doLines();return SETFLAGLESS; }
+goto            { doLines();return GOTO; }
+gototrue        { doLines();return GOTOTRUE; }
+gotofalse       { doLines();return GOTOFALSE; }
+gotoless        { doLines();return GOTOLESS; }
+gotomore        { doLines();return GOTOMORE; }
+
+arraytoindex    { doLines();return ARRAYTOINDEX; } //Store array in an index of another array..
+
+POINTER         { doLines();return POINTER; }
+
+SETFLAG         { doLines();return SETFLAG; }
+SETFLAGFALSE    { doLines();return SETFLAGFALSE; }
+SETFLAGTRUE     { doLines();return SETFLAGTRUE; }
+SETFLAGMORE     { doLines();return SETFLAGMORE; }
+SETFLAGLESS     { doLines();return SETFLAGLESS; }
+GOTO            { doLines();return GOTO; }
+GOTOTRUE        { doLines();return GOTOTRUE; }
+GOTOFALSE       { doLines();return GOTOFALSE; }
+GOTOLESS        { doLines();return GOTOLESS; }
+GOTOMORE        { doLines();return GOTOMORE; }
+
+ARRAYTOINDEX    { doLines();return ARRAYTOINDEX; } //Store array in an index of another array..
+
+POINTER         { doLines();return POINTER; }
+
+until           { doLines(); return UNTIL; }
+UNTIL           { doLines(); return UNTIL; }
+
+unless          { doLines(); return UNLESS; }
+UNLESS          { doLines(); return UNLESS; }
+
+repeat          { doLines(); return REPEAT; }
+REPEAT          { doLines(); return REPEAT; }
+
+switch          { doLines(); return SWITCH; }
+SWITCH          { doLines(); return SWITCH; }
+
+begin          { doLines(); return BEGIN; }
+BEGIN          { doLines(); return BEGIN; }
+
+end          { doLines(); return END; }
+END          { doLines(); return END; }
+
+\#\d\e\f\i\n\e { doLines();return DEFINE; } //We need an actual include directive.
+\#\c\a\s\e{ doLines();return CASE; } //We need an actual include directive.
+case { doLines();return CASE; }
+CASE { doLines();return CASE; }
+/// char { doLines();return CHAR; }
+\#\c\h\a\r { doLines();return CHAR; }
+CHAR { doLines();return CHAR; }
+/// array { doLines();return NEWARRAY; } //This could be a problem if the parser reads something like '
+int array[]', picking uo the identifier 'array' as a token. :(
+\#\a\r\r\a\y { doLines();return NEWARRAY; } 
+ARRAY { doLines();return NEWARRAY; } 
+/// string { doLines();return NEWSTRING; } //For the same reason...
+\#\s\t\r\i\n\g { doLines();return NEWSTRING; }
+STRING { doLines();return NEWSTRING; }
+
+obj                     {doLines(); return OBJECT;}
+object                     {doLines(); return OBJECT;}
+OBJ                     {doLines(); return OBJECT;}
+OBJECT                     {doLines(); return OBJECT;}
+
+// 'int'type Integer that is automatically truncated
+igr                     {doLines(); return INTEGER; }
+IGR                     {doLines(); return INTEGER; }
+
+//Signed integer types
+int8                    {doLines(); return SIGNEDINTEGER8BIT; }
+INT8                    {doLines(); return SIGNEDINTEGER8BIT; }
+int16                   {doLines(); return SIGNEDINTEGER16BIT; }
+INT16                   {doLines(); return SIGNEDINTEGER16BIT; }
+int32                   {doLines(); return SIGNEDINTEGER32BIT; }
+INT32                   {doLines(); return SIGNEDINTEGER32BIT; }
+
+//Do we want to support 64b values? I don't even believe that we *can* do that.
+INT64                   {doLines(); return SIGNEDINTEGER64BIT; }
+int64                   {doLines(); return SIGNEDINTEGER64BIT; }
+
+uint8                   {doLines(); return UNSIGNEDINTEGER8BIT; }
+UINT8                   {doLines(); return UNSIGNEDINTEGER8BIT; }
+uint16                  {doLines(); return UNSIGNEDINTEGER16BIT; }
+UINT16                  {doLines(); return UNSIGNEDINTEGER16BIT; }
+uint32                  {doLines(); return UNSIGNEDINTEGER32BIT; }
+UINT32                  {doLines(); return UNSIGNEDINTEGER32BIT; }
+
+//Do we want to support 64b values? I don't even believe that we *can* do that.
+uint64                  {doLines(); return UNSIGNEDINTEGER64BIT; }
+UINT64                  {doLines(); return UNSIGNEDINTEGER64BIT; }
+
+//Floating point values.
+float32                 {doLines(); return SIGNEDFLOAT32BIT; }
+FLOAT32                 {doLines(); return SIGNEDFLOAT32BIT; }
+
+//Fix and Fixed
+
+"signed fix"            {doLines(); return SIGNEDINTEGER32BIT; }
+"SIGNED FIX"            {doLines(); return SIGNEDINTEGER32BIT; }
+signed FIX              {doLines(); return SIGNEDINTEGER32BIT; }
+SIGNED fix              {doLines(); return SIGNEDINTEGER32BIT; }
+fix                     {doLines(); return SIGNEDINTEGER32BIT; }
+
+"unsigned fix"            {doLines(); return UNSIGNEDINTEGER32BIT; }
+"UNSIGNED FIX"            {doLines(); return UNSIGNEDINTEGER32BIT; }
+"unsigned FIX"              {doLines(); return UNSIGNEDINTEGER32BIT; }
+"UNSIGNED fix"              {doLines(); return UNSIGNEDINTEGER32BIT; }
+ufix                     {doLines(); return UNSIGNEDINTEGER32BIT; }
+
+"signed fixed"            {doLines(); return SIGNEDINTEGER32BIT; }
+"SIGNED FIXED"            {doLines(); return SIGNEDINTEGER32BIT; }
+"signed FIXED"              {doLines(); return SIGNEDINTEGER32BIT; }
+SIGNED fixed              {doLines(); return SIGNEDINTEGER32BIT; }
+fixed                     {doLines(); return SIGNEDINTEGER32BIT; }
+
+"unsigned fixed"            {doLines(); return UNSIGNEDINTEGER32BIT; }
+"UNSIGNED FIXED"            {doLines(); return UNSIGNEDINTEGER32BIT; }
+"unsigned FIXED"              {doLines(); return UNSIGNEDINTEGER32BIT; }
+"UNSIGNED fixed"              {doLines(); return UNSIGNEDINTEGER32BIT; }
+ufixed                     {doLines(); return UNSIGNEDINTEGER32BIT; }
+
+//Double
+
+double                  {doLines(); return SIGNEDDOUBLE; }
+DOUBLE                  {doLines(); return SIGNEDDOUBLE; }
+udouble                  {doLines(); return UNSIGNEDDOUBLE; }
+UDOUBLE                  {doLines(); return UNSIGNEDDOUBLE; }
+
+//More object tokens
+private             {doLines(); return PRIVATE; }
+PRIVATE             {doLines(); return PRIVATE; }
+get                 {doLines(); return GET; }
+GET                 {doLines(); return GET; }
+
+//New types for numerical values
+\u\n\s\i\g\n\e\d\ \l\o\n\g   {doLines(); return UNSINGLEDLONG; } 
+\u\n\s\i\g\n\e\d\ \i\n\t   {doLines(); return UNSINGLEDINT; } 
+\u\n\s\i\g\n\e\d\ \f\l\o\a\t   {doLines(); return UNSINGLEDFLOAT; } 
+\u\n\s\i\g\n\e\d\ \i\g\r   {doLines(); return UNSINGLEDIGR; } 
+
+\s\i\g\n\e\d\ \i\g\r  {doLines(); return SINGLEDIGR; } 
+
+\s\i\g\n\e\d\ \l\o\n\g   {doLines(); return SINGLEDLONG; } 
+\s\i\g\n\e\d\ \i\n\t   {doLines(); return SINGLEDINT; } 
+s\i\g\n\e\d\ \f\l\o\a\t   {doLines(); return SINGLEDFLOAT; } 
+
+
+
+\^\^			{ doLines();return LOGICALXOR; }
+XOR			{ doLines();return LOGICALXOR; }
+xor			{ doLines();return LOGICALXOR; }
+// If we can add XOR, with a custom function, this would be nice. 
+
+//Other logical operators
+NOR			{ doLines();return LOGICALNOR; }
+nor			{ doLines();return LOGICALNOR; }
+
+NAND			{ doLines();return LOGICALNAND; }
+nand			{ doLines();return LOGICALNAND; }
+
+//Check if two things are identical. This is not the same as ==, but
+determines if two pointers are the same object, etc.
+//This is usedul for conversionto AngelScript for handles.
+IS			{ doLines();return ISTHESAME; }
+is			{ doLines();return ISTHESAME; }
+
+([*][_a-zA-Z])  {        doLines();
+						yylval = new ASTString(yytext, yylloc);
+						return USERPOINTER; 
+					}
+                    
+\?      { doLines(); return QMARK; }
+
+
+///Loaads a quest into the present save file. as load "name.qst"
+LOAD			  { doLines();return LOAD; }
+load			  { doLines();return LOAD; }
+\#\l\o\a\d			  { doLines();return LOAD; }
+\#L\O\A\D			  { doLines();return LOAD; }
+
+//Add comment blocks. We need a comment block function, for the parser. 
+//Begin vomment block.
+\/\*.*             { ; } //We need to have a special { doLines(); return COMMENTBLOCK } routine here.
+//End comment block.
+\*\/             { ; } //We need to have a special { doLines(); return COMMENTBLOCK } routine here.
+
+
+// END SECTION
+*/ 
+
+
+/* BEGIN DECTION
+\:\:		{ doLines(); return RESSCOPE;}  This is for AngelScript compat. Note that if we
+                                            add scope resolution, we will need to change this
+                                            to reflect that addition. otherwise, we can use this
+                                            as a pointer dereferencing token. */
+                                            
+
+
+([?]|[_a-zA-Z]|[0-9]|[@][$]+)([?]|[_a-zA-Z]|[0-9]|[@]|[$])*{
+						doLines();
+						yylval = new ASTString(yytext, yylloc);
+						return IDENTIFIER; 
+					}
+        
+//Add * to the identifier class, but only if at the end of an identifier, and no other alpha
+//or numeric chars follow it. This should prevent it being mistaken for a MULTIPLY token.
+
+([?]|[_a-zA-Z]|[0-9]|[@][$]+)([?]|[_a-zA-Z]|[0-9]|[@]|[$])*[*^([?]|[_a-zA-Z]|[0-9]|[@][$]+)([?]|[_a-zA-Z]|[0-9]|[@]|[$])]
+{
+						doLines();
+						yylval = new ASTString(yytext, yylloc);
+						return IDENTIFIER; 
+					}
+
+/*
+[^([?]|[_a-zA-Z]|[0-9]|[@][$]+)([?]|[_a-zA-Z]|[0-9]|[@]|[$])*][*]([?]|[_a-zA-Z]|[0-9]|[@][$]+)([?]|[_a-zA-Z]|[0-9]|[@]|[$])*
+{                       doLines();
+						yylval = new ASTString(yytext, yylloc);
+						return USERPOINTER; 
+					}
+// END SECTION
+*/ 
+
+([0-9]*\.?[0-9]+) 		{ doLines();yylval = new ASTFloat(yytext, ASTFloat::TYPE_DECIMAL, yylloc); return NUMBER; }
+
+(0x[0-9a-fA-F]+)		{ doLines();yylval = new ASTFloat(yytext, ASTFloat::TYPE_HEX, yylloc); return NUMBER; }
+
+([0-1]+b)				{ doLines();yylval = new ASTFloat(yytext, ASTFloat::TYPE_BINARY, yylloc); return NUMBER; }
+
+(o[0-7])                { doLines();yylval = new ASTFloat(yytext, ASTFloat::TYPE_OCTAL, yylloc); return NUMBER; } 
+                        //We should add TYPE_OCTAL here, (and thus we need to define the return)
+
+
+\"[^\"]+\"				{ doLines();yylval = new ASTString(yytext, yylloc); return QUOTEDSTRING; }
+\"\"                    { doLines();yylval = new ASTString(yytext, yylloc); return QUOTEDSTRING; }
+
+//Is there a reason that an empty QUOTEDSTRING was not allowed?
+
+\'[^\']?\'				{ doLines();yylval = new ASTString(yytext, yylloc); return SINGLECHAR; }
+
+[\x80-\xFF]             { ; }//ASCII chars above 127 register as Whitespace.
+
+{WS}					{ ; } //Whitespace
+
+
+.		{
+	char temp[512];
+	sprintf(temp, "Scanner, line %d: lexical error '%s'.\n", yylineno, yytext); 
+	box_out(temp);
+	box_eol();
+	}
+%%
+void resetLexer(){
+YY_FLUSH_BUFFER;
+yylineno=1;
+}
+void doLines()
+{
+YYLTYPE rval = {yylineno, 0, yylineno, 0};
+yylloc = rval;
+}
+
+
+
+//void comment(void) {
+//	char c; prev = 0;
+//	while ( ( c = input() ) != 0 ) {
+//		if ( c == '/' && prev == '*' ) return;
+//		prev = c;
+//	}
+//	error("Unterminated Comment");
+//}
+

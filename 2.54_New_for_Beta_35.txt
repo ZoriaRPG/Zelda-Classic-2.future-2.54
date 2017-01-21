@@ -1,0 +1,155 @@
+//New for Beta 34
+
+
+////////////////
+///  ZQuest  ///
+////////////////
+
+The Enemy Editor now had an additional tab,'Defenses 3'. In this tab, you will find settings for configuring
+enemy defences for each of the ten LW_SCRIPT* types. These otherwise work as normal weapon defences, and
+correspond to npc->ScriptDefense[] in ZScript. 
+
+Quests made in versions prior to 2.54 have no knowledge of these types, and will fall back on the generic 'Script'
+defence type. This type should no longer be used to configure enemies, as it will be ignored in quests saved in
+2.54. 
+
+
+/////////////////
+///  ZScript  ///
+/////////////////
+
+/////////////
+///  NPC  ///
+/////////////
+
+
+int ScriptDefense[];		ZASM Instruction: 
+				NPCSCRDEFENSED
+/**
+* The npc's Script Weapon Defense values, as an array of 10 integers. Use the NPCSD_ and NPCDT_ constants
+* in std.zh to set or compare these values.
+*/
+
+/************************************************************************************************************/
+
+
+//////////////
+///  Link  /// 
+//////////////
+
+int Eaten;				ZASM Instruction: 
+					LINKEATEN
+				
+/**
+* This stores a counter for how long Link has been inside a LikeLike, or similar enemy.
+* It returns 0 if Link is not eaten, otherwise it returns the duration of him being eaten.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Extend;				ZASM Instruction: 
+					LINKEXTEND
+
+/**
+* Sets the extend value for all of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting 
+* a tile, click on his sprites for any given action, and press the 'x' key.
+* The options are 16x16, 16x32, and 32x32; which correspond to Extend values of ( 0, 1, and 2 ) 
+* respectively. 
+*
+* If used to check, this will return the value of the LSPR_NORMAL entry.
+*/
+
+/************************************************************************************************************/
+//Implemented, but does nothing. The opcodes are unfinished.  
+void SetTile(int sprite, int tile, int dir, int flip)			
+				ZASM Instruction: 
+				LINKSETTILE
+
+/**
+* Sets the tile for Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'tile is the base tile for the sequence. It uses the animation style set in the sprites editor.
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Implemented, but the opcodes are unfinished, so it does not yet work as intended. 
+int GetLinkExtend(int sprite, int dir);		ZASM Instruction: 
+					LINKGETEXTEND
+
+/**
+* Gets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Implemented, but the opcodes are unfinished, so it does not yet work as intended. 
+void SetLinkExtend(int sprite, int dir, int extend);		ZASM Instruction: 
+					LINKSETEXTEND
+
+/**
+* Sets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Not implemented. 
+int GetTile(int sprite, int dir, int flip)			
+				ZASM Instruction: 
+				LINKGETTILE
+
+/**
+* Returns the tile for one of Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+String Control Codes
+
+These have been rearranged. Code 23 is likely to replace 19, and 19 may be removed to clear space. 
+We may reduce the number of warp codes from four, to two.
+
++-----------------------------+
+| WARP EFFECT CODES           |
++-----------------------------+
+
+\26\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID.
+\27\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+\28\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+\29\X\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+			 Argument 5 is a WARP EFFECT (see below).
+
+Warp Return Values: 0 = A, 1 = B, 2 = C, 3 = D.
+Warp Effect Types: 
+		0: None
+		1: Instant
+		2: Instant (Blackout)
+		3: Instant (Opening Wipe)
+		4: Instant (Zap Effects)
+		5: Instant (Wavy Effects)
+		6: Reset Room
+		7: Scrolling
+		
+
+
++-----------------------------+
+| MISC EFFECT CODES           |
++-----------------------------+
+
+\18\X\X - Set Screen->D[reg] on this screen, where Argument 1 is the [register] and Argument 2 is the value to set. 
+\19\X\X\X - Set Screen->D[reg] on another screen, where Argument 1 is the Screen (on this DMap), Argument 1 is
+		the [reg], and Argument 3 is the value.
+\23\X\X\X\X - Set Screen->D on any DMap, or screen in the game. Argument 1 is the DMap, Argument 1 is the screen,
+		Argument 3 is the [reg], and Argument 4 is the value. 

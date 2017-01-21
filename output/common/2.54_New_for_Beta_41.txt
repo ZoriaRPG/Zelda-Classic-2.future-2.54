@@ -1,0 +1,242 @@
+//New for Beta 41
+
+
+////////////////
+///  ZQuest  ///
+////////////////
+
+The Enemy Editor now had an additional tab, 'Defenses 3'. In this tab, you will find settings for configuring
+enemy defences for each of the ten LW_SCRIPT* types. These otherwise work as normal weapon defences, and
+correspond to npc->ScriptDefense[] in ZScript. 
+
+Quests made in versions prior to 2.54 have no knowledge of these types, and will fall back on the generic 'Script'
+defence type. This type should no longer be used to configure enemies, as it will be ignored in quests saved in
+2.54. 
+
+Further, as of Beta 40, the following new defence outcomes exist:
+
+Trigger Secrets: Hitting the enemy with this weapon type will trigger all the secrets on the screen.
+Double Damage : Should inflict 2x damage, unverified.
+Triple Damage : Should inflict 3x damage, unverified.
+Quadruple Damage : Should inflict 4x damage, unverified.
+Block if Damage < 10 
+
+The 'Block if < n' defence outcoms have been renamed to 'Block if Damage < n', for clarity. 
+
+Other new defence outcomes have been added to the enemy editor, but they do nothing.
+
+
+/////////////////
+///  ZScript  ///
+/////////////////
+
+/////////////
+///  NPC  ///
+/////////////
+
+
+int ScriptDefense[];		ZASM Instruction: 
+				NPCSCRDEFENSED
+/**
+* The npc's Script Weapon Defense values, as an array of 10 integers. Use the NPCSD_ and NPCDT_ constants
+* in std.zh to set or compare these values.
+* 
+* This corresponds to the 'Defenses 3' tab in the Enemy Editor. 
+*/
+
+/************************************************************************************************************/
+
+
+//////////////
+///  Link  /// 
+//////////////
+
+//! Link->Equipment is now read-write, and needs testing. 
+//! It is also a pain to write bitwise values, to test it. 
+
+int Equipment;				ZASM Instruction: 
+					LINKEQUIP
+				
+/**
+* Contains the item IDs of what is currently equiped to Link's A and B buttons.
+* The first 8 bits contain the A button item, and the second 8 bits contain the B button item.
+* If you are not comfortable with performing binary operations,
+* you can use the functions GetEquipmentA() or GetEquipmentB() in std.zh.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int ItemA;				ZASM Instruction: 
+					LINKITEMA
+				
+/**
+* Contains the item IDs of what is currently equiped to Link's A button.
+* Writing to this variable will set an item to the A-button. 
+* This will occur even if the item is not in inventory, and not on the subscreen.
+* This will ignore if you have B+A or B-only subscreens, and force-set the item.
+* The intent of this is to allow scriters to easily create scripted subscreens. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int ItemB;				ZASM Instruction: 
+					LINKITEMB
+				
+/**
+* Contains the item IDs of what is currently equiped to Link's B button.
+* Writing to this variable will set an item to the A-button. 
+* This will occur even if the item is not in inventory, and not on the subscreen.
+* The intent of this is to allow scriters to easily create scripted subscreens. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+//! Not quite right yet. -Z 24/Dec/2016
+int SetItemSlot(int itm_id, int button, int force);				
+					ZASM Instruction: 
+					LINKITEMB
+				
+/**
+* This allows you to set Link's button items without binary operations, and to decide whether to 
+* obey quest rules, or inventory.
+*
+* When using this, 'itm_id' is the ID number of the item.
+* 'button' is the button to set, where 0 == B, 1 == B, and other values are reserved for future expansion.
+* Set force using the following flags: 
+* 	0 == None : Ignores if the item is in inventory, and ifnores B+A quest rules for setting A-Slot items.
+* 	1 == Check Inventory: Verifes that the item is in inventory before setting it. 
+* 	2 == Check quest rule: if seting anA-Button item, only valid items can be set. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Eaten;				ZASM Instruction: 
+					LINKEATEN
+				
+/**
+* This stores a counter for how long Link has been inside a LikeLike, or similar enemy.
+* It returns 0 if Link is not eaten, otherwise it returns the duration of him being eaten.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int Extend;				ZASM Instruction: 
+					LINKEXTEND
+
+/**
+* Sets the extend value for all of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting 
+* a tile, click on his sprites for any given action, and press the 'x' key.
+* The options are 16x16, 16x32, and 32x32; which correspond to Extend values of ( 0, 1, and 2 ) 
+* respectively. 
+*
+* In future, setting this values of 0 through 4 will set Link->Extend based on Link's present drection and 
+* sprite and values of -1 through -5 will force Extend = 0 through Extend = 4 for all sprites and directions.
+*
+* In future, checking this will return the extend value for Link's present sprite and direction. 
+*
+* At present, setting this sets the extend value for all sprites and directions, and checking it 
+* returns the value for his walking sprite, DIR_UP. 
+*
+* If used to check, this will return the value of the LSPR_NORMAL entry.
+*/
+
+/************************************************************************************************************/
+ 
+int GetLinkExtend(int sprite, int dir);		ZASM Instruction: 
+						SETLINKEXTEND
+
+/**
+* Gets the extend value for one of Link's various actions based on a direction.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+ 
+void SetLinkExtend(int sprite, int dir, int extend);		
+						ZASM Instruction: 
+						SETLINKEXTEND
+
+/**
+* Sets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* 'sprite' is the 'action', 'dir' is the sprite direction, and 'extend' is a value between 1 and 3.
+* An extend value of '4' is reserved for future implementations of Link->Hit/DrawOffsets ad HitWidth/height.
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//Implemented, but does nothing. This is intended to work as OTile for Link.   
+void SetLinkTile(int sprite, int tile, int dir, int flip)			
+				ZASM Instruction: 
+				SETLINKTILE
+
+/**
+* Sets the tile for Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'tile is the base tile for the sequence. It uses the animation style set in the sprites editor.
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Not implemented. 
+int GetLinkTile(int sprite, int dir, int flip)			
+				ZASM Instruction: 
+				LINKGETTILE
+
+/**
+* Returns the tile for one of Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+String Control Codes
+
+These have been rearranged. Code 23 is likely to replace 19, and 19 may be removed to clear space. 
+We may reduce the number of warp codes from four, to two.
+
++-----------------------------+
+| WARP EFFECT CODES           |
++-----------------------------+
+
+\26\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID.
+\27\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+\28\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+\29\X\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+			 Argument 5 is a WARP EFFECT (see below).
+
+Warp Return Values: 0 = A, 1 = B, 2 = C, 3 = D.
+Warp Effect Types: 
+		0: None
+		1: Instant
+		2: Instant (Blackout)
+		3: Instant (Opening Wipe)
+		4: Instant (Zap Effects)
+		5: Instant (Wavy Effects)
+		6: Reset Room
+		7: Scrolling
+		
+
+
++-----------------------------+
+| MISC EFFECT CODES           |
++-----------------------------+
+
+\18\X\X - Set Screen->D[reg] on this screen, where Argument 1 is the [register] and Argument 2 is the value to set. 
+\19\X\X\X - Set Screen->D[reg] on another screen, where Argument 1 is the Screen (on this DMap), Argument 1 is
+		the [reg], and Argument 3 is the value.
+\23\X\X\X\X - Set Screen->D on any DMap, or screen in the game. Argument 1 is the DMap, Argument 1 is the screen,
+		Argument 3 is the [reg], and Argument 4 is the value. 

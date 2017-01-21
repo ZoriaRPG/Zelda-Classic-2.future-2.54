@@ -1,0 +1,36 @@
+
+New String Control Codes for 2.54
+
++-----------------------------+
+| WARP EFFECT CODES           |
++-----------------------------+
+
+\26\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID.
+\27\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+\28\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+\29\X\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+			 Argument 5 is a WARP EFFECT (see below).
+
+Warp Return Values: 0 = A, 1 = B, 2 = C, 3 = D.
+Warp Effect Types: 
+		0: None
+		1: Instant
+		2: Instant (Blackout)
+		3: Instant (Opening Wipe)
+		4: Instant (Zap Effects)
+		5: Instant (Wavy Effects)
+		6: Reset Room
+		7: Scrolling
+		
+
++-----------------------------+
+| MISC EFFECT CODES           |
++-----------------------------+
+
+\18\X\X - Set Screen->D[reg] on this screen, where Argument 1 is the [register] and Argument 2 is the value to set. 
+\19\X\X\X - Set Screen->D[reg] on another screen, where Argument 1 is the Screen (on this DMap), Argument 1 is
+		the [reg], and Argument 3 is the value.
+\23\X\X\X\X - Set Screen->D on any DMap, or screen in the game. Argument 1 is the DMap, Argument 1 is the screen,
+		Argument 3 is the [reg], and Argument 4 is the value. 

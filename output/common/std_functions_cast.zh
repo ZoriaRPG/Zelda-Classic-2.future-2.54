@@ -1,0 +1,11 @@
+//! Typecasting
+
+//Convert boolean variable 'input' to floating point, or int.
+float BoolToFloat(bool input){
+	if ( input ) return 1;
+	else return 0;
+}
+
+int BoolToInt(bool input) {
+	BoolToFloat(input);
+}

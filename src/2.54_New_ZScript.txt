@@ -1,0 +1,892 @@
+// Beta 28
+
+//////////////
+//  Global  //
+//////////////
+ 
+void OverlayTile(int firsttile, int secondtile);		ZASM Instruction:
+								OVERLAYTILEVV
+								OVERLAYTILEVR
+								OVERLAYTILERV
+								OVERLAYTILERR
+/**
+* Overlays secondtile onto firsttile, ignoring all pixels of colour 0.  
+* The valid tile value range is 0 to 65519.
+* This change is *TEMPORARY* within the quest file
+* and will not be retained when saving the game.
+*
+*/ Example Use:
+
+/************************************************************************************************************/
+
+////////////
+//  Game  //
+////////////
+
+bool CappedFPS		ZASM: THROTTLEFPS
+
+/**
+	* Returns if the user enabled an uncapped mode either with F1 or TILDE.
+	* Returns 'true' is the game is capped to 60fps, or false otherwise. 
+	* At present, you may get (read), but NOT set (write to) this value. 
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+/////////////
+///  NPC  ///
+/////////////
+
+
+int ScriptDefense[];		ZASM Instruction: 
+				NPCSCRDEFENSED
+/**
+* The npc's Script Weapon Defense values, as an array of 10 integers. Use the NPCSD_ and NPCDT_ constants
+* in std.zh to set or compare these values.
+*/
+
+/************************************************************************************************************/
+
+//////////////
+///  Link  ///
+//////////////
+
+int Eaten;				ZASM Instruction: 
+					LINKEATEN
+				
+/**
+* This stores a counter for how long Link has been inside a LikeLike, or similar enemy.
+* It returns 0 if Link is not eaten, otherwise it returns the duration of him being eaten.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+//Implemented, but does nothing. The opcodes are unfinished.  
+void SetTile(int sprite, int tile, int dir, int flip)			
+					ZASM Instruction: 
+					LINKSETTILE
+
+/**
+* Sets the tile for Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'tile is the base tile for the sequence. It uses the animation style set in the sprites editor.
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Implemented, but the opcodes are unfinished, so it does not yet work as intended. 
+int GetLinkExtend(int sprite, int dir);		
+					ZASM Instruction: 
+					LINKGETEXTEND
+
+/**
+* Gets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Implemented, but the opcodes are unfinished, so it does not yet work as intended. 
+void SetLinkExtend(int sprite, int dir, int extend);		
+					ZASM Instruction: 
+					LINKSETEXTEND
+
+/**
+* Sets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Not implemented. 
+int GetTile(int sprite, int dir, int flip)			
+					ZASM Instruction: 
+					LINKGETTILE
+
+/**
+* Returns the tile for one of Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+int Extend;				ZASM Instruction: 
+					LINKEXTEND
+
+/**
+* Sets the extend value for all of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting 
+* a tile, click on his sprites for any given action, and press the 'x' key.
+* The options are 16x16, 16x32, and 32x32; which correspond to Extend values of ( 0, 1, and 2 ) 
+* respectively. 
+*
+* If used to check, this will return the value of the LSPR_NORMAL entry.
+*/
+
+/************************************************************************************************************/
+
+int WarpEffect;			ZASM Instruction: 
+				WARPEFFECT
+				
+/**
+* Sets a warp effect type prior to doing Screen->Warp
+* These replicate the in-build effects for tile warps. 
+* see 'std_constants.zh' under WARPFX_* for a list of effects. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int WarpSound;			ZASM Instruction: 
+				LINKWARPSOUND
+				
+/**
+* Setting this to a value other than '0' will play that sound when Link warps.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool SideWarpSounds;		ZASM Instruction: 
+				PLAYWARPSOUND
+				
+/**
+* By default, even if you set a warp sound, it will not play in sidewarps. 
+* If you enable this setting, the sound will play in side warps.
+* At present, this does not disable playing the sound otherwise. Set Link->WarpSound = 0 to do that. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool PitWarpSounds;		ZASM Instruction: 
+				PLAYPITWARPSFX
+				
+/**
+* By default, even if you set a warp sound, it will not play in pit warps. 
+* If you enable this setting, the sound will play in a pit warp, one time.
+* This value resets after the pit warp, so it is mandatory to re-set it each time tat you desire a pit warp
+* 	to play a sound. Do this before Waitdraw().
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int UseWarpReturn;		ZASM Instruction: 
+				LINKRETSQUARE
+				
+/**
+* Setting this to a value between 0 and 3 will change the target return square for Link->Warp
+* Valid values are: 0 (A), 1 (B), 2 (C), and 3 (D). Other values will be clamed within this range. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int UsingItem;			ZASM Instruction: 
+				LINKUSINITEM
+				
+/**
+* Returns the ID of an item used when Link uses an item.
+* Returns -1 if Link is not using an item this frame. 
+* Does not work at present. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int UsingItemA;			ZASM Instruction: 
+				LINKUSINITEMA
+				
+/**
+* Returns the ID of an item used when Link uses an item on button A.
+* Returns -1 if Link is not using an item this frame. 
+* Does not work at present. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int UsingItemB;			ZASM Instruction: 
+				LINKUSINITEMB
+				
+/**
+* Returns the ID of an item used when Link uses an item on button B.
+* Returns -1 if Link is not using an item this frame. 
+* Does not work at present. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Diagonal;			ZASM Instruction: 
+				LINKDIAG
+				
+/**
+* This corresponds to whether 'Diagonal Movement' is enabled, or not. 
+* This will initially return true, or false, based on the setting in Quest->Graphics->Sprites->Link.
+* You may enable, or disable diagonal movement by writing to this value. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool BigHitbox;			ZASM Instruction: 
+				LINKBIGHITBOX
+				
+/**
+* This corresponds to whether 'Big Hitbox' is enabled, or not. 
+* This will initially return true, or false, based on the setting in Quest->Graphics->Sprites->Link.
+* You may enable, or disable big hitbox, by writing to this value. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+float Misc[32];				ZASM Instruction: 
+					LINKMISC
+					LINKMISCD
+				
+/**
+* An array of 32 miscellaneous variables for you to use as you please.
+* These variables are not saved with Link.
+*
+*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+//////////////////
+///  itemdata  ///
+//////////////////
+
+										class itemdata
+	int ID;			ZASM Instruction: 
+					IDATAID
+	/**
+	* Returns the item number of the item in question.
+	* Can be called with this->ID in item scripts. 
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int Modifier;			ZASM Instruction: 
+					IDATALTM
+	/**
+	* The Link Tile Modifier
+	* 
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int Tile;			ZASM Instruction: 
+					IDATATILE
+	/**
+	* The tile used by the item.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int CSet;			ZASM Instruction: 
+					IDATAID
+	/**
+	* The CSet of the tile used by the item.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int Flash;			ZASM Instruction: 
+					IDATAFLASH
+	/**
+	* The Flash value for the CSet
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int AFrames;			ZASM Instruction: 
+					IDATAFRAMES
+	/**
+	* The number of animation frames in the item's tile animation. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int ASpeed;			ZASM Instruction: 
+					IDATAASPEED
+	/**
+	* The speed of the item's animation.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int Delay;			ZASM Instruction: 
+					IDATADELAY
+	/**
+	* The Delay value, before the animation begins. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int Script;			ZASM Instruction: 
+					IDATAID
+	/**
+	* The Action Script for the item.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int PScript;			ZASM Instruction: 
+					IDATAID
+	/**
+	* The Pickup Script for the item.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int MagicCost;			ZASM Instruction: 
+					IDATAID
+	/**
+	* The item's maic (or rupees, if this is set) cost.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int MinHearts;			ZASM Instruction: 
+					IDATAID
+	/**
+	* The minimum number of hearts required to pick up the item.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+	int Misc1, Misc2, Misc3, Misc4, Misc5, Misc6, Misc7, Misc8, Misc9, Misc10;
+					ZASM Instructions: 
+					IDATAMISC1, IDATAMISC2, IDATAMISC3, IDATAMISC4, IDATAMISC5
+					IDATAMISC6, IDATAMISC7, IDATAMISC8, IDATAMISC9, IDATAMISC10
+	/**
+	* These correspond to the pull-down options in the item editor 'Data' tab. 
+	* 
+	* Example: For a Sword Misc1 is 'Beam hearts', and Misc2 is 'Beam .
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+	int Attribute1, Attribute2, Attribute3, Attribute4, Attribute5, Attribute6, 
+		Attribute7, Attribute8, Attribute9, Attribute10;
+					ZASM Instructions: 
+					IDATAWPN, IDATAWPN2, IDATAWPN3, IDATAWPN4, IDATAWPN5
+					IDATAWPN6, IDATAWPN7, IDATAWPN8, IDATAWPN9, IDATAWPN10
+	/**
+	* These correspond to the pull-down options in the item editor 'Action' tab. 
+	* 
+	* Example: For a Sword Attribute1 is 'Sprite', Attribute 2 is 'Slash sprite' 
+	* and Attribute 3 is 'Beam sprite'.
+	*  
+	*/ Example Use: !#!
+	
+/************************************************************************************************************/
+
+bool Combine;				ZASM Instruction: 
+					IDATACOMBINE
+	/**
+	* Corresponds to 'Upgrade when collected twice'.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Downgrade;				ZASM Instruction: 
+					IDATADOWNGRADE
+	/**
+	* Corresponds to the 'Remove When Used' option on the Action tab of the item editor. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool KeepOld;				ZASM Instruction: 
+					IDATAKEEPOLD
+	/**
+	* Corresponds to 'Keep lower level items on the Pickup tab of the item editor. 
+	* NOTE: Not to be confused with 'Keep', which corresponds to the 'Equipment Item' box. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool RupeeCost;				ZASM Instruction: 
+					IDATARUPEECOST
+	/**
+	* Corresponds to the 'Use Rupees Instead of Magic' option on the item editor 'Action' tab.
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Edible;				ZASM Instruction: 
+					IDATAEDIBLE
+	/**
+	* Corresponds to the 'Can be Eaten by Enemies' box on the Pickup tab of the item editor. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool GainLower;				ZASM Instruction: 
+					IDATAGAINLOWER
+	/**
+	* Corresponds to the 'Gain All Lower Level Items' box on the Pickup tab of the item editor. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+
+bool Flag1;				ZASM Instruction: 
+					IDATAFLAG1
+	/**
+	* Multipurpose Flag 1
+	* 
+	* The properties of this flag change based on the item class (family).
+	* This corresponds to the box directly below 'Equiment Item'.
+	* For swords, this is 'B.H. is Percent'.
+	* Scripted item classes may make use of this as a general-purpose 'Script 1' flag. 
+	* See 'zscript_itemdata.txt' for more information on what this flag does, based on the item class. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Flag2;				ZASM Instruction: 
+					IDATAFLAG2
+	/**
+	* Multipurpose Flag 2
+	* 
+	* The properties of this flag change based on the item class (family).
+	* This corresponds to the box directly below 'Flag 1, or two boxes down from 'Equiment Item'.
+	* For swords, this is 'B.D. is Percent'.
+	* Scripted item classes may make use of this as a general-purpose 'Script 2' flag. 
+	* See 'zscript_itemdata.txt' for more information on what this flag does, based on the item class. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Flag3;				ZASM Instruction: 
+					IDATAFLAG3
+	/**
+	* Multipurpose Flag 3
+	* 
+	* The properties of this flag change based on the item class (family).
+	* This corresponds to the box directly right of 'Equiment Item'.
+	* For swords, this is 'B.  Penetrates Enemies'.
+	* Scripted item classes may make use of this as a general-purpose 'Script 3' flag. 
+	* See 'zscript_itemdata.txt' for more information on what this flag does, based on the item class. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Flag4;				ZASM Instruction: 
+					IDATAFLAG4
+	/**
+	* Multipurpose Flag 4
+	* 
+	* The properties of this flag change based on the item class (family).
+	* This corresponds to the box directly right of 'Flag 2'.
+	* For swords, this is 'Can Slash'.
+	* Scripted item classes may make use of this as a general-purpose 'Script 4' flag. 
+	* See 'zscript_itemdata.txt' for more information on what this flag does, based on the item class. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Flag5;				ZASM Instruction: 
+					IDATAFLAG5
+	/**
+	* Multipurpose Flag 5
+	* 
+	* The properties of this flag change based on the item class (family).
+	* This corresponds to the box directly below 'Flag 4'.
+	* For swords, this is '<Unused>', and greyed out.
+	* Scripted item classes may make use of this as a general-purpose 'Script 5' flag. 
+	* See 'zscript_itemdata.txt' for more information on what this flag does, based on the item class. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool Unused;				ZASM Instruction: 
+					IDATAFLAGUNUSED
+	/**
+	* ? - An extra script-only flag. It's a mystery to everyone.
+	* Likely best left unused in the event that we need to reserve it. 
+	*  
+	*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+////////////
+///  npc ///
+////////////
+
+	float Misc[32];			ZASM Instruction: 
+					NPCMISCD
+	/**
+	* An array of 32 miscellaneous variables for you to use as you please.
+	*/
+	
+/************************************************************************************************************/
+
+
+/////////////////
+///  *weapon  ///
+/////////////////
+
+float Misc[32];			ZASM Instruction: 
+					LWPNMISCD
+					EWPNMISCD
+	
+	/**
+	* An array of 32 miscellaneous variables for you to use as you please.
+	*/ Example Use: !#!
+	
+
+/************************************************************************************************************/
+
+////////////////
+///  Screen  ///
+////////////////
+
+void WavyIn();			ZASM Instruction: 
+				WAVYIN
+				
+/**
+* Replicates the warping screen wave effect (inbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void WavyOut();			ZASM Instruction: 
+				WAVYOUT
+				
+/**
+* Replicates the warping screen wave effect (outbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void ZapIn();			ZASM Instruction: 
+				ZAPIN
+				
+/**
+* Replicates the warping screen zap effect (inbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void ZapOut();			ZASM Instruction: 
+				ZAPOUT
+				
+/**
+* Replicates the warping screen zap effect (outbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void OpeningWipe();		ZASM Instruction: 
+				OPENWIPE
+				
+/**
+* Replicates the opening wipe screen effect (using the quest rule for its type) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void DrawBitmapEx	( int layer, 
+			int bitmap_id, 
+			int source_x, int source_y, int source_w, int source_h, 
+			int dest_x, int dest_y, int dest_w, int dest_h, 
+			float rotation, int cx, int cy, int mode, int lit,  bool mask);
+			
+			ZASM: BITMAPEXR
+			
+/**
+* 
+* As DrawBitmap(), except that it can do more things. 
+* 
+* The 'mode' parameter sets up drawing modes. AT PRESENT this supports normal opaque drawing as DrawBitmap()
+* AND it supports TRABSLUCENT MODE, which will allow drawing translucent bitmaps.
+* The translucent mode does not yet support rotation, and all other modes are temporarily suspended, pending 
+* full implementation.
+*
+* See std_constants.zh, under BITDX_* (or possibly we'll change this to BMPDX_* later?) for a list of modes, 
+* and more information 
+*
+* cx, cy: Used for pivot
+* lit: used for lit colour in light table (may not work).
+			
+/************************************************************************************************************/
+
+BitmapQuad
+//sdci[1]=layer
+    //sdci[2]=x1
+    //sdci[3]=y1
+    //sdci[4]=x2
+    //sdci[5]=y2
+    //sdci[6]=x3
+    //sdci[7]=y3
+    //sdci[8]=x4
+    //sdci[9]=y4
+	//sdci[10]=sourcex
+	//sdci[11]=sourcey
+	//sdci[12]=sourcew
+	//sdci[13]=sourceh
+    //sdci[14]=width
+    //sdci[15]=height
+    //sdci[16]=tile/combo
+    //sdci[17]=polytype
+
+void ComboArray	( int layer, int number_of_combos, 
+			int combos[], 
+			int x_positions[], 
+			int y_positions[], 
+			int csets[]);
+			
+			ZASM: COMBOARRAY
+			
+/**
+*
+* Draws a number of combos specified by 'number_of_combos' to 'layer'.
+* Specify the combos by populating an array with their IDs and passing the array ointer to 'combos'.
+* Specify the X coordinate for each by passing an array with their x coordinates to 'x_positions'.
+* Specify the Y coordinate for each by passing an array with their y coordinates to 'y_positions'.
+* Specify the CSet for each by passing an array with their csets to 'csets'.
+*
+* This function counts as a single draw.
+*
+* Transparency is not yet imlemented, but you may draw to a bitmap and render it translucent.
+*// Example:
+
+int combos[4] = {16,19,31,20};
+int cmbx[4]= {0, 16, 32, 48}:
+int cmby[4]={8, 8, 8, 8);
+int cmbc[4]={0,0,0,0};
+Screen->ComboArray(6, 4, combos, cmbx, cmby, cmbc);
+
+
+/************************************************************************************************************/
+
+//! This new mode does not work as intended, and will likely be deprecated by Screen->SetRenderSource
+void Quad	( int layer, 
+			int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4,
+			int w, int h, int cset, int flip, int texture, int render_mode);
+	
+					ZASM Instruction: 
+					QUADR
+	
+	/**
+	* Draws a quad on the specified layer with the corners x1,y1 through x4,y4.
+	* Corners are drawn in a counterclockwise order starting from x1,y1. ( So
+	* if you draw a "square" for example starting from the bottom-right corner
+	* instead of the usual top-left, the the image will be textured onto the
+	* quad so it appears upside-down. -yes, these are rotatable. )
+	*
+	* From there a single or block of tiles, combos **or a bitmap** is then texture mapped
+	* onto the quad using the arguments w, h, cset, flip, and render_mode.
+	* A positive vale in texture will draw the image from the tilesheet pages,
+	* whereas a negative value will be drawn from the combo page. 0 will draw combo number 0.
+	* Both w and h are undefined unless 1 <= blockh, blockw <= 16, and it is a power of
+	* two. ie: 1, 2 are acceptable, but 2, 15 are not.
+	*
+	* To specify a bitmap as a texture, sum 65520 with the bitmap ID, or use the constant TEX_BITMAP + Bitmap
+	* Example: Screen->Quad(6, 0, 0, 40, 25, 18, 50, 60, 110, 0, 0, 0, 0, TEX_BITMAP+RT_BITMAP0, PT_TEXTURE);
+	*
+	*
+	* Flip specifies how the tiles/combos should be flipped when drawn:
+	* 0: No flip
+	* 1: Horizontal flip
+	* 2: Vertical flip
+	* 3: Both (180 degree rotation)
+	*	(!)  See std.zh for a list of all available render_mode arguments.
+	*/ Example Use: !#!
+	
+///////////////////
+// Unimplemented //
+///////////////////
+
+// Link->
+
+/************************************************************************************************************/
+//Implemented, but does nothing. 
+void SetTile(int sprite, int tile, int dir, int flip)			
+				ZASM Instruction: 
+				LINKSETTILE
+
+/**
+* Sets the tile for Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'tile is the base tile for the sequence. It uses the animation style set in the sprites editor.
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+//!Not Implemented in this build. 
+int GetExtend(int sprite, int dir);		ZASM Instruction: 
+					LINKGETEXTEND
+
+/**
+* Gets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//Implemented, but does nothing. 
+void SetExtend(int sprite, int dir, int extend);		ZASM Instruction: 
+					LINKSETEXTEND
+
+/**
+* Sets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Not Implemented in this build. 
+int GetTile(int sprite, int dir, int flip)			
+				ZASM Instruction: 
+				LINKGETTILE
+
+/**
+* Returns the tile for one of Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+// Screen->
+
+
+void TileArray	( int layer, int number_of_tiles, 
+			int tiles[], 
+			int x_positions[], 
+			int y_positions[], 
+			int csets[]);
+			
+			ZASM: TILEARRAY
+			
+/**
+*
+* Draws a number of tiles specified by 'number_of_tiles' to 'layer'.
+* Specify the tiles by populating an array with their IDs and passing the array ointer to 'tiles'.
+* Specify the X coordinate for each by passing an array with their x coordinates to 'x_positions'.
+* Specify the Y coordinate for each by passing an array with their y coordinates to 'y_positions'.
+* Specify the CSet for each by passing an array with their csets to 'csets'.
+*
+* This function counts as a single draw.
+*
+* Transparency is not yet imlemented, but you may draw to a bitmap and render it translucent.
+*// Example:
+
+int tiles[4] = {16,19,31,20};
+int tilx[4]= {0, 16, 32, 48}:
+int tily[4]={8, 8, 8, 8);
+int tilc[4]={0,0,0,0};
+Screen->TileArray(6, 4, tiles, tilx, tily, tilc);
+
+
+/************************************************************************************************************/
+
+void PixelArray	( int layer, int number_of_pixels, 
+			int x_positions[], 
+			int y_positions[], 
+			int colours[]);
+			
+			ZASM: PIXELARRAY
+			
+/**
+*
+* Draws a number of pixel, similar to PutPixel, specified by 'number_of_pixels' to 'layer'.
+* Specify the X coordinate for each by passing an array with their x coordinates to 'x_positions'.
+* Specify the Y coordinate for each by passing an array with their y coordinates to 'y_positions'.
+* Specify the colour for each by passing an array with their csets to 'colours'.
+*
+* This function counts as a single draw.
+*
+* Transparency is not yet imlemented, but you may draw to a bitmap and render it translucent.
+*// Example:
+
+int pix[4] = {16,19,31,20};
+int px[4]= {0, 16, 32, 48}:
+int py[4]={8, 8, 8, 8);
+int pc[4]={0x12,0xB0,0xDA,0x4F};
+Screen->TileArray(6, 4, pix, px, py, pc);
+
+/************************************************************************************************************/
+
+CreateBitmap(int id, int xsize, int ysize)
+
+* Min size 1, max 2048
+/************************************************************************************************************/
+
+SetRenderSource(int target, int x, int y, int w, int h)
+
+/************************************************************************************************************/
+
+void Polygon	( int layer, ... );
+			
+			ZASM: POLYGON
+			
+* Adding to Beta 9
+
+/************************************************************************************************************/
+
+// Game->
+
+//! These do not yet work:
+
+//Returns Screen->Door[index] for a given DMap and Screen
+int GetDMapScreenDoor( int dmap, int screen, int index )
+
+
+//Sets Screen->Door[index] for a given DMap and Screen to 'value'
+void SetDMapScreenDoor( int dmap, int screen, int index, int value)
+
+
+//Returns Screen->State[index] for a given DMap and Screen
+bool GetDMapScreenState( int dmap, int screen, int index )
+
+
+//Sets Screen->State[index] for a given DMap and Screen to 'value'
+void SetDMapScreenState( int dmap, int screen, int index, bool value)
+
+/************************************************************************************************************/
+

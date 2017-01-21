@@ -1,0 +1,7 @@
+//Beta 45
+
+///////////////////////
+///  Zelda Classic  ///
+///////////////////////
+
+You may not enable, or disable the Debug Console from the Misc menu. 

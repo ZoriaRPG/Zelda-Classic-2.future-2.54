@@ -1,0 +1,413 @@
+
+//////////////////////////////////////
+/// Splitting Enemies              ///
+/// v0.6.2                         ///
+/// 19th June, 2016                ///
+/// By: ZoriaRPG                   ///
+////////////////////////////////////////////////////////////////////////////////////////
+/// D0: Source Enemy ID                                                             ///
+/// D1: ID  of enemy to split into.                                                  ///
+/// D2: Number of splits. i.e. On death, enemy D0 will split into D2 number of D1.   ///
+/// D3: A randomising factor for spawning the splits. Suggested value range: 2 to 5. ///
+///                                                                                  ///
+/// Requested by Cukeman on PureZC.net                                               ///
+////////////////////////////////////////////////////////////////////////////////////////
+
+//SplitOnDeath ffc a[]
+//Loops
+const int SPLTR_Q = 0;
+const int SPLTR_W = 1; 
+const int SPLTR_E = 2;
+const int SPLTR_R = 3;
+const int SPLTR_T = 4;
+const int SPLTR_Y = 5;
+const int SPLTR_U = 6;
+//X/Y Positions
+const int SPLTR_X = 7;
+const int SPLTR_Y = 8;
+
+//SplitOnHit fff n[]
+const int SPLTR_ENEM_BASE = 0;
+const int SPLTR_ENEM_REPL = 1;
+
+ffc script SplitOnDeath {
+	void run(int enem_id, int splits_into, int number_of_splits, int dist_flux ){
+		npc n; int a[10];
+		Waitframes(5); //Enemies require five frames, to spawn.
+		  // If a 'No Return' flag is set, and there are no enemies on the screen, 
+		 //  cleanly exit the script and make the ffc slot available.
+		if ( ( Screen->State[ST_ENEMYNORETURN] || Screen->State[ST_TEMPNORETURN] ) && !Screen->NumNPCs() ){
+		    this->Data = 0; this->Script = 0; Quit();
+		}
+		while(true){
+			for ( a[SPLTR_Q] = 1; a[SPLTR_Q] <= Screen->NumNPCs(); a[SPLTR_Q]++ ) {
+				n = Screen->LoadNPC(a[SPLTR_Q]);
+				if ( n->isValid() ) {
+				      // If it's dying, not removed, and the correct enemy ID...
+					if ( n->ID  == enem_id && n->HP < 1 && n->X != -32768 && n->Y != -32768 ) {
+						for ( a[SPLTR_W] = 0; a[SPLTR_W] < number_of_splits; a[SPLTR_W]++ ) {
+							a[SPLTR_X] = n->X; //Store its position, so that we know where to spawn its splits.
+							a[SPLTR_Y] = n->Y;
+							n = Screen->CreateNPC(splits_into); //Reuse our pointer, instead of wasting one.
+							n->X = a[SPLTR_X]+Rand( (dist_flux * -1), dist_flux);
+							n->Y = a[SPLTR_Y]+Rand( (dist_flux * -1), dist_flux);
+							n = Screen->LoadNPC(a[SPLTR_Q]); //Reset the pointer for the next iteration.
+						}
+					}
+				}
+			} 
+			if ( ( Screen->State[ST_ENEMYNORETURN] || Screen->State[ST_TEMPNORETURN] ) && !Screen->NumNPCs() ) {
+				this->Data = 0; this->Script = 0; Quit();
+				// Free up the slot if we're done.
+			}
+			Waitframe();
+		}
+	}
+}
+
+ffc script SplitOnHit {
+	void run(int enem_id, int splits_into, int number_of_splits, int dist_flux ){
+		npc n[2]; int a[10];
+		Waitframes(5); //Enemies require five frames, to spawn.
+		  // If a 'No Return' flag is set, and there are no enemies on the screen, 
+		 //  cleanly exit the script and make the ffc slot available.
+		if ( ( Screen->State[ST_ENEMYNORETURN] || Screen->State[ST_TEMPNORETURN] ) && !Screen->NumNPCs() ){
+		    this->Data = 0; this->Script = 0; Quit();
+		}
+		while(true){
+			for ( a[SPLTR_Q] = 1; a[SPLTR_Q] <= Screen->NumNPCs(); a[SPLTR_Q]++ ) {
+				n[SPLTR_ENEM_BASE] = Screen->LoadNPC(a[SPLTR_Q]);
+				if ( n[SPLTR_ENEM_BASE]->isValid() ) {
+				      // If it's dying, not removed, and the correct enemy ID...
+					if ( n[SPLTR_ENEM_BASE]->ID  == enem_id ) {
+						//Read lweapons, check collision, and see if the weapon is blocked
+						for ( a[SPLTR_W] = 1; a[SPLTR_W] <= Screen->NumLWeapons(); a[SPLTR_W]++ ) { 
+							//Read the lweapons on the screen, loadfing them
+							lweapon l = Screen->LoadLWeapon(a[7]);
+							if ( l->isValid() ) { //If it's valid
+								if ( Collision(l,n[SPLTR_ENEM_BASE]) { 
+									//Check for collision with that weapon and the enemy
+									//Check if any of the defs block this weapon.
+									if ( n[SPLTR_ENEM_BASE]->Defense[ LWeaponToNPCD(l->ID) ] < 3 ) { 
+										//Can be damaged by the weapon
+										for ( a[SPLTR_E] = 0; a[SPLTR_E] < list[a[SPLTR_Q]+2]; a[SPLTR_E]++ ) {
+											//Read how many enemies to make, and make one per iteration.
+											a[SPLTR_X] = n->X; //Store its position, so that we know where to spawn its splits.
+											a[SPLTR_Y] = n->Y;
+											n[SPLTR_ENEM_BASE]->HitXOffset = -200; //Hide the source enemy.
+											n[SPLTR_ENEM_BASE]->HitYOffset = -200;
+											n[SPLTR_ENEM_BASE]->DrawXOffset = -200;
+											n[SPLTR_ENEM_BASE]->DrawYOffset = -200;
+											n[SPLTR_ENEM_REPL] = Screen->CreateNPC(list[a[0]+1]); //Reuse our pointer, instead of wasting one.
+											n[SPLTR_ENEM_REPL]->X = a[SPLTR_X]+Rand( (dist_flux * -1), dist_flux);
+											n[SPLTR_ENEM_REPL]->Y = a[SPLTR_Y]+Rand( (dist_flux * -1), dist_flux);
+											n[SPLTR_ENEM_BASE]->HP = -9999; //Kill the original enemy.
+										}
+							
+									}
+								}
+							}
+						}
+					}
+				}
+			} 
+			if ( ( Screen->State[ST_ENEMYNORETURN] || Screen->State[ST_TEMPNORETURN] ) && !Screen->NumNPCs() ) {
+				this->Data = 0; this->Script = 0; Quit();
+				// Free up the slot if we're done.
+			}
+			Waitframe();
+		}
+	}
+}
+
+//////////////////////////////////////
+/// Splitting Enemies              ///
+/// v0.5                           ///
+/// 18th June, 2016                ///
+/// By: ZoriaRPG                   ///
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// D0: The enemy ID of the base enemy that will split when killed.                                                   ///
+/// D1: The enemy that the main enemy becomes, when killed.                                                           ///
+/// D2: The number of enemies the main enemy splits into.                                                             ///
+/// D4: The ID of the enemy that D1 becomes when it 'tribbles up'. Set to '0' to use the main enemy (e.g. zols).      ///
+/// D5: The ransomised distance to spawn the split-offs into.  Suggested value range: 2 to 5.                         ///
+/// D6: The timer, for the split-offs, in frames. Thus, '240' would be 5 seconds.                                     ///
+///	-> When enemy D0 dies, it splits into D2 quantity of enemy D1 at a distance of D0->X and D0->Y +/- D5 pixels. ///
+///	-> Then, when the duration defined in D6 expires (it is set as a separate timer, on a per-enemy basis),       ///
+///	-> D1 will transform into D4, unless D4 is not set to a positive value, in which case, it transforms into D0. ///
+///                                                                                                                   ///
+/// Requested by: idontknow8 on PureZC.net                                                                            ///
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Splitter FFC a[]
+const int TRIB_BASE = 0;
+const int TRIB_INTO = 1;
+const int TRIB_LAST = 2;
+const int TRIB_TIME = 3;
+
+// Splitter FFC n[]
+const int TRIB_Q = 0;
+const int TRIB_W = 1; 
+const int TRIB_E = 2;
+const int TRIB_X = 4;
+const int TRIB_Y = 5;
+
+ffc script BasicTribble{
+	void run(int base_enemy, int tribbles_into, int num_tribbles, int tribbles_become, int waver, int trib_time){
+		int a[6]; //a vars array, for loops and stats
+		npc n[2]; //an npc array
+		Waitframes(5); //Wait for npcsto spawn.
+		if ( ( Screen->State[ST_ENEMYNORETURN] || Screen->State[ST_TEMPNORETURN] ) && !Screen->NumNPCs() ) {
+			this->Data = 0; this->Script = 0; Quit();
+		}
+		while(true){
+			//handle making the main enemy split.
+			for ( a[TRIB_Q] = 1; a[TRIB_Q] <= Screen->NumNPCs(); a[TRIB_Q]++ ) {
+				n[TRIB_BASE] = Screen->LoadNPC(a[TRIB_Q]); //Parse each npc onthe screen
+				if ( n[TRIB_BASE]->isValid() ) {
+					if ( n[TRIB_BASE]->HP <= 0 && n[TRIB_BASE]->ID == base_enemy && n[TRIB_BASE]->X != -32768 && n[TRIB_BASE]->Y != -32768){
+						n[TRIB_BASE]->DrawXOffset = -200;
+						n[TRIB_BASE]->DrawYOffset = -200;
+						n[TRIB_BASE]->HitXOffset = -200;
+						n[TRIB_BASE]->HitYOffset = -200;
+						a[TRIB_X] = n[TRIB_BASE]->X;
+						a[TRIB_Y] = n[TRIB_BASE]->Y;
+						n[TRIB_BASE]->HP = -9999; //Kill the original.
+						//Waitframes(15); //A delay to make the spawning feel less insant. 
+						n[TRIB_INTO] = CreateNPCAt(tribbles_into, a[TRIB_X] + Rand( (waver * -1), waver ), a[TRIB_Y] + Rand( (waver * -1), waver )); //make the new enemies. 
+						n[TRIB_INTO]->Misc[TRIB_TIME] = trib_time;
+
+					}
+				}
+			}
+			//Handle making the splits of the main enemy tribble up.
+			if ( tribbles_become <= 0 ) tribbles_become = base_enemy; //Split-off enemies will turn into the main enemy, unless D3 is set.
+			
+			for ( a[TRIB_Q] = 1; a[TRIB_Q] <= Screen->NumNPCs(); a[TRIB_Q]++ ) { 
+				//Count down the individual enemy timers.
+				n[TRIB_BASE] = Screen->LoadNPC(a[TRIB_Q]); //Load the enemy.
+				if ( n[TRIB_BASE]->isValid()){ //Verify that it is valid...
+					if ( n[TRIB_BASE]->Misc[TRIB_TIME] > 0 ) n[TRIB_BASE]->Misc[TRIB_TIME]--; //If the timer is positive, decrement it. 
+				
+					if ( n[TRIB_BASE]->Misc[TRIB_TIME] <= 0 ) {
+						//if the timer for a specific enemy has run out...transform it.
+						n[TRIB_BASE]->DrawXOffset = -200; //Hide the main enemy.
+						n[TRIB_BASE]->DrawYOffset = -200;
+						n[TRIB_BASE]->HitXOffset = -200;
+						n[TRIB_BASE]->HitYOffset = -200;
+						a[TRIB_X] = n[TRIB_BASE]->X;
+						a[TRIB_Y] = n[TRIB_BASE]->Y;
+						n[TRIB_BASE]->HP = -9999;
+							//...the spawn its replacement. 
+						n[TRIB_INTO] = CreateNPCAt(tribbles_become, a[TRIB_X], a[TRIB_Y]);
+					}
+				}
+			}
+			if ( ( Screen->State[ST_ENEMYNORETURN] || Screen->State[ST_TEMPNORETURN] ) && !Screen->NumNPCs() ) {
+				this->Data = 0; this->Script = 0; Quit();
+			}
+			Waitframe();
+		}
+	}
+}
+					
+
+/// Tribble enemies globally
+
+
+const int TRIBBLE_DIST_FLUX = 3;
+const int NPCM_TRIBBLEUP_TO = 6; //Index to store the index to tribble up to.
+const int NPCM_TRIBBLE_TIMER = 5; //Index to holsd the timer for tribbling up.
+const int TRIBLE_TIME_DUR = 200; 
+
+void TribbleEnemies(int dist_flux, int trib_timer_dur){
+	int list[]={1,10,2,16	2,102,3,103	40, 12, 2, 70};
+		//Format: base_enemy, replace with, number of tribbles, tribbles_become
+	npc n[2]; int a[6]; //a 0 = q, 1 = w, 2 = e; 3 = n->X, 4  = n->Y; 5 = r
+	for ( a[0] = 1; a[0] <= Screen->NumNPCs(); a[0]++ ) {
+                n[0] = Screen->LoadNPC(a[0]);
+                if ( n[0]->isValid() ) {
+                      // If it's dying, not removed, and the correct enemy ID...
+			for ( a[1] = 0; a[1] < SizeOfArray(list); a[1]+=4 ) {
+				//Parse the list looking for base enemies.
+				if ( n[0]->ID  == list[w] ) {
+					if ( n[0]->HP < 1 && n[0]->X != -32768 && n[0]->Y != -32768 ) {
+						for ( a[2] = 0; a[2] < list[a[0]+2]; a[2]++ ) {
+							//Read how many enemies to make, and make one per iteration.
+							a[3] = n->X; //Store its position, so that we know where to spawn its splits.
+							a[4] = n->Y;
+							n[0]->HitXOffset = -200; //Hide the source enemy.
+							n[0]->HitYOffset = -200;
+							n[0]->DrawXOffset = -200;
+							n[0]->DrawYOffset = -200;
+							n[1] = Screen->CreateNPC(list[a[0]+1]); //Reuse our pointer, instead of wasting one.
+							n[1]->X = a[3]+Rand( (dist_flux * -1), dist_flux);
+							n[1]->Y = a[4]+Rand( (dist_flux * -1), dist_flux);
+							n[0]->HP = -9999; //Kill the original enemy.
+							n[1]->Misc[NPCM_TRIBBLEUP_TO] = list[a[q]+3]; //Store the ID of the enemy to trible it up to.
+							n[1]->Misc[NPCM_TRIBBLE_TIMER] = trib_timer_dur;
+						}
+						
+					}
+				}
+			}
+			if ( n->[0]->Misc[NPCM_TRIBBLEUP_TO] > 0 && n[0]->Misc[NPCM_TRIBBLE_TIMER] > 0 ) n[0]->Misc[NPCM_TRIBBLE_TIMER]--;
+				//Reduce tribbling enemy timers.
+			if ( n->[0]->Misc[NPCM_TRIBBLEUP_TO] > 0 && n[0]->Misc[NPCM_TRIBBLE_TIMER] == 0 ) {
+				//Cause it to tribble upward.
+				a[3] = n->X; //Store its position, so that we know where to spawn its splits.
+				a[4] = n->Y;
+				n[0]->HitXOffset = -200; //Hide the source enemy.
+				n[0]->HitYOffset = -200;
+				n[0]->DrawXOffset = -200;
+				n[0]->DrawYOffset = -200;
+				n[1] = CreateNPCAt(n[0]->Misc[NPCM_TRIBBLEUP_TO], a[3] + Rand( (waver * -1), waver ), a[4] + Rand( (waver * -1), waver )); //make the new enemies. 
+				n[0]->HP = -9999; //Kill the original enemy.
+			}
+				
+		}
+	}
+}
+
+//Split on Death globally
+
+const itn SPLITONDEATH_DIST_FLUX = 3;
+
+void SplitOnDeath(int dist_flux){
+	int list[]={1,10,2,	2,102,3,	40, 12, 5};
+		//Format: base_enemy, replace with, number of replacements
+	npc n[2]; int a[6]; //a 0 = q, 1 = w, 2 = e; 3 = n->X, 4  = n->Y; 5 = r
+	for ( a[0] = 1; a[0] <= Screen->NumNPCs(); a[0]++ ) {
+                n[0] = Screen->LoadNPC(a[0]);
+                if ( n[0]->isValid() ) {
+                      // If it's dying, not removed, and the correct enemy ID...
+			for ( a[1] = 0; a[1] < SizeOfArray(list); a[1]+=3 ) {
+				//Parse the list looking for base enemies.
+				if ( n[0]->ID  == list[w] ) {
+					if ( n[0]->HP < 1 && n[0]->X != -32768 && n[0]->Y != -32768 ) {
+						for ( a[2] = 0; a[2] < list[a[0]+2]; a[2]++ ) {
+							//Read how many enemies to make, and make one per iteration.
+							a[3] = n->X; //Store its position, so that we know where to spawn its splits.
+							a[4] = n->Y;
+							n[0]->HitXOffset = -200; //Hide the source enemy.
+							n[0]->HitYOffset = -200;
+							n[0]->DrawXOffset = -200;
+							n[0]->DrawYOffset = -200;
+							n[1] = Screen->CreateNPC(list[a[0]+1]); //Reuse our pointer, instead of wasting one.
+							n[1]->X = a[3]+Rand( (dist_flux * -1), dist_flux);
+							n[1]->Y = a[4]+Rand( (dist_flux * -1), dist_flux);
+							n[0]->HP = -9999; //Kill the original enemy.
+						}
+						
+					}
+				}
+			}
+		}
+	}
+}
+
+
+//Global Split on hit
+
+const itn SPLITONHIT_DIST_FLUX = 3;
+
+void SplitOnHit(int dist_flux){
+	int list[]={1,10,2,	2,102,3,	40, 12, 5};
+		//Format: base_enemy, replace with, number of replacements
+	npc n[2]; int a[8]; //a 0 = q, 1 = w, 2 = e; 3 = n->X, 4  = n->Y; 5 = r; 6 = t ; 7 = y
+	for ( a[0] = 1; a[0] <= Screen->NumNPCs(); a[0]++ ) {
+                n[0] = Screen->LoadNPC(a[0]);
+                if ( n[0]->isValid() ) {
+                      // If it's dying, not removed, and the correct enemy ID...
+			for ( a[1] = 0; a[1] < SizeOfArray(list); a[1]+=3 ) {
+				//Parse the list looking for base enemies.
+				if ( n[0]->ID  == list[w] ) {
+					//Read lweapons, check collision, and see if the weapon is blocked
+					for ( a[6] = 1; a[6] <= Screen->NumLWeapons(); a[6]++ ) { 
+						//Read the lweapons on the screen, loadfing them
+						lweapon l = Screen->LoadLWeapon(a[7]);
+						if ( l->isValid() ) { //If it's valid
+							if ( Collision(l,n[0]) { 
+								//Check for collision with that weapon and the enemy
+								//Check if any of the defs block this weapon.
+								if ( n[0]->Defense[ LWeaponToNPCD(l->ID) ] < 3 ) { 
+									//Can be damaged by the weapon
+									for ( a[2] = 0; a[2] < list[a[0]+2]; a[2]++ ) {
+										//Read how many enemies to make, and make one per iteration.
+										a[3] = n->X; //Store its position, so that we know where to spawn its splits.
+										a[4] = n->Y;
+										n[0]->HitXOffset = -200; //Hide the source enemy.
+										n[0]->HitYOffset = -200;
+										n[0]->DrawXOffset = -200;
+										n[0]->DrawYOffset = -200;
+										n[1] = Screen->CreateNPC(list[a[0]+1]); //Reuse our pointer, instead of wasting one.
+										n[1]->X = a[3]+Rand( (dist_flux * -1), dist_flux);
+										n[1]->Y = a[4]+Rand( (dist_flux * -1), dist_flux);
+										n[0]->HP = -9999; //Kill the original enemy.
+									}
+						
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//std functions for this
+
+int LWeaponToNPCD(int ltype){
+	if ( ltype == LW_ARROW ) return NPCD_ARROW;
+	if ( ltype == LW_BEAM ) return NPCD_BEAM;
+	if ( ltype == LW_BRANG ) return NPCD_BRANG;
+	if ( ltype == LW_BOMBBLAST ) return NPCD_BOMB;
+	if ( ltype == LW_BYRNA ) return NPCD_BYRNA;
+	if ( ltype == LW_FIRE ) return NPCD_FIRE;
+	if ( ltype == LW_HAMMER ) return NPCD_HAMMER;
+	if ( ltype == LW_HOOKSHOT ) return NPCD_HOOKSHOT;
+	if ( ltype == LW_MAGIC ) return NPCD_MAGIC;
+	if ( ltype == LW_REFBEAM ) return NPCD_REFBEAM;
+	if ( ltype == LW_REFMAGIC ) return NPCD_REFMAGIC;
+	if ( ltype == LW_REFFIREBALL ) return NPCD_REFFIREBALL;
+	if ( ltype == LW_REFROCK ) return NPCD_REFROCK;
+	if ( ltype == LW_SBOMBBLAST ) return NPCD_SBOMB;
+	if ( ltype == LW_STOMP ) return NPCD_STOMP;
+	if ( ltype == LW_SWORD ) return NPCD_SWORD;
+	if ( ltype == LW_WAND ) return NPCD_WAND;
+	if ( ltype == LW_SCRIPT1 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT2 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT3 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT4 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT5 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT6 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT7 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT8 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT9 ) return NPCD_SCRIPT;
+	if ( ltype == LW_SCRIPT10 ) return NPCD_SCRIPT;
+	return -1;
+}
+
+int NPCDtoLWeapon(int ltype){
+	if ( ltype == NPCD_ARROW ) return LW_ARROW;
+	if ( ltype == NPCD_BEAM ) return LW_BEAM;
+	if ( ltype == NPCD_BRANG ) return LW_BRANG;
+	if ( ltype == NPCD_BOMB ) return LW_BOMBBLAST;
+	if ( ltype == NPCD_BYRNA ) return LW_BYRNA;
+	if ( ltype == NPCD_FIRE ) return LW_FIRE;
+	if ( ltype == NPCD_HAMMER ) return LW_HAMMER;
+	if ( ltype == NPCD_HOOKSHOT ) return LW_HOOKSHOT;
+	if ( ltype == NPCD_MAGIC ) return LW_MAGIC;
+	if ( ltype == NPCD_REFBEAM ) return LW_REFBEAM;
+	if ( ltype == NPCD_REFMAGIC ) return LW_REFMAGIC;
+	if ( ltype == NPCD_REFFIREBALL ) return LW_REFFIREBALL;
+	if ( ltype == NPCD_REFROCK ) return LW_REFROCK;
+	if ( ltype == NPCD_SBOMB ) return LW_SBOMBBLAST;
+	if ( ltype == NPCD_STOMP ) return LW_STOMP;
+	if ( ltype == NPCD_SWORD ) return LW_SWORD;
+	if ( ltype == NPCD_WAND ) return LW_WAND;
+	if ( ltype == NPCD_SCRIPT ) return 100; 
+	return -1;
+}

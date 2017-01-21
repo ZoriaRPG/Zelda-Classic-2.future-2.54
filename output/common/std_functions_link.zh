@@ -1,0 +1,121 @@
+//Returns the item ID of the item equipped to Link's A button
+int GetEquipmentA() {
+	return (Link->Equipment&0xFF);
+}
+
+
+
+//Returns the item ID of the item equipped to Link's B button
+int GetEquipmentB() {
+	return ((Link->Equipment&0xFF00)>>8);
+}
+
+//Returns true if Link is using item 'id'
+bool UsingItem(int id){
+	return (GetEquipmentA() == id && Link->InputA) || (GetEquipmentB() == id && Link->InputB);
+}
+
+//Returns the X and Y coordinates of the centre of Link. 
+int CenterLinkX() { return Link->X+8; }
+int CenterLinkY() { return Link->Y+8; }
+
+
+//We need to modify these functions to allow the same options as the non-Link versions. g
+
+int CenterLinkX(bool hitoffset) { 
+	if ( hitoffset ) return Link->X + 8 * Link->TileWidth + Link->HitXOffset;
+	else return Link->X + 8 * Link->TileWidth;
+}
+
+int CenterLinkY(bool hitoffset) {
+	if ( hitoffset ) return Link->Y + 8 * Link->TileHeight + Link->HitYOffset;
+	else return Link->Y + 8 * Link->TileHeight;
+}
+
+int CenterLinkX(bool hitoffset, bool drawoffset) { 
+	int lx = Link->X + 8 * Link->TileWidth;
+	if ( hitoffset ) lx += Link->HitXOffset;
+	if ( drawoffset ) lx += Link->DrawXOffset;	
+	return lx;
+}
+
+int CenterLinkY(bool hitoffset, bool drawoffset) {
+	int ly = Link->Y + 8 * Link->TileHeight;
+	if ( hitoffset ) ly += Link->HitYOffset;
+	if ( drawoffset ) ly += Link->DrawYOffset;	
+	return ly;
+}
+
+
+//June 2016
+
+//Returns if Link is facing an object. 
+bool LinkFacing(ffc f){
+	if ( Link->Dir == DIR_UP && Link->Y > f->Y ) return true;
+	if ( Link->Dir == DIR_DOWN && Link->Y < f->Y ) return true;
+	if ( Link->Dir == DIR_RIGHT && Link->X < f->X ) return true;
+	if ( Link->Dir == DIR_LEFT && Link->X > f->X ) return true;
+	return false;
+}
+
+
+bool LinkFacing(npc f){
+	if ( Link->Dir == DIR_UP && Link->Y > f->Y ) return true;
+	if ( Link->Dir == DIR_DOWN && Link->Y < f->Y ) return true;
+	if ( Link->Dir == DIR_RIGHT && Link->X < f->X ) return true;
+	if ( Link->Dir == DIR_LEFT && Link->X > f->X ) return true;
+	return false;
+}
+
+
+bool LinkFacing(lweapon f){
+	if ( Link->Dir == DIR_UP && Link->Y > f->Y ) return true;
+	if ( Link->Dir == DIR_DOWN && Link->Y < f->Y ) return true;
+	if ( Link->Dir == DIR_RIGHT && Link->X < f->X ) return true;
+	if ( Link->Dir == DIR_LEFT && Link->X > f->X ) return true;
+	return false;
+}
+
+
+bool LinkFacing(eweapon f){
+	if ( Link->Dir == DIR_UP && Link->Y > f->Y ) return true;
+	if ( Link->Dir == DIR_DOWN && Link->Y < f->Y ) return true;
+	if ( Link->Dir == DIR_RIGHT && Link->X < f->X ) return true;
+	if ( Link->Dir == DIR_LEFT && Link->X > f->X ) return true;
+	return false;
+}
+
+
+bool LinkFacing(item f){
+	if ( Link->Dir == DIR_UP && Link->Y > f->Y ) return true;
+	if ( Link->Dir == DIR_DOWN && Link->Y < f->Y ) return true;
+	if ( Link->Dir == DIR_RIGHT && Link->X < f->X ) return true;
+	if ( Link->Dir == DIR_LEFT && Link->X > f->X ) return true;
+	return false;
+}
+
+bool LinkFacing(int combo_pos){
+	int posX = ComboX(combo_pos);
+	int posY = ComboY(combo_pos);
+	if ( Link->Dir == DIR_UP && Link->Y > posY ) return true;
+	if ( Link->Dir == DIR_DOWN && Link->Y < posY ) return true;
+	if ( Link->Dir == DIR_RIGHT && Link->X < posX ) return true;
+	if ( Link->Dir == DIR_LEFT && Link->X > posX ) return true;
+	return false;
+}
+
+//Negates engine knockback for Link on land, or in water.
+void NoLinkKnockback(){
+	if ( Link->Action == LA_GOTHURTLAND || Link->Action == LA_GOTHURTWATER ) Link->HitDir = -1;
+}
+
+//Negates engine knockback for Link only on land.
+void NoLinkKnockbackLand(){
+	if ( Link->Action == LA_GOTHURTLAND ) Link->HitDir = -1;
+}
+
+//Negates engine knockback for Link only in water.
+void NoLinkKnockbackWater(){
+	if ( Link->Action == LA_GOTHURTWATER ) Link->HitDir = -1;
+}
+

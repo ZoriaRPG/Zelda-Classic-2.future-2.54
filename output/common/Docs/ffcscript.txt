@@ -1,0 +1,26 @@
+ffcscript.zh
+Version 1.1.1
+
+int RunFFCScript(int scriptNum, float args[])
+ * Finds an unused FFC with ID between FFCS_MIN_FFC and FFCS_MAX_FFC and
+ * sets it to use FFCS_INVISIBLE_COMBO and run the given script.
+ * args should be a pointer to an array of up to 8 numbers. You can also
+ * pass in NULL (from std.zh), in which case no arguments will be set.
+ * The return value is the number of the FFC used, or 0 if no suitable FFC
+ * could be found or scriptNum is invalid.
+
+ffc RunFFCScriptOrQuit(int scriptNum, float args[])
+ * Run an FFC script as above, or call Quit() if no FFCs are available or 
+ * scriptNum is invalid. Returns a pointer to the FFC running the script.
+
+int FindFFCRunning(int scriptNum)
+ * Returns the number of an FFC running the specified script or 0 if
+ * no FFC is running it or scriptNum is invalid.
+
+int FindNthFFCRunning(int scriptNum, int n)
+ * Returns the number of the nth FFC running the specified script or 0 if
+ * there aren't that many FFCs running it or scriptNum is invalid.
+
+int CountFFCsRunning(int scriptNum)
+ * Returns the number of FFCs running the given script.
+ 

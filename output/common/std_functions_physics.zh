@@ -1,0 +1,75 @@
+///// 2016
+
+//int DirRev(int dir) {
+//	int bypassshields = 0;
+//	if ( dir > 7 ) {
+//		bypassshields = 8;
+//		dir = dir - 8;
+//	}
+//	if ( dir == DIR_LEFT) return DIR_RIGHT + bypassshields;
+//	if ( dir == DIR_DOWN) return DIR_UP + bypassshields;
+//	if ( dir == DIR_UP) return DIR_DOWN + bypassshields;
+//	if ( dir == DIR_RIGHT) return DIR_LEFT + bypassshields;
+//	if ( dir == DIR_LEFTUP) return DIR_RIGHTDOWN + bypassshields;
+//	if ( dir == DIR_RIGHTDOWN) return DIR_LEFTUP + bypassshields;
+//	if ( dir == DIR_LEFTDOWN) return DIR_RIGHTUP + bypassshields;
+//	if ( dir == DIR_RIGHTUP) return DIR_LEFTDOWN + bypassshields;
+//}
+	
+
+int DirRev(int dir) {
+	if ( dir == DIR_LEFT) return DIR_RIGHT;
+	if ( dir == DIR_DOWN) return DIR_UP;
+	if ( dir == DIR_UP) return DIR_DOWN;
+	if ( dir == DIR_RIGHT) return DIR_LEFT;
+	if ( dir == DIR_LEFTUP) return DIR_RIGHTDOWN;
+	if ( dir == DIR_RIGHTDOWN) return DIR_LEFTUP;
+	if ( dir == DIR_LEFTDOWN) return DIR_RIGHTUP;
+	if ( dir == DIR_RIGHTUP) return DIR_LEFTDOWN;
+}
+
+int SpeedRev(int speed, int reduceinertia){
+	if ( speed > 0 ) speed = ((speed * -1) + reduceinertia);
+	if ( speed < 0 ) speed = ((speed * -1) - reduceinertia);
+	return speed;
+}
+
+//Accepts the mass, and velocity if two objects. Determins the acceleration on impact. 
+//Returns the net change that would affect both objects. 
+int ImpactVelocity(int mass1, int velocity1, int mass2, int velociy2 ) { //, int time){ //time is sed here, as the amount of time that both objects are in contact.
+	int momentum1 = mass1*velocity1; //mv1
+	int momentum2 = mass2*velociy2; //mv2
+	//int accel1;
+	//int accel2;
+	return momentum1 - momentum2;
+}
+
+//Accepts the mass, and velocity if two objects. Determins the acceleration on impact. 
+//Returns the change of acceleration for object 'B'. 
+int ImpactVelocityA(int massA, int velocityA, int massB, int velociyB ) { //, int time){ //time is sed here, as the amount of time that both objects are in contact.
+	int momentumA = massA*velocityA; //mv1
+	int momentumB = massB*velociyB; //mv2
+	return momentumA - momentumB;
+}
+
+//Accepts the mass, and velocity if two objects. Determins the acceleration on impact. 
+//Returns the change of acceleration for object 'B'.
+int ImpactVelocityB(int massA, int velocityA, int massB, int velociyB ) { //, int time){ //time is sed here, as the amount of time that both objects are in contact.
+	int momentumA = massA*velocityA; //mv1
+	int momentumB = massB*velociyB; //mv2
+	return momentumB - momentumA;
+}
+
+//Accepts the mass, and velocity if two weapons. Determins the acceleration on impact. 
+//Changes the Step of both to reflect their mass on collision. 
+void ImpactVelocity(lweapon a, eweapon b, int massA, int velocityA, int massB, int velociyB ) { //, int time){ //time is sed here, as the amount of time that both objects are in contact.
+	int momentumA = massA*velocityA; //mv1
+	int momentumB = massB*velociyB; //mv2
+	int accelA = momentumA - momentumB;
+	int accelB = momentumB - momentumA;
+	a->Step += accelA;
+	b->Step += accelB;
+}
+
+void ImpactVelocityF(){} //FFC version that will change the direction, and speed of moving ffcs on collision. 
+

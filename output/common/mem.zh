@@ -1,0 +1,412 @@
+//! Array memory management Utilities
+// 12th January, 2016
+
+const int MALLOC_FREE = 214747.9898;
+const int MALLOC_RESERVED = 214747.8989;
+
+//marks array indices in range as being freed. Only affects indices that are Malloc'd.
+void Free(int arr, int startindex, int lastindex){
+	for ( int q = startindex; q < lastindex; q++ ) if ( arr[q] == MALLOC_RESERVED ) arr[q] = MALLOC_FREE;
+}
+
+//marks array indices in range as being freed.
+void ForceFree(int arr, int startindex, int lastindex){
+	for ( int q = startindex; q < lastindex; q++ ) if ( arr[q] == MALLOC_RESERVED ) arr[q] = MALLOC_FREE;
+}
+
+//marks array indices in range as being freed. Will ignore any indices in this range that are not 'ignoreunlessvalue'
+void Free(int arr, int startindex, int lastindex, int ignoreunlessvalue){
+	for ( int q = startindex; q < lastindex; q++ ) if ( arr[q] == ignoreunlessvalue ) arr[q] = MALLOC_FREE;
+}
+
+//marks an range of array indices as reserved. Will ignore any indices in this range that match 'ignoreindices'
+void FreeExcept(int arr, int startindex, int lastindex, int ignoreindices){
+	for ( int q = startindex; q < lastindex; q++ ) 
+	if ( arr[q] != ignoreindices ) arr[q] = MALLOC_FREE;
+}
+
+//marks a range of array indices as being reserved.
+void ForceMalloc(int arr, int startindex, int lastindex){
+	for ( int q = startindex; q < lastindex; q++ ) arr[q] = MALLOC_RESERVED;
+}
+
+
+//marks a range of array indices as reserved. Will ignore any indices in thsi range that aren't free.
+void Malloc(int arr, int startindex, int lastindex){
+	for ( int q = startindex; q < lastindex; q++ ) 
+	if ( arr[q] == MALLOC_FREE ) arr[q] = MALLOC_RESERVED;
+}
+
+//marks a range of array indices as reserved. Will ignore any indices in this range that are not 'ignoreunlessvalue'
+void Malloc(int arr, int startindex, int lastindex, int ignoreunlessvalue){
+	for ( int q = startindex; q < lastindex; q++ ) 
+	if ( arr[q] == ignoreunlessvalue ) arr[q] = MALLOC_RESERVED;
+}
+
+//marks an range of array indices as reserved. Will ignore any indices in this range that match 'ignoreindices'
+void MallocExcept(int arr, int startindex, int lastindex, int ignoreindices){
+	for ( int q = startindex; q < lastindex; q++ ) 
+	if ( arr[q] != ignoreindices ) arr[q] = MALLOC_RESERVED;
+}
+
+//Marks a specific array index as reserved.
+void Malloc(int arr, int index){
+	arr[index] = MALLOC_RESERVED;
+}
+
+//Parses an array to find a number of contiginous free indices. 
+//Returns the lowest index number, of the range that it finds. 
+//Returns -1 on failure. 
+int FindFree(int arr, int numbercont) {
+	bool free;
+	int a;
+	for ( int q = SizeOfArray(arr); q > 0; q-- ) {
+		if ( arr[q] == MALLOC_FREE ) {
+			free = true;
+			++a;
+		}
+		else if ( arr[q] != MALLOC_FREE ) {
+			free = false;
+			a = 0;
+		}
+		if ( a == numbercont && free ) return q;
+	}
+	return -1;
+}
+
+//Parses an array to find a number of contiginous free indices. 
+//Returns the lowest index number, of the range that it finds. 
+//Returns -1 on failure. 
+int FindMalloc(int arr, int numbercont) {
+	bool malloc;
+	int a;
+	for ( int q = SizeOfArray(arr); q > 0; q-- ) {
+		if ( arr[q] == MALLOC_RESERVED ) {
+			malloc = true;
+			++a;
+		}
+		else if ( arr[q] != MALLOC_RESERVED ) {
+			malloc = false;
+			a = 0;
+		}
+		if ( a == numbercont && malloc ) return q;
+	}
+	return -1;
+}
+
+//Finds a single free index in an array. Starts with highest numbered index. 
+int FreeIndex(int arr){ 
+	for ( int q = SizeOfArray(arr); q > 0; q-- ) {
+		if ( arr[q] == MALLOC_FREE ) return q;
+	}
+}
+
+//Finds a single free index in an array. Starts with highest numbered index. 
+int ReservedIndex(int arr){ 
+	for ( int q = SizeOfArray(arr); q > 0; q-- ) {
+		if ( arr[q] == MALLOC_RESERVED ) return q;
+	}
+}
+
+//Finds a single reserved index in an array. Starts with highest numbered index. 
+int MallocIndex(int arr){ 
+	for ( int q = SizeOfArray(arr); q > 0; q-- ) {
+		if ( arr[q] == MALLOC_RESERVED ) return q;
+	}
+}
+
+//Finds a single free index in an array. Starts with lowest numbered index. 
+int FreeIndexLow(int arr){ 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == MALLOC_FREE ) return q;
+	}
+}
+
+//Finds a single free index in an array. Starts with lowest numbered index. 
+int ReservedIndexLow(int arr){ 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == MALLOC_RESERVED ) return q;
+	}
+}
+
+//Finds a single free index in an array. Starts with lowest numbered index. 
+int MallocIndexLow(int arr){ 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == MALLOC_RESERVED ) return q;
+	}
+}
+
+
+//Checks if a specific index in an array is free. 
+bool IsFreeIndex(int arr, int index){
+	if ( arr[index] == MALLOC_FREE ) return true;
+	return false;
+}
+
+//Checks if a specific index in an array is free. 
+bool IsReservedIndex(int arr, int index){
+	if ( arr[index] == MALLOC_RESERVED ) return true;
+	return false;
+}
+
+//Checks if a specific index in an array is free. 
+bool IsMallocIndex(int arr, int index){
+	if ( arr[index] == MALLOC_RESERVED ) return true;
+	return false;
+}
+
+//Inits , or Mallocs an entire array. 
+void MallocArray(int arr){ 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) arr[q] = MALLOC_RESERVED;
+}
+
+//Inits , or Mallocs an entire array. Only Malloc's free values.  
+void MallocFreeArray(int arr){ 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) if ( arr[q] == MALLOC_FREE ) arr[q] = MALLOC_RESERVED;
+}
+
+// Frees an entire array. 
+void FreeArray(int arr){ 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) arr[q] = MALLOC_FREE;
+}
+
+//Frees an entire array. ignores present values.
+void FreeArrayForce(int arr){
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) arr[q] = MALLOC_FREE;
+}
+
+// Frees an entire array. Only frees Malloc'd values. 
+void FreeMallocArray(int arr){ 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) if ( arr[q] == MALLOC_RESERVED ) arr[q] = MALLOC_FREE;
+}
+
+//Mallocs an entire array, but only indices that have the value specified by 'onlyvalue'.
+void MallocArray(int arr, int onlyvalue) { 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == onlyvalue ) arr[q] = MALLOC_RESERVED;
+	}
+}
+
+//Frees an entire array, but only indices that have the value specified by 'onlyvalue'.
+void FreeArray(int arr, int onlyvalue) { 
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == onlyvalue ) arr[q] = MALLOC_FREE;
+	}
+}
+
+void MallocArrayExcept(int arr, int exclude){}
+	
+	
+//Returns the size (indices with a zero value) in a given array. 
+//int MemSize(int arr){
+//	int size;
+//	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+//		if ( !arr[q] ) size++;
+//	}
+//	return size;
+//}
+
+//Returns the RESERVED size (total number of reserved indices) for a given array.
+int MallocSize(int arr){
+	int size;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == MALLOC_RESERVED ) size++;
+	}
+	return size;
+}
+
+//Returns the FREE size of a given array.
+int FreeSize(int arr){
+	int size;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == MALLOC_FREE ) size++;
+	}
+	return size;
+}
+
+//Returns the RESERVED size (total number of reserved indices) for a given array.
+//Only from a range of indices starting with 'rangeStart' and engind with 'rangeStop.
+//Both 'rangeStart', and 'rangeStop' are included in this return, if reserved.
+int MallocSize(int arr, int rangeStart, int rangeStop){
+	int size;
+	for ( int q = rangeStart; q <= rangeStop; q++ ) {
+		if ( arr[q] == MALLOC_RESERVED ) size++;
+	}
+	return size;
+}
+
+//Returns the FREE size of a given array.
+//Only from a range of indices starting with 'rangeStart' and engind with 'rangeStop.
+//Both 'rangeStart', and 'rangeStop' are included in this return, if free.
+int FreeSize(int arr, int rangeStart, int rangeStop){
+	int size;
+	for ( int q = rangeStart; q <= rangeStop; q++ ) {
+		if ( arr[q] == MALLOC_RESERVED ) size++;
+	}
+	return size;
+}
+
+
+//Returns the RESERVED size (total number of reserved indices) for a given array.
+//Only from a range of indices starting with 'rangeStart' and engind with 'rangeStop.
+//Both 'rangeStart', and 'rangeStop' are included in this return, if reserved.
+//'Set contiguous true, if you wish to require that free memory be in a contiguous 
+//block no smaller than a size set by 'span'
+//Set 'returnpos' true to return the first index in the range this finds.
+//The default return is the size that it discovers. 
+
+//Returns the size of the largest number of contiguous blocks of reserved mem in a given range.
+//Args: 'rangeStart' and 'rangeStop' determine the first, and last indices to scan.
+//	'minspan' is the minimum number of contiguous indices. 
+//	'returnpos' determines if the function returns the size of the discovered reserved blocks,
+//	...or the first index in that block set. 
+
+int MallocSize(int arr, int rangeStart, int rangeStop, int minspan, bool returnpos){
+	int size;
+	bool free;
+	int q;
+	//int a;
+	int sizeB;
+	for ( q = rangeStart; q <= rangeStop; q++ ) {
+		if ( arr[q] == MALLOC_RESERVED ) {
+			free = true;
+			//++a;
+			++size;
+			if ( size > sizeB ) sizeB = size; //Store the value that we will return.
+				//This allows us to parse more blocks, resetting free, and size, 
+				//trying to find a larger one to meet the requirements of minspan.. 
+		}
+		if ( arr[q] != MALLOC_RESERVED ) {
+			free = false;
+			size = 0;
+			//a = 0;
+		}
+			
+	}
+	
+	if ( sizeB >= minspan && !returnpos ) return sizeB;
+	if ( sizeB >= minspan && returnpos ) return q - sizeB; //Return the first index of the discovered span.
+	
+	else {
+	
+		if ( returnpos ) return -1;
+		else return 0;
+	}
+}
+
+//Returns the size of the largest number of contiguous blocks of FREE mem in a given range.
+//Args: 'rangeStart' and 'rangeStop' determine the first, and last indices to scan.
+//	'minspan' is the minimum number of contiguous indices. 
+//	'returnpos' determines if the function returns the size of the discovered reserved blocks,
+//	...or the first index in that block set. 
+
+int FreeSize(int arr, int rangeStart, int rangeStop, int minspan, bool returnpos){
+	int size;
+	bool free;
+	int q;
+	//int a;
+	int sizeB;
+	for ( q = rangeStart; q <= rangeStop; q++ ) {
+		if ( arr[q] == MALLOC_FREE ) {
+			free = true;
+			//++a;
+			++size;
+			if ( size > sizeB ) sizeB = size; //Store the value that we will return.
+				//This allows us to parse more blocks, resetting free, and size, 
+				//trying to find a larger one to meet the requirements of minspan.. 
+		}
+		if ( arr[q] != MALLOC_FREE ) {
+			free = false;
+			size = 0;
+			//a = 0;
+		}
+			
+	}
+	
+	if ( sizeB >= minspan && !returnpos ) return sizeB;
+	if ( sizeB >= minspan && returnpos ) return q - sizeB; //Return the first index of the discovered span.
+	
+	else {
+	
+		if ( returnpos ) return -1;
+		else return 0;
+	}
+}
+
+//Returns the FREE size of a given array.
+//Only from a range of indices starting with 'rangeStart' and engind with 'rangeStop.
+//Both 'rangeStart', and 'rangeStop' are included in this return, if free.
+//int FreeSize(int arr, int rangeStart, int rangeStop, bool contiguous, int span){
+//	int size;
+//	for ( int q = rangeStart; q <= rangeStop; q++ ) {
+//		if ( arr[q] == MALLOC_RESERVED ) size++;
+//	}
+//	return size;
+//}
+
+
+//Returns the contiguous RESERVED size (total number of reserved indices) for a given array.
+int MallocSize(int arr, bool contiguous, int minspan, bool returnpos){
+	int size;
+	int sizeB;
+	int q;
+	for ( q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] == MALLOC_RESERVED ) {
+			++size;
+			if ( size > sizeB ) sizeB = size; //Store the value that we will return.
+				//This allows us to parse more blocks, resetting free, and size, 
+				//trying to find a larger one to meet the requirements of minspan.. 
+		}
+		if ( arr[q] != MALLOC_RESERVED ) {
+			size = 0;
+		}
+			
+	}
+	
+	if ( sizeB >= minspan && !returnpos ) return sizeB;
+	if ( sizeB >= minspan && returnpos ) return q - sizeB; //Return the first index of the discovered span.
+	
+	else {
+	
+		if ( returnpos ) return -1;
+		else return 0;
+	}
+}
+
+//!Z This has an error.
+
+//Returns the FREE size of a given array.
+//int FreeSize(int arr, bool contiguous, int span, bool returnpos){
+	//int size;
+	//int sizeB;
+	//for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+	//	if ( arr[q] == MALLOC_FREE ) {
+	//		++size;
+	//		if ( size > sizeB ) sizeB = size; //Store the value that we will return.
+				//This allows us to parse more blocks, resetting free, and size, 
+				//trying to find a larger one to meet the requirements of minspan.. 
+	//	}
+	//	if ( arr[q] != MALLOC_FREE ) {
+	//		size = 0;
+	//	}
+			
+	//}
+	
+	//if ( sizeB >= minspan && !returnpos ) return sizeB;
+	//if ( sizeB >= minspan && returnpos ) return q - sizeB; //Return the first index of the discovered span.
+	
+	//else {
+	
+	//	if ( returnpos ) return -1;
+	//	else return 0;
+	//}
+//}
+
+//Returns the size (indices with a zero value) in a given array. 
+int MemSize(int arr){
+	int size;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( !arr[q] ) size++;
+	}
+	return size;
+}

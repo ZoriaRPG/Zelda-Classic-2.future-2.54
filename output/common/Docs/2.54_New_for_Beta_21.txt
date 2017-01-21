@@ -1,0 +1,148 @@
+//New for Beta 21
+
+//////////////
+///  Link  /// 
+//////////////
+
+int WarpEffect;			ZASM Instruction: 
+				WARPEFFECT
+				
+/**
+* Sets a warp effect type prior to doing Screen->Warp
+* These replicate the in-build effects for tile warps. 
+* see 'std_constants.zh' under WARPFX_* for a list of effects. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int WarpSound;			ZASM Instruction: 
+				LINKWARPSOUND
+				
+/**
+* Setting this to a value other than '0' will play that sound when Link warps.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool SideWarpSounds;		ZASM Instruction: 
+				PLAYWARPSOUND
+				
+/**
+* By default, even if you set a warp sound, it will not play in sidewarps. 
+* If you enable this setting, the sound will play in side warps.
+* At present, this does not disable playing the sound otherwise. Set Link->WarpSound = 0 to do that. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+bool PitWarpSounds;		ZASM Instruction: 
+				PLAYPITWARPSFX
+				
+/**
+* By default, even if you set a warp sound, it will not play in pit warps. 
+* If you enable this setting, the sound will play in a pit warp, one time.
+* This value resets after the pit warp, so it is mandatory to re-set it each time tat you desire a pit warp
+* 	to play a sound. Do this before Waitdraw().
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+int UseWarpReturn;		ZASM Instruction: 
+				LINKRETSQUARE
+				
+/**
+* Setting this to a value between 0 and 3 will change the target return square for Link->Warp
+* Valid values are: 0 (A), 1 (B), 2 (C), and 3 (D). Other values will be clamed within this range. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+////////////////
+///  Screen  ///
+////////////////
+
+void WavyIn();			ZASM Instruction: 
+				WAVYIN
+				
+/**
+* Replicates the warping screen wave effect (inbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void WavyOut();			ZASM Instruction: 
+				WAVYOUT
+				
+/**
+* Replicates the warping screen wave effect (outbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void ZapIn();			ZASM Instruction: 
+				ZAPIN
+				
+/**
+* Replicates the warping screen zap effect (inbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void ZapOut();			ZASM Instruction: 
+				ZAPOUT
+				
+/**
+* Replicates the warping screen zap effect (outbound) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+void OpeningWipe();		ZASM Instruction: 
+				OPENWIPE
+				
+/**
+* Replicates the opening wipe screen effect (using the quest rule for its type) from a tile warp. 
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+
+
++-----------------------------+
+| WARP EFFECT CODES           |
++-----------------------------+
+
+\31\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID.
+\32\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+\33\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+\33\X\X\X\X\X - Warp Link. Argument 1 is the DMap, Argument 2 is te Screen ID, Argument 3 is the Warp Return.
+			 Argument 4 is a sound to play, using the sound ID from Quest->Qudio->SFX
+			 Argument 5 is a WARP EFFECT (see below).
+
+Warp Return Values: 0 = A, 1 = B, 2 = C, 3 = D.
+Warp Effect Types: 
+		0: None
+		1: Instant
+		2: Instant (Blackout)
+		3: Instant (Opening Wipe)
+		4: Instant (Zap Effects)
+		5: Instant (Wavy Effects)
+		6: Reset Room
+		7: Scrolling
+		
+
++-----------------------------+
+| MISC EFFECT CODES           |
++-----------------------------+
+
+\40\X\X - Set Screen->D[reg] on this screen, where Argument 1 is the [register] and Argument 2 is the value to set. 

@@ -1,0 +1,439 @@
+//Returns the logarithm of x to the given base
+float LogToBase(float x, float base){
+	return Ln(x)/Ln(base);
+}
+
+//Truncates x to an integer
+int Floor(float x) {
+	if(x < 0)
+		return (x-.9999)<<0;
+	return x<<0;
+}
+
+//Raises x to the nearest integer
+int Ceiling(float x) {
+	if(x < 0)
+		return x<<0;
+	return (x+.9999)<<0;
+}
+
+//Rounds x to the nearest integer
+float Round(float x) {
+	if(x < 0)
+		return (x-.5)<<0;
+	return (x+.5)<<0;
+}
+
+//Returns true if the integer is odd (or even in IsEven)
+bool IsOdd(int x) {
+	return ((x & 1) == 1);
+}
+
+bool IsEven(int x) {
+	return ((x & 1) == 0);
+}
+
+
+//Returns the Quotient only of x divided by y
+int Div(float x, float y) {
+	return (x/y)<<0;
+}
+
+
+//Converts 'd' in degrees to radians
+float DegtoRad(float d) {
+	return d*0.0174;
+}
+
+//Converts 'r' in radians to degrees
+float RadtoDeg(float r) {
+	return r*57.2958;
+}
+
+//Returns the sign of n
+int Sign(int n) {
+	if (n > 0) return 1;
+	else if (n < 0) return -1;
+	else return 0;
+}
+	
+// Returns the X component of a vector with a degree angle.
+// A length of 3 and angle of 0 returns 3.
+// A length of 3 and angle of 45 returns approx. 1.57.
+// A length of 3 and angle of 90 returns 0.
+float VectorX(int len, float angle) {
+	return Cos(angle)*len;
+}
+
+// Returns the Y component of a vector with a degree angle.
+// A length of 3 and angle of 0 returns 0.
+// A length of 3 and angle of 45 returns approx. 1.57.
+// A length of 3 and angle of 90 returns 3.
+float VectorY(int len, float angle) {
+	return Sin(angle)*len;
+}
+
+//rotates X about a center point by an amount of degrees
+float RotatePointX(float x, float y, float centerX, float centerY, float degrees) {
+	float dx = x - centerX;
+	float dy = y - centerY;
+	return (Cos(degrees) * dx) - (Sin(degrees) * dy) + centerX;
+}
+
+//rotates Y about a center point by an amount of degrees
+float RotatePointY(float x, float y, float centerX, float centerY, float degrees) {
+	float dx = x - centerX;
+	float dy = y - centerY;
+	return (Sin(degrees) * dx) - (Cos(degrees) * dy) + centerY;
+}
+
+//scales X to centerX by a given scale
+float ScalePointX(float x, float centerX, float scale) {
+	return (scale * (x - centerX)) + centerX; 
+}
+
+//scales Y to centerY by a given scale
+float ScalePointY(float y, float centerY, float scale) {
+	return (scale * (y - centerY)) + centerY; 
+}
+
+//rotates and scales X about a center point by an amount of degrees
+float RotateScalePointX(float x, float y, float centerX, float centerY, float degrees, float scaleX, float scaleY) {
+	float dx = (x - centerX) * scaleX;
+	float dy = (y - centerY) * scaleY;
+	return (Cos(degrees) * dx) - (Sin(degrees) * dy) + centerX;
+}
+
+//rotates and scales Y about a center point by an amount of degrees
+float RotateScalePointY(float x, float y, float centerX, float centerY, float degrees, float scaleX, float scaleY) {
+	float dx = (x - centerX) * scaleX;
+	float dy = (y - centerY) * scaleY;
+	return (Sin(degrees) * dx) - (Cos(degrees) * dy) + centerY;
+}
+
+
+// Interpolates between p1 and p2 given 't' clamped within range 0,1.
+float Lerp(float p1, float p2, float t) {
+	return (p1 + (p2 - p1) * t);
+}
+
+// Returns the dot product of two vectors.
+float DotProduct( float x1, float y1, float x2, float y2 ) {
+	return (x1 * x2 + y1 * y2);
+}
+
+// Returns the cross product of two vectors.
+float CrossProduct( float x1, float y1, float x2, float y2 ) {
+	return (x1 * y2 - y1 * x2);
+}
+
+
+
+// Performs a "Smooth" Interpolation given 't' clamped within range 0,1.
+float SmoothStep(float p1, float p2, float t) {
+	t = (t * t) * (3.0 - (2.0 * t));
+	return Lerp(p1, p2, t);
+}
+
+//Returns the direction of the vector from (0, 0) to point, in degrees from -180 to 180. (0 = right)
+float Angle(int x, int y) {
+  return ArcTan(x, y)*57.2958;
+}
+//Returns angle of the given direction.
+int DirAngle(int dir){
+	dir &=7;
+	if (dir==DIR_UP) return 90;
+	if (dir==DIR_DOWN) return 270;
+	if (dir==DIR_LEFT) return 180;
+	if (dir==DIR_RIGHT) return 0;
+	if (dir==DIR_LEFTUP) return 135;
+	if (dir==DIR_RIGHTUP) return 45;
+	if (dir==DIR_LEFTDOWN) return 225;
+	if (dir==DIR_RIGHTDOWN) return 315;
+	return -1;
+}
+
+//Same as DirAngle, but return value is measured in radians.
+int DirRad(int dir){
+	return DirAngle(dir)*0.0174;
+}
+
+//Randomly return true or false. 
+int Chance(){
+	return Rand(0,1);
+}
+
+//Randomly returns true, or false, using input 'percentChance' to determine the percentage change of a 'true return'
+bool Chance(int percentChance){
+	return RandB(percentChance);
+}
+
+//Feb 2016
+bool Pos(int val){ return ( val > 0 ); }
+bool Neg(int val){ return ( val < 0 ); }
+
+
+//Returns if arg valA is less than all other values passed. Overloaded to work with two, to eight values.
+int Min(int valA, int valB, int valC){
+	int val = 214747.9999;
+	int arr[]={valA, valB, valC};
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) val = arr[q];
+	}
+	return val;
+}
+
+
+int Min(int valA, int valB, int valC, int valD){
+	int val = 214747.9999;
+	int arr[]={valA, valB, valC, valD};
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) val = arr[q];
+	}
+	return val;
+}
+
+
+int Min(int valA, int valB, int valC, int valD, int valE){
+	int val = 214747.9999;
+	int arr[]={valA, valB, valC, valD, valE};
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) val = arr[q];
+	}
+	return val;
+}
+
+
+int Min(int valA, int valB, int valC, int valD, int valE, int valF){
+	int val = 214747.9999;
+	int arr[]={valA, valB, valC, valD, valE, valF};
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) val = arr[q];
+	}
+	return val;
+}
+int Min(int valA, int valB, int valC, int valD, int valE, int valF, int valG){
+	int val = 214747.9999;
+	int arr[]={valA, valB, valC, valD, valE, valF, valG};
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) val = arr[q];
+	}
+	return val;
+}
+
+int Min(int valA, int valB, int valC, int valD, int valE, int valF, int valG, int valH){
+	int val = 214747.9999;
+	int arr[]={valA, valB, valC, valD, valE, valF, valG, valH};
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) val = arr[q];
+	}
+	return val;
+}
+
+//Returns if arg valA is greater than all other values passed. Overloaded for two, to eight values.
+int Max(int valA, int valB, int valC){
+	int arr[]={valA, valB, valC};
+	int val = -214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) val = arr[q];
+	}
+	return val;
+}
+
+int Max(int valA, int valB, int valC, int valD){
+	int arr[]={valA, valB, valC, valD};
+	int val = -214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) val = arr[q];
+	}
+	return val;
+}
+
+int Max(int valA, int valB, int valC, int valD, int valE){
+	int arr[]={valA, valB, valC, valD, valE};
+	int val = -214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) val = arr[q];
+	}
+	return val;
+}
+
+
+int Max(int valA, int valB, int valC, int valD, int valE, int valF){
+	int arr[]={valA, valB, valC, calD, valE, valF};
+	int val = -214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) val = arr[q];
+	}
+	return val;
+}
+
+int Max(int valA, int valB, int valC, int valD, int valE, int valF, int valG){
+	int arr[]={valA, valB, valC, calD, valE, valF, valG};
+	int val = -214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) val = arr[q];
+	}
+	return val;
+}
+
+int Max(int valA, int valB, int valC, int valD, int valE, int valF, int valG, int valH){
+	int arr[]={valA, valB, valC, calD, valE, valF, valG, valH};
+	int val = -214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) val = arr[q];
+	}
+	return val;
+}
+
+//Returns the lowest value in an array
+int Min(int arr){
+	int val = 214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) val = arr[q];
+	}
+	return val;
+}
+
+//Returns the highest value in an array
+int Max(int arr){
+	int val = -214747.9999;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) val = arr[q];
+	}
+	return val;
+}
+
+//Returns the index holding the lowest value in an array
+//If the lowest value is present in two or more indices, this will return the lowest-numbered index of the set.
+int MinIndex(int arr){
+	int val = 214747.9999;
+	int index;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] < val ) { 
+			val = arr[q];
+			index = q;
+		}
+	}
+	return index;
+}
+
+//Returns the index holding the highest value in an array
+//If the highest value is present in two or more indices, this will return the lowest-numbered index of the set.
+int MaxIndex(int arr){
+	int val = -214747.9999;
+	int index;
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		if ( arr[q] > val ) {
+			val = arr[q];
+			index = q;
+		}
+	}
+	return index;
+}
+
+
+//Safe Sqrt functions if an irrational number would be involved.
+//Returns '464' (square root of 215296), if the value passed is negative. 
+//Returns '0' on Sqrt(0).
+float SafeSqrt(float val){
+	
+	if ( STD_NEVER_USE_SAFESQRT ) return Sqrt(val);
+	else {
+		//if ( val > 214748.3648 ) val = 214748.3648;
+		if ( val > 0 && val <= 214747.9999 ) return Sqrt(val);
+		//Return a predesignated square root, instead of performing a Sqrt(MAX_INT) would be more optimised. 
+		if ( val < 0 ) return 464; 	//! This is the smallest integer square root value possible 
+						//! that is greater than the square root of MAX_INT.
+						//! and would help identify errors.
+		//if ( val < 0 ) return 463.4095; //The square root of 214798.3648
+		//! We could also returm 363 here, which is the smallest square root over MAX_INT.
+		//Returns the square root of MAX_INT if the value passed is a negative number. 
+		//if ( val < 0 ) return Sqrt(214747.9999);
+		return 0;
+	}
+}
+
+
+
+//Returns square root of 'val'. Returns 'specifyNegRet' if a negative value is passed as 'val'. Returns '0' for Sqrt(0).
+float SafeSqrt(float val, float specifyNegRet){
+	if ( val > 214747.9999 ) val = 214747.9999;
+	if ( val > 0 && val <= 214747.9999 ) return Sqrt(val);
+	if ( val < 0 ) return specifyNegRet;
+	return 0;
+}
+
+// Wraps radian value towards the range of -PI,PI.
+float WrapAngle( float radians ) {
+	while (radians <= -PI) radians += PI2;
+	while (radians > PI) radians -= PI2;
+	return radians;
+}
+
+// Wraps degree value towards the range of -180,180.
+float WrapDegrees( float degrees ) {
+	while (degrees <= -180) degrees += 360;
+	while (degrees > 180) degrees -= 360;
+	return degrees;
+}
+
+// Converts a counterclockwise degree angle (from -180 to 180) into one of the eight
+// standard directions (DIR_UP etc.) used by ZC.
+int AngleDir8(float angle) {
+	if (angle <= 157.5 && angle > 112.5)
+		return DIR_LEFTDOWN;
+	else if (angle <= 112.5 && angle > 67.5)
+		return DIR_DOWN;
+	else if (angle <= 67.5 && angle > 22.5)
+		return DIR_RIGHTDOWN;
+	else if (angle <= 22.5 && angle > -22.5)
+		return DIR_RIGHT;
+	else if (angle <= -22.5 && angle > -67.5)
+		return DIR_RIGHTUP;
+	else if (angle <= -67.5 && angle > -112.5)
+		return DIR_UP;
+	else if (angle <= -112.5 && angle > -157.5)
+		return DIR_LEFTUP;
+	else
+		return DIR_LEFT;
+}
+
+//The above, but for radian angles.
+int RadianAngleDir8(float angle) {
+	return AngleDir8(angle*57.2958);
+}
+
+// Converts a counterclockwise degree angle (from -180 to 180) into one of the four
+// standard directions (DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT) used by ZC.
+int AngleDir4(float angle) {
+	if (angle <= 135 && angle > 45)
+		return DIR_DOWN;
+	else if (angle <= 45 && angle > -45)
+		return DIR_RIGHT;
+	else if (angle <= -45 && angle > -135)
+		return DIR_UP;
+	else
+		return DIR_LEFT;
+}
+
+//The above, but for radian angles.
+int RadianAngleDir4(float angle) {
+	return AngleDir4(angle*57.2958);
+}
+
+// Finds the center of p1 and p2.
+float Midpoint(float p1, float p2) {
+	return Lerp(p1, p2, 0.5);
+}
+
+// Returns an angle pointing (t)percentage more accurate to the target than the specified radian_angle.
+float TurnTowards( int X, int Y, int targetX, int targetY, float radian_angle, float t ) {
+	float a = ArcTan( targetX - X, targetY - Y );
+	float d = WrapAngle(a - radian_angle);
+	if ( d > PI )
+		d =-( PI2 - d );
+	else if ( d < -PI )
+		d = PI2 + d;
+	return WrapAngle(radian_angle + d * t);
+}

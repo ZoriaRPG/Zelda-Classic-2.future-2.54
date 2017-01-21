@@ -1,0 +1,147 @@
+///////////////////////////////
+/// Custom Counters Example ///
+///////////////////////////////
+
+//Counters array.
+int Counters[214747];
+
+//Counter Array Indices
+const int CTR_ARROW_4 = 1001;
+const int CTR_MAX_ARROW_4 = 1002;
+    
+//Item vconstants
+const int IT_ARROW_4 = 200;
+
+//Drawing Arrow 4 COunters Settings:
+const int DRAW_ARROW_4_X = -30;
+const int DRAW_ARROW_4_Y = 100;
+const int DRAW_ARROW_4_FONT = 16;
+const int DRAW_ARROW_4_WIDTH = 8;
+const itn DRAW_ARROW_4_HEIGHT = 8;
+const int DRAW_ARROW_4_COLOUR = 1;
+
+//Initial Set-Up Values
+const int INIT_ARROW_4_MAX = 20;
+
+//Script for 'Arrow 4' quiver.
+item script Arrow_4_Quiver{
+    void run(int increase, int set_exact){
+        if ( increase && !set_exact ) IncreaseCounterMax(CTR_MAX_ARROW_4, increase);
+        if ( !increase && set_exact ) SetCounterMax(CTR_MAX_ARROW_4, set_exact);
+    }
+}
+
+//Script for Arrow 4 ammo.
+item script PickupCustomArrowAmmo4{
+    void run(int amount, int sound){
+        Game->PlaySound(sound);
+        if ( Counters[CTR_ARROW_4] - amount < Counters[CTR_MAX_ARROW_4] ) Counters[CTR_ARROW_4]+=amount;
+        if ( Counters[CTR_ARROW_4] - amount > Counters[CTR_MAX_ARROW_4] ) Counters[CTR_ARROW_4] = Counters[CTR_MAX_ARROW_4];
+    }
+}
+        
+//Example bow item that uses 'IT_ARROW_4' and a custom counter.
+//Assign to an item, with the item class 'Custom itemclass', or one of the 'zz###' item classes
+//as the 'Action; script.
+
+//Arguments:
+//Arguments:
+// D0: The sound to play for firing an arrow.. 
+// D1: The number of ammo to use.
+// D2: The sound effect to play for an error, including too many arrows on screen, or out of arrows in the counter.
+// D3: The maximum number of arrows that the player may have on-screen at any one time. 
+// --> You want to set this argument, as not setting it, will allow the player to fire up to 255 arrows, providing 
+// --> that they have sufficient ammunition. Normal values are between '1' and '4'. 
+// D4: Set to a value of '1' to allow Link to fire arrows while jumping. 
+// D5: The ID of the arrow type to generate.
+// D6: The sprite of the arrow when fired.
+// D7: The distance from Link to place it. 
+
+item script Arrow_CustomCounter{
+	void run(int sound, int errorSFX, int maxOnscreen, int allowLinkZ, int arrowID, int sprite, int dist){
+		int numArrows;
+		if ( Floor(Link->Z) !=0 && !allowLinkZ ) Quit();
+
+			if ( Counters[CTR_ARROW_4] && !maxOnscreen ){
+				( if cost > 1 ) {
+                    if ( cost > Counters[CTR_ARROW_4] ) {
+                        Game->PlaySound(SFX_ERROR);
+                        Quit();
+                    }
+                    else Counters[CTR_ARROW_4]-=cost;
+                }
+                if ( !cost ) Counters[CTR_ARROW_4]--;
+				if ( sound ) Game->PlaySound(sound);
+				lweapon arrow = NextToLink(LW_ARROW, dist);
+				itemdata normalArrow = Game->LoadItemData(arrowID);
+				arrow->UseSprite(sprite);
+				this->Power = normalArrow->Power;
+			}
+			else if ( Counters[CTR_ARROW_4] && maxOnscreen ){
+				for ( int q = 1; q <= Screen->NumLWeapons(); q++ ) {
+					lweapon l = Screen->LoadLWeapon(q);
+					if ( l->ID == LW_ARROW ) numArrows++;
+				}
+				if ( numArrows < maxOnscreen ) {
+                    if ( cost > 1 ) {
+                        if ( cost > Counters[CTR_ARROW_4] ) {
+                            Game->PlaySound(SFX_ERROR);
+                            Quit();
+                        else Counters[CTR_ARROW_4]--;
+                    }
+					if ( !cost ) Counters[CTR_ARROW_4]--;
+					if ( sound ) Game->PlaySound(sound);
+					lweapon arrow = NextToLink(LW_ARROW, dist);
+					itemdata normalArrow = Game->LoadItemData(arrowOD);
+					arrow->UseSprite(sprite);
+					this->Power = normalArrow->Power;
+				}
+				else Game->PlaySound(errorSFX);
+			}
+			if ( !Counters[CTR_ARROW_4] ) Game->PlaySound(errorSFX);
+		
+	}
+}
+
+//Example Global Scripts
+
+//Active
+global script DrawCounters{
+    void run(){
+        while(true){
+            DrawArrow_4_Counter(true);
+            WaitDraw();
+            Waitframe();
+        }
+    }
+}
+    
+global script Init{
+    void run(){
+        Counters[COUNTER_MAX_ARROW_4] = INIT_ARROW_4_MAX;
+    }
+}
+
+//Global functions
+
+//Draws custom counter from array[index] using settings passed to the remainder of the params.
+void DrawCounter(int arr, int index, int x, int y, int font, int width, int height, int colour){
+    Screen->Drawinteger(7,x,y,colour,0,sizeX,arr[index],0,128);
+}
+
+//Draws the counter for 'Arrow 4'. Set 'only_equipped 'true' if you wish ti display only if equipped.
+void DrawArrow_4_Counter(bool only_equipped){
+    if ( only_equipped && ( GetEquipmentA() == IT_ARROW_4 || GetEquipmentB() == IT_ARROW_4 ) )
+                DrawCounter(Counters, CTR_ARROW_4, DRAW_ARROW_4_X, DRAW_ARROW_4_Y, DRAW_ARROW_4_FONT, DRAW_ARROW_4_WIDTH, DRAW_ARROW_4_HEIGHT, DRAW_ARROW_4_COLOUR)'
+    if ( !only_equipped ) DrawCounter(Counters, CTR_ARROW_4, DRAW_ARROW_4_X, DRAW_ARROW_4_Y, DRAW_ARROW_4_FONT, DRAW_ARROW_4_WIDTH, DRAW_ARROW_4_HEIGHT, DRAW_ARROW_4_COLOUR)'
+}
+
+//Increases a custom counter max to a specified amount.
+void SetCounterMax(int counter, int amount){
+    Counters[counter] = amount;
+}
+
+//Increases a ccustom ounter max by a specified amount.
+void IncreaseCounterMax(int counter, int amount){
+    Counters[counter] += amount;
+}

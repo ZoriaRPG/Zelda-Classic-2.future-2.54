@@ -1,0 +1,318 @@
+        /////////////////////////////////////////////////////
+        /////// Raycasting Engine Script, version 0.2 ///////
+        /////// by blue_knight						  ///////
+        /////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////
+        // This is a fun little script
+        // that renders the current screens in first person
+        // using raycasting and column rendering.
+        // X, Y is on the horizontal plane.
+        // Z is up in 3D space.
+        // This script has no set limits, except the map limit
+        // 16x8 screens.
+        /////////////////////////////////////////////////////
+
+        const int scrWidth  = 256;
+        const int scrHeight = 176;
+
+        ffc script Raycaster
+        {
+        	/////////////////////////////
+        	// startX     : start X position in virtual space.
+        	// startY     : start Y position in virtual space.
+        	// BackgroundTiles : Tile index for the background.
+        	/////////////////////////////
+        	void run(int startX, int startY, int BackgroundTiles)
+        	{
+        		//use virtual coordinates for Link's position.
+        		//since he is not displayed, we don't bother keeping local coordinates, so Link's position is forced to the center.
+        		float camPos_X = startX;
+        		float camPos_Y = startY;
+        		float camDir_X;
+        		float camDir_Y;
+        		float camYaw = 0;
+        		float moveSpeed = 1.0;
+        		float playerRadius = 16;
+        		
+        		//ginormous array...
+        		int map_combo[1024];	//holds the 32x32 area centered on the camera.
+        		int map_left_x=0;
+        		int map_left_y=0;
+        		
+        		int map_cenX = 0;
+        		int map_cenY = 0;
+        		
+        		int curScreen = Game->GetCurScreen();
+        		int curMap = Game->GetCurMap();
+        	
+        		while (true)
+        		{
+        			//update the movement.
+        			if ( Link->InputLeft )
+        				camYaw-=2;
+        			else if ( Link->InputRight )
+        				camYaw+=2;
+        				
+        			if (camYaw < 0 )
+        				camYaw += 360;
+        			else if ( camYaw >= 360 )
+        				camYaw -= 360;
+        			
+        			camDir_X = Cos(camYaw);
+        			camDir_Y = Sin(camYaw);
+        			
+        			float newPosX = camPos_X;
+        			float newPosY = camPos_Y;
+        			float travelDirX;
+        			float travelDirY;
+        			bool bCollisionNeeded = false;
+        			if ( Link->InputUp )
+        			{
+        				newPosX = newPosX + camDir_X*moveSpeed;
+        				newPosY = newPosY + camDir_Y*moveSpeed;
+        				bCollisionNeeded = true;
+        				
+        				travelDirX = camDir_X;
+        				travelDirY = camDir_Y;
+        			}
+        			else if ( Link->InputDown )
+        			{
+        				newPosX = newPosX - camDir_X*moveSpeed;
+        				newPosY = newPosY - camDir_Y*moveSpeed;
+        				bCollisionNeeded = true;
+        				
+        				travelDirX = -camDir_X;
+        				travelDirY = -camDir_Y;
+        			}
+        			
+        			//Super basic collision for now.
+        			//If we're intersecting a solid combo after moving, we revert the move.
+        			//note that we actually check ahead in the direction of travel so we don't get too close to
+        			//the wall.
+        			if ( bCollisionNeeded )
+        			{
+        				if ( ComboSolid( Floor(newPosX+travelDirX*playerRadius), Floor(newPosY+travelDirY*playerRadius), curMap, curScreen ) )
+        				{
+        					newPosX = camPos_X;
+        					newPosY = camPos_Y;
+        				}
+        			}
+        			camPos_X = newPosX;
+        			camPos_Y = newPosY;
+        			
+        			//Read the area around the camera into an array
+        			//whenever we change cells.
+        			//This way we don't have to call GetComboFromTileIndex() or Game->GetComboData()
+        			//up to 16 times per ray.
+        			//This improves our performance by 40% or more.
+        			int mx = camPos_X>>4;
+        			int my = camPos_Y>>4;
+        			if ( mx != map_cenX || my != map_cenY )
+        			{
+        				map_cenX = mx;
+        				map_cenY = my;
+        				map_left_x = Max(mx-16,0);
+        				map_left_y = Max(my-16,0);
+        				for (int y=0; y<32; y++)
+        				{
+        					int yy = y+map_left_y;
+        					for (int x=0; x<32; x++)
+        					{
+        						int xx = x+map_left_x;
+        						map_combo[y*32+x] = GetComboFromTileIndex(xx, yy, curMap, curScreen);
+        					}
+        				}
+        			}
+        			
+        			//Finally draw the world.
+        			DrawWorld( camDir_X, camDir_Y, camPos_X, camPos_Y, BackgroundTiles, map_combo, map_left_x, map_left_y );
+        			
+        			DisableInput();
+        			
+        			Waitframe();
+        		}
+        	}
+        	
+        	void DisableInput()
+        	{
+        		Link->X = 128;
+        		Link->Y = 88;
+        		Link->InputLeft = false;
+        		Link->InputRight = false;
+        		Link->InputUp = false;
+        		Link->InputDown = false;
+        		Link->InputA = false;
+        		Link->InputB = false;
+        		Link->InputL = false;
+        		Link->InputR = false;
+        		Link->InputStart = false;
+        		Link->InputEx1 = false;
+        		Link->InputEx2 = false;
+        		Link->InputEx3 = false;
+        		Link->InputEx4 = false;
+        	}
+        	
+        	bool ComboSolid(int x, int y, int map, int curScr)
+        	{
+        		bool solid = false;
+        		
+        		int cx = (x>>4)&15;
+        		int cy = (y>>4)%11;
+        		
+        		int scr = curScr;
+        		scr += ( x>>8 );
+        		scr += ( Floor(y/176)<<4 );
+        		
+        		int s = Game->GetComboSolid( map, scr, (cy<<4)+cx );
+        		if ( s != 0 )
+        			solid = true;
+        			
+        		return solid;
+        	}
+        	
+        	int GetComboFromTileIndex(int tx, int ty, int map, int curScr)
+        	{
+        		int cx = tx&15;
+        		int cy = ty%11;
+        		
+        		int scr = curScr;
+        		scr += ( tx>>4 );
+        		scr += ( Floor(ty/11)<<4 );
+        		
+        		return Game->GetComboData( map, scr, (cy<<4)+cx );
+        	}
+        		
+        	//draw the "3D" world.
+        	void DrawWorld(float camDirX, float camDirY, float cX, float cY, int BackgroundTiles, int map_combo, int map_left_x, int map_left_y)
+        	{
+        		float cenY = scrHeight*0.5;
+        		
+        		//This camera has no pitch, though looking up and down can be faked later.
+        		//Anyway, the camera plane is perpendicular to the camera direction, 
+        		//so a simple 2D "perp product" is good enough [i.e. P(x,y) = (-Dy,Dx)]
+        		float planeX = -camDirY;
+        		float planeY =  camDirX;
+        				
+        		//we do raycasting in "map space", where each tile = 1 unit.
+        		float camX = cX/16;
+        		float camY = cY/16;
+        		
+        		int mapX = Floor(camX);
+        		int mapY = Floor(camY);
+        		
+        		//maximum extents, 8x8 screens for now.
+        		int maxTileX = map_left_x+32;
+        		int maxTileY = map_left_y+32;
+        		
+        		//maximum number of raycasting steps. Setting this lower
+        		//will improve performance, setting it higher allows more distant walls to be rendered.
+        		int MAX_STEPS = 16;
+        		
+        		//Draw the background.
+        		Screen->DrawTile(1, 0, 0, BackgroundTiles, 1, 11, 0, 256, 176, 0, 0, 0, 0, false, 128);
+        				
+        		//Note that we're pixel doubling for performance, later this should be an option
+        		//for people with fast computers.
+        		for (int x=0; x<scrWidth; x+=2)
+        		{
+        			int mx = mapX;
+        			int my = mapY;
+        			
+        			//compute the screen ray from the x position and camera paramters.
+        			float sx = (2 * x/scrWidth) - 1;
+        			float rayDirX = camDirX + planeX*sx;
+        			float rayDirY = camDirY + planeY*sx;
+        			
+        			//compute the DDA parameters, will detail in some documentation later.
+        			float rXX = rayDirX*rayDirX;
+        			float rYY = rayDirY*rayDirY;
+        			
+        			float deltaDistX = 32767;
+        			float deltaDistY = 32767;
+        			if ( rXX != 0 ) deltaDistX = Sqrt( 1.0 + rYY/rXX );
+        			if ( rYY != 0 ) deltaDistY = Sqrt( 1.0 + rXX/rYY );
+        		
+        			int stepX;
+        			int stepY;
+        			float sideDistX;
+        			float sideDistY;
+        			if ( rayDirX < 0 )
+        			{ stepX = -1; sideDistX = (camX - mx) * deltaDistX; }
+        			else
+        			{ stepX = 1; sideDistX = (mx + 1.0 - camX)*deltaDistX; }
+        			
+        			if ( rayDirY < 0 )
+        			{ stepY = -1; sideDistY = (camY - my)*deltaDistY; }
+        			else
+        			{ stepY = 1; sideDistY = (my + 1.0 - camY)*deltaDistY; }
+        			
+        			//now that we have the DDA parameters, actually walk the ray and find the closest intersecting wall.
+        			int hit = 0;
+        			int iter = 0;
+        			int side;
+        			while (hit == 0 && iter < MAX_STEPS)
+        			{
+        				if ( sideDistX < sideDistY )
+        				{
+        					sideDistX += deltaDistX;
+        					mx += stepX;
+        					side = 0;
+        					if ( mx < map_left_x || mx >= maxTileX )
+        						break;
+        				}
+        				else
+        				{
+        					sideDistY += deltaDistY;
+        					my += stepY;
+        					side = 1;
+        					if ( my < map_left_y || my >= maxTileY )
+        						break;
+        				}
+        				hit = map_combo[ ((my-map_left_y)<<5)+(mx-map_left_x) ];
+        				iter++;
+        			}
+        			
+        			//if we've hit something we figure out the column to render.
+        			if ( hit )
+        			{
+        				float wallDist;
+        				int u;
+        				//compute the distance to the wall and the texture coordinate.
+        				if ( side == 0 )
+        				{
+        					wallDist = (mx - camX + (1 - stepX)*0.5 ) / rayDirX;
+        					u = camY + rayDirY*wallDist;
+        				}
+        				else
+        				{
+        					wallDist = (my - camY + (1 - stepY)*0.5 ) / rayDirY;
+        					u = camX + rayDirX*wallDist;
+        				}
+        				//we use 16x16 tiles for textures.
+        				u = Floor( u*16 )&15;
+        				
+        				//compute the wall height.
+        				wallDist = Abs(wallDist);
+        				float height = 256.0 / wallDist;
+        				
+        				//compute the column dimensions.
+        				int y0 = Floor(cenY - height*0.5);
+        				int y1 = Floor(cenY + height*0.5);
+        				
+        				if ( y0 < -96 ) y0 = -96;
+        				if ( y1 > 240 ) y1 = 240;
+        				
+        				//shading depends on the "side" (so some faces are darker then others)
+        				//and the distance.
+        				int shading = Floor(wallDist/2) + side;
+        				if ( shading > 7 ) shading = 7;
+        				//textures are hard to author for this, but we compute the final tile we need for this column based on
+        				//the texture coordinate and shading.
+        				int tile = Game->ComboTile(hit) + u+(shading*20);
+
+        				//Quad() doesn't work well here, but DrawTile() does since we're rendering a screen aligned quad.
+        				Screen->DrawTile(1, x, y0, tile, 1, 1, 0, 2, (y1-y0), 0, 0, 0, 0, false, 128);
+        			}
+        		}
+        	}
+        }

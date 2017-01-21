@@ -1,0 +1,90 @@
+//Input
+
+//Kills inputs from A, B, L, R, Start, Map, and Ex buttons. 
+void NoInput(){ 
+	Link->InputA = false;
+	Link->InputB = false;
+	Link->InputL = false;
+	Link->InputR = false;
+	Link->InputEx1 = false;
+	Link->InputEx2 = false;
+	Link->InputEx3 = false;
+	Link->InputEx4 = false;
+	Link->InputStart = false;
+	Link->InputMap = false;
+}
+
+//Kills presses from A, B, L, R, Start, Map, and Ex buttons. 
+void NoPress(){ 
+	Link->PressA = false;
+	Link->PressB = false;
+	Link->PressL = false;
+	Link->PressR = false;
+	Link->PressEx1 = false;
+	Link->PressEx2 = false;
+	Link->PressEx3 = false;
+	Link->PressEx4 = false;
+	Link->PressStart = false;
+	Link->PressMap = false;
+}
+
+//Kills inputs from A, B, L, R, Start, Map, and Ex buttons. 
+void NoInput(bool stick){ 
+	Link->InputA = false;
+	Link->InputB = false;
+	Link->InputL = false;
+	Link->InputR = false;
+	Link->InputEx1 = false;
+	Link->InputEx2 = false;
+	Link->InputEx3 = false;
+	Link->InputEx4 = false;
+	Link->InputStart = false;
+	Link->InputMap = false;
+	if ( stick ) {
+		Link->InputAxisUp = false; 
+		Link->InputAxisDown = false; 
+		Link->InputAxisLeft = false; 
+		Link->InputAxisRight = false; 
+	}
+}
+
+//Kills presses from A, B, L, R, Start, Map, and Ex buttons. 
+void NoPress(bool stick){ 
+	Link->PressA = false;
+	Link->PressB = false;
+	Link->PressL = false;
+	Link->PressR = false;
+	Link->PressEx1 = false;
+	Link->PressEx2 = false;
+	Link->PressEx3 = false;
+	Link->PressEx4 = false;
+	Link->PressStart = false;
+	Link->PressMap = false;
+	if ( stick ) {
+		Link->PressAxisUp = false; 
+		Link->PressAxisDown = false; 
+		Link->PressAxisLeft = false; 
+		Link->PressAxisRight = false; 
+	}
+}
+
+//Functions for those who are not comfortable with binary
+//Returns true if the left mouse button is pressed
+bool InputLeftClick() {
+	return (Link->InputMouseB&MB_LEFTCLICK) != 0;
+}
+
+//Returns true if the right mouse button is pressed
+bool InputRightClick() {
+	return (Link->InputMouseB&MB_RIGHTCLICK) != 0;
+}
+
+//Returns true if the central mouse button (if equipped) is pressed
+bool InputMiddleClick() {
+	return (Link->InputMouseB&MB_MIDDLECLICK) != 0;
+}
+
+
+
+
+//keyboard

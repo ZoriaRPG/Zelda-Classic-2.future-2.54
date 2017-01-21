@@ -1,0 +1,654 @@
+//Generalized and optimized rectangle collision checking function.
+//Returns true if the bounding box of box1 and box2 overlap.
+bool RectCollision(int box1_x1, int box1_y1, int box1_x2, int box1_y2, int box2_x1, int box2_y1, int box2_x2, int box2_y2) {
+	if( box1_y2 < box2_y1 ) return false;
+	else if( box1_y1 > box2_y2 ) return false;
+	else if( box1_x2 < box2_x1 ) return false;
+	else if( box1_x1 > box2_x2 ) return false;
+	return true;
+}
+
+//Check for collisions of two squares given upper-left coordinates and a side length for each.
+bool SquareCollision(int c1x, int c1y, int side1, int c2x, int c2y, int side2) {
+	return RectCollision(c1x, c1y, c1x+side1, c1y+side1, c2x, c2y, c2x+side2, c2y+side2);
+}
+
+//Check for collisions of two squares given center coordinates and a halved side length for each.
+bool SquareCollision2(int c1x, int c1y, int radius1, int c2x, int c2y, int radius2) {
+	if( c1y + radius1 < c2y - radius2 ) return false;
+	else if( c1y - radius1 > c2y + radius2 ) return false;
+	else if( c1x + radius1 < c2x - radius2 ) return false;
+	else if( c1x - radius1 > c2x + radius2 ) return false;
+	return true;
+}
+
+//Returns true if the two circles c1 and c2 overlap.
+bool CircleCollision(int c1x, int c1y, int radius1, int c2x, int c2y, int radius2) {
+	return (Distance(c1x,c1y,c2x,c2y) <= (radius1+radius2));
+}
+
+//Returns true if there is a collision between the hitboxes of an lweapon and an eweapon.
+bool Collision(lweapon a, eweapon b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an lweapon and an lweapon.
+bool Collision(lweapon a, lweapon b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an eweapon and an eweapon.
+bool Collision(eweapon a, eweapon b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an lweapon and an npc.
+bool Collision(lweapon a, npc b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an eweapon and an npc.
+bool Collision(eweapon a, npc b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an npc and an npc.
+bool Collision(npc a, npc b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an item and an lweapon.
+bool Collision(item a, lweapon b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an item and an eweapon.
+bool Collision(item a, eweapon b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an item and an npc.
+bool Collision(item a, npc b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an item and an item.
+bool Collision(item a, item b) {
+	int c[4];
+	c[0] = a->X + a->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = a->Y + a->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+a->HitWidth, c[2]+a->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (a->Z + a->HitZHeight >= b->Z) && (a->Z <= b->Z + b->HitZHeight);
+}
+
+//A collision between an ffc and an lweapon. Uses TileWidth and TileHeight for the FFC's bounding box. Ignores the Z axis.
+bool Collision(ffc f, lweapon b) {
+	int c[2];
+	c[0] = b->X + b->HitXOffset;
+	c[1] = b->Y + b->HitYOffset;
+	return RectCollision(f->X, f->Y, f->X+(f->TileWidth*16), f->Y+(f->TileHeight*16), c[0], c[1], c[0]+b->HitWidth, c[1]+b->HitHeight);
+}
+
+//A collision between an ffc and an eweapon. Uses TileWidth and TileHeight for the FFC's bounding box. Ignores the Z axis.
+bool Collision(ffc f, eweapon b) {
+	int c[2];
+	c[0] = b->X + b->HitXOffset;
+	c[1] = b->Y + b->HitYOffset;
+	return RectCollision(f->X, f->Y, f->X+(f->TileWidth*16), f->Y+(f->TileHeight*16), c[0], c[1], c[0]+b->HitWidth, c[1]+b->HitHeight);
+}
+
+//A collision between an ffc and an npc. Uses TileWidth and TileHeight for the FFC's bounding box. Ignores the Z axis.
+bool Collision(ffc f, npc b) {
+	int c[2];
+	c[0] = b->X + b->HitXOffset;
+	c[1] = b->Y + b->HitYOffset;
+	return RectCollision(f->X, f->Y, f->X+(f->TileWidth*16), f->Y+(f->TileHeight*16), c[0], c[1], c[0]+b->HitWidth, c[1]+b->HitHeight);
+}
+
+//A collision between an ffc and an item. Uses TileWidth and TileHeight for the FFC's bounding box. Ignores the Z axis.
+bool Collision(ffc f, item b) {
+	int c[2];
+	c[0] = b->X + b->HitXOffset;
+	c[1] = b->Y + b->HitYOffset;
+	return RectCollision(f->X, f->Y, f->X+(f->TileWidth*16), f->Y+(f->TileHeight*16), c[0], c[1], c[0]+b->HitWidth, c[1]+b->HitHeight);
+}
+
+//A collision between an ffc and an ffc. Uses TileWidth and TileHeight for the FFCs' bounding boxes.
+bool Collision(ffc f, ffc f2) {
+	return RectCollision(f->X, f->Y, f->X+(f->TileWidth*16), f->Y+(f->TileHeight*16), f2->X, f2->Y, f2->X+f2->TileWidth*16, f2->Y+f2->TileHeight*16);
+}
+
+//A circular collision between an ffc and an ffc. Uses TileWidth and TileHeight to find the centre of the FFCs.
+bool Collision(ffc f, int radius1, ffc f2, int radius2) {
+	return CircleCollision(f->X+f->TileWidth/2, f->Y+f->TileHeight/2, radius1,f2->X+f2->TileWidth/2, f2->Y+f2->TileHeight/2, radius2);
+}
+
+// So that you don't have to remember the ordering of the args
+bool Collision(eweapon a, lweapon b) {
+	return Collision(b, a);
+}
+
+bool Collision(npc a, lweapon b) {
+	return Collision(b, a);
+}
+
+bool Collision(npc a, eweapon b) {
+	return Collision(b, a);
+}
+
+bool Collision(lweapon a, item b) {
+	return Collision(b, a);
+}
+
+bool Collision(eweapon a, item b) {
+	return Collision(b, a);
+}
+
+bool Collision(npc a, item b) {
+	return Collision(b, a);
+}
+
+bool Collision(lweapon a, ffc b) {
+	return Collision(b, a);
+}
+
+bool Collision(eweapon a, ffc b) {
+	return Collision(b, a);
+}
+
+bool Collision(npc a, ffc b) {
+	return Collision(b, a);
+}
+
+bool Collision(item a, ffc b) {
+	return Collision(b, a);
+}
+
+// Returns true if there is a collision between Link's hitbox and the eweapon's.
+// This only checks hitboxes.
+bool LinkCollision(eweapon b) {
+	int c[4];
+	c[0] = Link->X + Link->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = Link->Y + Link->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+Link->HitWidth, c[2]+Link->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (Link->Z + Link->HitZHeight >= b->Z) && (Link->Z <= b->Z + b->HitZHeight);
+}
+
+// Returns true if there is a collision between Link's hitbox and the lweapon's.
+// This only checks hitboxes.
+bool LinkCollision(lweapon b) {
+	int c[4];
+	c[0] = Link->X + Link->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = Link->Y + Link->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+Link->HitWidth, c[2]+Link->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (Link->Z + Link->HitZHeight >= b->Z) && (Link->Z <= b->Z + b->HitZHeight);
+}
+
+
+// Returns true if there is a collision between Link's hitbox and the item's.
+// This only checks hitboxes.
+bool LinkCollision(item b) {
+	int c[4];
+	c[0] = Link->X + Link->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = Link->Y + Link->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+Link->HitWidth, c[2]+Link->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (Link->Z + Link->HitZHeight >= b->Z) && (Link->Z <= b->Z + b->HitZHeight);
+}
+
+
+// Returns true if there is a collision between Link's hitbox and the npc's.
+// This only checks hitboxes.  Uses TileWidth and TileHeight to find the centre of the FFCs.
+bool LinkCollision(npc b) {
+	int c[4];
+	c[0] = Link->X + Link->HitXOffset;
+	c[1] = b->X + b->HitXOffset;
+	c[2] = Link->Y + Link->HitYOffset;
+	c[3] = b->Y + b->HitYOffset;
+	return RectCollision(c[0], c[2], c[0]+Link->HitWidth, c[2]+Link->HitHeight, c[1], c[3], c[1]+b->HitWidth, c[3]+b->HitHeight) && (Link->Z + Link->HitZHeight >= b->Z) && (Link->Z <= b->Z + b->HitZHeight);
+}
+
+
+// Returns true if there is a collision between Link's hitbox and the FFC's.
+// This only checks hitboxes.
+bool LinkCollision(ffc f) {
+	int c[2];
+	c[0] = Link->X + Link->HitXOffset;
+	c[1] = Link->Y + Link->HitYOffset;
+	return RectCollision(f->X, f->Y, f->X+(f->TileWidth*16), f->Y+(f->TileHeight*16), c[0], c[1], c[0]+Link->HitWidth, c[1]+Link->HitHeight);
+}
+
+// Returns the X coordinate of the left edge of the hitbox.
+int HitboxLeft(eweapon a) {
+	return (a->X + a->HitXOffset);
+}
+
+int HitboxLeft(lweapon a) {
+	return (a->X + a->HitXOffset);
+}
+
+int HitboxLeft(item a) {
+	return (a->X + a->HitXOffset);
+}
+
+int HitboxLeft(npc a) {
+	return (a->X + a->HitXOffset);
+}
+
+int HitboxLeft(ffc a) {
+	return a->X;
+}
+
+// Returns the X coordinate of the right edge of the hitbox.
+int HitboxRight(eweapon a) {
+	return (a->X + a->HitXOffset + a->HitWidth - 1);
+}
+
+int HitboxRight(lweapon a) {
+	return (a->X + a->HitXOffset + a->HitWidth - 1);
+}
+
+int HitboxRight(item a) {
+	return (a->X + a->HitXOffset + a->HitWidth - 1);
+}
+
+int HitboxRight(npc a) {
+	return (a->X + a->HitXOffset + a->HitWidth - 1);
+}
+
+int HitboxRight(ffc a) {
+	return a->X + a->TileWidth*16 - 1;
+}
+
+// Returns the Y coordinate of the top edge of the hitbox.
+int HitboxTop(eweapon a) {
+	return (a->Y + a->HitYOffset);
+}
+
+int HitboxTop(lweapon a) {
+	return (a->Y + a->HitYOffset);
+}
+
+int HitboxTop(item a) {
+	return (a->Y + a->HitYOffset);
+}
+
+int HitboxTop(npc a) {
+	return (a->Y + a->HitYOffset);
+}
+
+int HitboxTop(ffc a) {
+	return a->Y;
+}
+
+// Returns the Y coordinate of the bottom edge of the hitbox.
+int HitboxBottom(eweapon a) {
+	return (a->Y + a->HitYOffset + a->HitHeight - 1);
+}
+
+int HitboxBottom(lweapon a) {
+	return (a->Y + a->HitYOffset + a->HitHeight - 1);
+}
+
+int HitboxBottom(item a) {
+	return (a->Y + a->HitYOffset + a->HitHeight - 1);
+}
+
+int HitboxBottom(npc a) {
+	return (a->Y + a->HitYOffset + a->HitHeight - 1);
+}
+
+//Uses TileWidth and TileHeight for the FFC's bounding box. 
+int HitboxBottom(ffc a) {
+	return a->Y + (a->TileHeight*16) - 1;
+}
+
+//Collision functions, to avoid errors when using Collision() where LinkCOllision() is needed. 
+
+bool Collision(ffc f) {
+	return LinkCollision(f);
+}
+
+bool Collision(npc n){
+	return LinkCollision(n);
+}
+
+bool Collision(lweapon l){
+	return LinkCollision(l);
+}
+
+bool Collision(eweapon e){
+	return LinkCollision(e);
+}
+
+bool Collision(item i){
+	return LinkCollision(i);
+}
+//Read link's HitBox values
+//Thes eneed to take into accoun the new hitbox values if Extended
+int HitboxTop() {
+  return (Link->Y + Link->HitYOffset - Link->HitHeight);
+}
+
+int HitboxLeft() {
+  return (Link->X + Link->HitXOffset );
+}
+
+int HitboxRight() {
+  return (Link->X + Link->HitXOffset + Link->HitWidth - 1);
+}
+
+int HitboxBottom() {
+  return (Link->Y + Link->HitYOffset + Link->HitHeight - 1);
+}
+
+bool Collision(ffc f, int cmb) { return Collision(cmb,f); }
+bool Collision(lweapon l, int cmb) { return Collision(cmb,l); }
+bool Collision(eweapon e, int cmb) { return Collision(cmb,e); }
+bool Collision(npc n, int cmb) { return Collision(cmb,n); }
+bool Collision(item i, int cmb) { return Collision(cmb,i); }
+
+
+
+//Check for collision between lweapon 'l' and a combo at location 'cmb'. 
+//Set checkcoldetection to true if you wish to return false from an lweapon with ColDetection disabled. 
+bool Collision(lweapon l, int cmb, bool checkcoldetection) { 
+	if ( checkcoldetection && !l->CollDetection ) return false;
+	else return Collision(cmb,l); 
+}
+
+bool Collision(int cmb, lweapon l, bool checkcoldetection) { 
+	if ( checkcoldetection && !l->CollDetection ) return false;
+	else return Collision(cmb,l); 
+}
+
+
+//Check for collision between eweapon 'e' and a combo at location 'cmb' . 
+//Set checkcoldetection to true if you wish to return false from an eweapon with ColDetection disabled. 
+bool Collision(eweapon e, int cmb, bool checkcoldetection) {
+	if ( checkcoldetection && !e->CollDetection ) return false;
+	else return Collision(cmb,e); 
+}
+
+
+bool Collision(int cmb, eweapon e, bool checkcoldetection) {
+	if ( checkcoldetection && !e->CollDetection ) return false;
+	else return Collision(cmb,e); 
+}
+
+//Check for collision between NPC 'n' and a combo at location 'cmb' . 
+//Set checkcoldetection to true if you wish to return false from an NPC with ColDetection disabled. 
+bool Collision(npc n, int cmb, bool checkcoldetection) { 
+	if ( checkcoldetection && !n->CollDetection ) return false;
+	else return Collision(cmb,n); 
+}
+
+bool Collision(int cmb, npc n, bool checkcoldetection) { 
+	if ( checkcoldetection && !n->CollDetection ) return false;
+	else return Collision(cmb,n); 
+}
+
+//Check for collision between Link and a combo at location 'cmb' . 
+//Set checkcoldetection to true if you wish to return false from an NPC with ColDetection disabled. 
+bool Collision(int cmb, bool checkcoldetection) {
+	if ( checkcoldetection && !Link->CollDetection ) return false;
+	else return Collision(cmb); 
+}
+
+//Check for collision between ffc 'f' and a combo at location 'cmb'. 
+bool Collision(int cmb, ffc f){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (f->X);
+	c[5] = (f->Y);
+	c[6] = c[4]+(f->EffectWidth);
+	c[7] = c[5]+(f->EffectHeight);
+	return RectCollision( c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7] );
+}
+
+//Check for collision between lweapon 'l' and a combo at location 'cmb'. 
+bool Collision(int cmb, lweapon l){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (l->X)+l->HitXOffset+l->DrawXOffset;
+	c[5] = (l->Y)+l->HitYOffset+l->DrawYOffset;
+	c[6] = c[4]+l->HitWidth;
+	c[7] = c[5]+l->HitHeight;
+	return RectCollision( c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7] );
+}
+
+//Check for collision between eweapon 'e' and a combo at location 'cmb'. 
+bool Collision(int cmb, eweapon e){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (e->X)+e->HitXOffset+e->DrawXOffset;
+	c[5] = (e->Y)+e->HitYOffset+e->DrawYOffset;
+	c[5] = c[4]+e->HitWidth;
+	c[7] = c[5]+e->HitHeight;
+	return RectCollision( c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7] );
+}
+
+//Check for collision between npc 'n' and a combo at location 'cmb'. 
+bool Collision(int cmb, npc n){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (n->X)+n->HitXOffset+n->DrawXOffset;
+	c[5] = (n->Y)+n->HitYOffset+n->DrawYOffset;
+	c[6] = c[4]+n->HitWidth;
+	c[7] = c[5]+n->HitHeight;
+	return RectCollision( c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7] );
+}
+
+//Check for collision between item 'i' and a combo at location 'cmb'. 
+bool Collision(int cmb, item i){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (i->X)+i->HitXOffset+i->DrawXOffset;
+	c[5] = (i->Y)+i->HitYOffset+i->DrawYOffset;
+	c[6] = c[4]+i->HitWidth;
+	c[7] = c[5]+i->HitHeight;
+	return RectCollision( c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7] );
+}
+
+
+//Check for collision between Link and a combo at location 'cmb'. 
+bool Collision(int cmb){
+	int c[4];
+	c[0] = Link->X+Link->HitXOffset+Link->DrawXOffset;
+	c[1] = Link->Y+Link->HitYOffset+Link->DrawYOffset;
+	c[2] = c[0]+(Link->HitWidth);
+	c[3] = c[1]+(Link->HitHeight);
+	if ( !RectCollision( ComboX(cmb), ComboY(cmb), (ComboX(cmb)+16), (ComboY(cmb)+16), c[0], c[1], c[2], c[3]) ) return false;
+	else if ( !(Distance(CenterLinkX(), CenterLinkY(), (ComboX(cmb)+8), (ComboY(cmb)+8)) < 8) ) return false;
+	return true;
+}
+//! Collision with hitbox constraints. 
+//Check for collision between ffc 'f' and a combo at location 'cmb'. 
+bool Collision(int cmb, ffc f, int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (f->X);
+	c[5] = (f->Y);
+	c[6] = c[4]+(f->EffectWidth);
+	c[7] = c[5]+(f->EffectHeight);
+	return RectCollision( c[0]+a1, c[1]+b1, c[2]+c1, c[3]+d1, c[4]+a2, c[5]+b2, c[6]+c2, c[7]+d2 );
+}
+
+
+//Check for collision between lweapon 'l' and a combo at location 'cmb'. 
+bool Collision(int cmb, lweapon l, int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (l->X)+l->HitXOffset+l->DrawXOffset;
+	c[5] = (l->Y)+l->HitYOffset+l->DrawYOffset;
+	c[6] = c[4]+l->HitWidth;
+	c[7] = c[5]+l->HitHeight;
+	return RectCollision( c[0]+a1, c[1]+b1, c[2]+c1, c[3]+d1, c[4]+a2, c[5]+b2, c[6]+c2, c[7]+d2 );
+}
+
+//Check for collision between eweapon 'e' and a combo at location 'cmb'. 
+bool Collision(int cmb, eweapon e,  int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (e->X)+e->HitXOffset+e->DrawXOffset;
+	c[5] = (e->Y)+e->HitYOffset+e->DrawYOffset;
+	c[5] = c[4]+e->HitWidth;
+	c[7] = c[5]+e->HitHeight;
+	return RectCollision( c[0]+a1, c[1]+b1, c[2]+c1, c[3]+d1, c[4]+a2, c[5]+b2, c[6]+c2, c[7]+d2 );
+}
+
+//Check for collision between npc 'n' and a combo at location 'cmb'. 
+bool Collision(int cmb, npc n,  int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (n->X)+n->HitXOffset+n->DrawXOffset;
+	c[5] = (n->Y)+n->HitYOffset+n->DrawYOffset;
+	c[6] = c[4]+n->HitWidth;
+	c[7] = c[5]+n->HitHeight;
+	return RectCollision( c[0]+a1, c[1]+b1, c[2]+c1, c[3]+d1, c[4]+a2, c[5]+b2, c[6]+c2, c[7]+d2 );
+}
+
+//Check for collision between item 'i' and a combo at location 'cmb'. 
+bool Collision(int cmb, item i,  int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (i->X)+i->HitXOffset+i->DrawXOffset;
+	c[5] = (i->Y)+i->HitYOffset+i->DrawYOffset;
+	c[6] = c[4]+i->HitWidth;
+	c[7] = c[5]+i->HitHeight;
+	return RectCollision( c[0]+a1, c[1]+b1, c[2]+c1, c[3]+d1, c[4]+a2, c[5]+b2, c[6]+c2, c[7]+d2 );
+}
+
+
+//Check for collision between Link and a combo at location 'cmb'. 
+bool Collision(int cmb,  int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2){
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = Link->X+Link->HitXOffset+Link->DrawXOffset;
+	c[5] = Link->Y+Link->HitYOffset+Link->DrawYOffset;
+	c[6] = c[0]+(Link->HitWidth);
+	c[7] = c[1]+(Link->HitHeight);
+	return RectCollision( c[0]+a1, c[1]+b1, c[2]+c1, c[3]+d1, c[4]+a2, c[5]+b2, c[6]+c2, c[7]+d2 );
+}
+
+
+
+
+//Returns collision between an lweapon and a combo, only if its direction is 'dir'.
+//Set checkcoldetection true if you wish weapons without collision to automatically return false.
+bool CollisionDir(int cmb, lweapon l, int dir, bool checkcoldetection) {
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (l->X)+l->HitXOffset+l->DrawXOffset;
+	c[5] = (l->Y)+l->HitYOffset+l->DrawYOffset;
+	c[6] = c[4]+l->HitWidth;
+	c[7] = c[5]+l->HitHeight;
+	if ( checkcoldetection && !l->CollDetection ) return false;
+	if ( l->Dir != dir ) return false;
+	return RectCollision( c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7] );
+}
+
+//Returns collision between an lweapon and a combo.
+//Returns false base don direction:
+//Set 'facingspecificdir' to true, to check only if a weapon is facing a specific direction.
+//Set it false, if you want to check if a weapon is NOT facing a specific direction. 
+//Set checkcoldetection true if you wish weapons without collision to automatically return false.
+bool CollisionDir(int cmb, lweapon l, int dir, bool facingspecificdir, bool checkcoldetection) {
+	int c[8];
+	c[0] = ComboX(cmb);
+	c[1] = ComboY(cmb);
+	c[2] = ComboX(cmb)+16;
+	c[3] = ComboY(cmb)+16;
+	c[4] = (l->X)+l->HitXOffset+l->DrawXOffset;
+	c[5] = (l->Y)+l->HitYOffset+l->DrawYOffset;
+	c[6] = c[4]+l->HitWidth;
+	c[7] = c[5]+l->HitHeight;
+	if ( checkcoldetection && !l->CollDetection ) return false;
+	if ( facingspecificdir && l->Dir != dir ) return false;
+	if ( !facingspecificdir && l->Dir == dir ) return false;
+	return RectCollision( c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7] );
+}

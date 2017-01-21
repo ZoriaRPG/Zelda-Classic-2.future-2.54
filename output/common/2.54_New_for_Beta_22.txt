@@ -1,0 +1,101 @@
+//New for Beta 22
+
+//////////////
+///  Link  /// 
+//////////////
+
+int Eaten;			ZASM Instruction: 
+				LINKEATEN
+				
+/**
+* This stores a counter for how long Link has been inside a LikeLike, or similar enemy.
+* It returns 0 if Link is not eaten, otherwise it returns the duration of him being eaten.
+*
+*/ Example Use: !#!
+
+/************************************************************************************************************/
+//Implemented, but does nothing. 
+void SetTile(int sprite, int tile, int dir, int flip)			
+				ZASM Instruction: 
+				LINKSETTILE
+
+/**
+* Sets the tile for Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'tile is the base tile for the sequence. It uses the animation style set in the sprites editor.
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+int Extend;				ZASM Instruction: 
+					LINKEXTEND
+
+/**
+* Sets the extend value for all of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* If used to check, this will return the calue of the LSPR_NORMAL entry/
+*/
+
+/************************************************************************************************************/
+//!Not Implemented in this build. 
+int GetExtend(int sprite);		ZASM Instruction: 
+					LINKGETEXTEND
+
+/**
+* Gets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Not Implemented in this build. 
+void SetExtend(int sprite);		ZASM Instruction: 
+					LINKSETEXTEND
+
+/**
+* Sets the extend value for one of Link's various actions.
+* This is equivalent to the Extend value set in Quest->Graphics->Sprites->Link when selecting a tile.  
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+//!Not Implemented in this build. 
+int GetTile(int sprite, int dir, int flip)			
+				ZASM Instruction: 
+				LINKGETTILE
+
+/**
+* Returns the tile for one of Link's various actions.
+* 'sprite' is the action for the tile. See Quest->Graphics->Sprites->Link for a visual reference. 
+* 'dir' is the direction for the tile.
+* 'flip' is the flip attribute for the tile. 
+* See 'std_constants' entries under LSPR_* for a list of the various attributes for 'sprite'.
+*/
+
+/************************************************************************************************************/
+
+
+
+
++-----------------------------+
+| MISC EFFECT CODES           |
++-----------------------------+
+
+Changed the SCC IDs for new SCCs (again)
+\18 Screen->D
+\19 SetScreenD(screen,reg,value)
+\23 SetDmapScreenD(dmap,screen,reg,value)
+
+\26 Warp(dmap,screen)
+\27 Warp(dmap,screen,return)
+\28 Warp(dmap,screen,return,sound)
+\29 Warp(dmap,screen,return,sound,effect)
+
+\40\X\X - Set Screen->D[reg] on this screen, where Argument 1 is the [register] and Argument 2 is the value to set. 
+
+//Plan to add 
+\41\screen\reg\value
+\42\dmap\screen\reg\value

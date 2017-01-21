@@ -1,0 +1,12 @@
+//DMaps
+
+//Returns true if DMap Flag 'flag' is set on dmap 'dmap'
+bool GetDMapFlag(int dmap, int flag){
+	return (Game->DMapFlags[dmap]&flag)!=0;
+}
+
+//Sets a certain DMap flag to 'state'
+void SetDMapFlag(int dmap, int flag, bool state){
+	if(state) Game->DMapFlags[dmap] |= flag;
+	else Game->DMapFlags[dmap] &= ~flag;
+}

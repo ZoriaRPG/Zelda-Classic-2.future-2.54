@@ -1,0 +1,28 @@
+import "std.zh"
+
+global script a{
+	void run(){
+		while(true){
+if ( Link->PressEx1 ) {
+	int s[]="Setting all npcs on this screen to die instantly if hit by LW_SCRIPT1";
+	TraceS(s);
+	for ( int q = Screen->NumNPCs(); q > 0; q-- ) {
+		npc n = Screen->LoadNPC(q);
+		n->ScriptDefense[0] = 14; //one hit kill
+	}
+}
+Waitdraw(); Waitframe();
+}}}
+
+item script w{
+	void run(){
+		lweapon l = Screen->CreateLWeapon(LW_SCRIPT1);
+		l->X = Link->X; 
+		l->Y = Link->Y;
+		l->Dir = Link->Dir;
+		l->Step = 200; 
+		l->Damage = this->Power;
+		l->UseSprite(this->Attribute1);
+		Game->PlaySound(this->UseSound);
+	}
+}

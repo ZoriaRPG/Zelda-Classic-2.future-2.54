@@ -1,0 +1,106 @@
+<Link->Eaten
+
+//link.h
+ inlikelike; // 1 = Like Like. 2 = Taking damage while trapped
+ 
+    int getEaten();
+    void setEaten(int i);
+    
+    void stopCaneOfByrna();
+    
+    void red_shift(); //is this link death>
+    
+    //LINK.CPP
+    
+    int link_animation_speed = 1; //lower is faster animation
+    
+    //void LinkClass::linkstep() { lstep = lstep<(BSZ?27:11) ? lstep+1 : 0; }
+void LinkClass::linkstep()
+{
+    lstep = lstep<((zinit.linkanimationstyle==las_bszelda)?27:11) ? lstep+1 : 0;
+}
+
+
+stomping=false;
+
+ reset_swordcharge();
+
+//These have handlers, but no ZASM?
+
+
+int  LinkClass::getLStep()
+{
+    return lstep;
+}
+int  LinkClass::getCharging()
+{
+    return charging;
+}
+bool LinkClass::isCharged()
+{
+    return spins>0;
+}
+int  LinkClass::getAttackClk()
+{
+    return attackclk;
+}
+void  LinkClass::setAttackClk(int new_clk)
+{
+    attackclk=new_clk;
+}
+void LinkClass::setCharging(int new_charging)
+{
+    charging=new_charging;
+}
+int  LinkClass::getSwordClk()
+{
+    return swordclk;
+}
+int  LinkClass::getItemClk()
+{
+    return itemclk;
+}
+void LinkClass::setSwordClk(int newclk)
+{
+    swordclk=newclk;
+}
+void LinkClass::setItemClk(int newclk)
+{
+    itemclk=newclk;
+}
+
+
+int  LinkClass::getClk()
+{
+    return clk;
+}
+int  LinkClass::getPushing()
+{
+    return pushing;
+}
+void LinkClass::Catch()
+{
+    if(!inwallm && (action==none || action==walking))
+    {
+        action=attacking;
+        attackclk=0;
+        attack=wCatching;
+    }
+}
+
+bool LinkClass::getClock()
+{
+    return superman;
+}
+void LinkClass::setClock(bool state)
+{
+    superman=state;
+}
+
+ linktile(&tile, &flip, &extend, is_moving()?ls_swim:ls_float, dir, zinit.linkanimationstyle);
+tile += anim_3_4(lstep,7)*(extend==2?2:1);
+
+item_tile_mod(shieldModify); //LTm
+
+
+hitshield=true;//ifa weapon hits links shield

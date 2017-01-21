@@ -1,0 +1,421 @@
+//Finds the location of a combo, given its (x,y) coordinates on the screen
+int ComboAt(int x, int y) {
+	x = VBound(x,255,0);
+	y = VBound(y,175,0);
+	return (y & 240)+(x>>4);
+}
+
+//Return the coordinates of a combo on the screen
+int ComboX(int loc) {
+	return loc%16*16;
+}
+
+int ComboY(int loc) {
+    return loc&0xF0;
+}
+
+//Returns true if the combo at '(x, y)' has either an inherent or place flag of type 'flag'
+bool ComboFI(int x, int y, int flag){
+	int loc = ComboAt(x,y);
+	return Screen->ComboF[loc] == flag || Screen->ComboI[loc] == flag;
+}
+
+//Returns true if the combo at 'loc' has either an inherent or place flag of type 'flag'
+bool ComboFI(int loc, int flag){
+	return Screen->ComboF[loc] == flag || Screen->ComboI[loc] == flag;
+}
+
+//A shorthand way to get a combo on the current layer.
+//Layer 0 is the screen itself.
+int GetLayerComboD(int layer, int pos) {
+	if (layer==0) return Screen->ComboD[pos];
+	else return Game->GetComboData(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos);
+}
+
+//A shorthand way to set a combo on the current layer.
+//Layer 0 is the screen itself.
+void SetLayerComboD(int layer, int pos, int combo) {
+	if (layer == 0) Screen->ComboD[pos] = combo;
+	else Game->SetComboData(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, combo);
+}
+
+//A shorthand way to get a combo flag on the current layer.
+//Layer 0 is the screen itself.
+int GetLayerComboF(int layer, int pos) {
+	if (layer==0) return Screen->ComboF[pos];
+	else return Game->GetComboFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos);
+}
+
+//A shorthand way to set a combo flag on the current layer.
+//Layer 0 is the screen itself.
+void SetLayerComboF(int layer, int pos, int flag) {
+	if (layer == 0) Screen->ComboF[pos] = flag;
+	else Game->SetComboFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, flag);
+}
+
+//A shorthand way to get a combo type on the current layer.
+//Layer 0 is the screen itself.
+int GetLayerComboT(int layer, int pos) {
+	if (layer==0) return Screen->ComboT[pos];
+	else return Game->GetComboType(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos);
+}
+
+//A shorthand way to set a combo type on the current layer.
+//Layer 0 is the screen itself.
+void SetLayerComboT(int layer, int pos, int type) {
+	if (layer == 0) Screen->ComboT[pos] = type;
+	else Game->SetComboType(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, type);
+}
+
+//A shorthand way to get a combo's solidity on the current layer.
+//Layer 0 is the screen itself.
+int GetLayerComboS(int layer, int pos) {
+	if (layer==0) return Screen->ComboS[pos];
+	else return Game->GetComboSolid(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos);
+}
+
+//A shorthand way to set a combo's solidity on the current layer.
+//Layer 0 is the screen itself.
+void SetLayerComboS(int layer, int pos, int solidity) {
+	if (layer == 0) Screen->ComboS[pos] = solidity;
+	if ( MIN_CONSTANT > -214747.9999 ) { //Not compile don 2.50.3
+		if ( layer == 1 ) 
+		Game->SetComboSolid(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, solidity);
+		else if ( layer > 1 ) {
+			int str[]="Setting solidity on layers higher than 1 causes this version of ZC to crash.";
+			TraceS(str);
+		}
+	}
+	else Game->SetComboSolid(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, solidity);
+}
+
+//A shorthand way to get a combo inherent flag on the current layer.
+//Layer 0 is the screen itself.
+int GetLayerComboI(int layer, int pos) {
+	if (layer==0) return Screen->ComboI[pos];
+	else return Game->GetComboInherentFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos);
+}
+
+//A shorthand way to set a combo inherent flag on the current layer.
+//Layer 0 is the screen itself.
+void SetLayerComboI(int layer, int pos, int flag) {
+	if (layer == 0) Screen->ComboI[pos] = flag;
+	else Game->SetComboInherentFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, flag);
+}
+
+//A shorthand way to get a combo CSet on the current layer.
+//Layer 0 is the screen itself.
+int GetLayerComboC(int layer, int pos) {
+	if (layer==0) return Screen->ComboC[pos];
+	else return Game->GetComboCSet(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos);
+}
+
+//A shorthand way to set a combo CSet on the current layer.
+//Layer 0 is the screen itself.
+void SetLayerComboC(int layer, int pos, int cset) {
+	if (layer == 0) Screen->ComboC[pos] = cset;
+	else Game->SetComboCSet(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, cset);
+}
+
+//Returns the position of the first instance of the given combo, or -1.
+int FirstComboOf(int t, int layer) {
+	for (int i = 0; i < 176; i++) {
+		if (layer == 0) {
+			if (Screen->ComboD[i] == t)
+			return i;
+		}
+		else {
+			if (GetLayerComboD(layer,i) == t)
+			return i;
+		}
+	}
+	return -1;
+}
+
+//Returns the position of the last instance of the given combo, or -1.
+int LastComboOf(int t, int layer) {
+	for (int i = 175; i >= 0; i--) {
+		if (layer == 0) {
+			if (Screen->ComboD[i] == t)
+			return i;
+		}
+		else {
+			if (GetLayerComboD(layer,i) == t)
+			return i;
+		}
+	}
+	return -1;
+}
+
+//Returns the position of the first instance of the given combo, or -1.
+int FirstComboTypeOf(int t, int layer) {
+	for (int i = 0; i < 176; i++) {
+		if (layer == 0) {
+			if (Screen->ComboT[i] == t)
+			return i;
+		}
+		else {
+			if (GetLayerComboT(layer,i) == t)
+			return i;
+		}
+	}
+	return -1;
+}
+
+//Returns the position of the last instance of the given combo, or -1.
+int LastComboTypeOf(int t, int layer) {
+	for (int i = 175; i >= 0; i--) {
+		if (layer == 0) {
+			if (Screen->ComboT[i] == t)
+			return i;
+		}
+		else {
+			if (GetLayerComboT(layer,i) == t)
+			return i;
+		}
+	}
+	return -1;
+}
+
+//Returns the position of the first instance of the given combo flag, or -1.
+//Checks inherent flags too!
+int FirstComboFlagOf(int t, int layer) {
+	for (int i = 0; i < 176; i++) {
+		if (layer == 0) {
+			if (Screen->ComboF[i] == t || Screen->ComboI[i] == t) return i;
+		}
+		else {
+			if (Game->GetComboFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer),i) == t
+			|| Game->GetComboInherentFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer),i) == t)
+			return i;
+		}
+	}
+	return -1;
+}
+
+//Returns the position of the last instance of the given combo flag, or -1.
+//Checks inherent flags too!
+int LastComboFlagOf(int t, int layer) {
+	for (int i = 175; i >= 0; i--) {
+		if (layer == 0) {
+			if (Screen->ComboF[i] == t || Screen->ComboI[i] == t) return i;
+		}
+		else {
+			if (Game->GetComboFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer),i) == t
+			|| Game->GetComboInherentFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer),i) == t)
+			return i;
+		}
+	}
+	return -1;
+}
+
+// Returns true if the combo at the given position is water.
+bool IsWater(int position) {
+	int combo=Screen->ComboT[position];
+	if(combo==CT_WATER || combo==CT_SWIMWARP || combo==CT_DIVEWARP || (combo>=CT_SWIMWARPB && combo<=CT_DIVEWARPD))
+		return true;
+	else return false;
+}
+
+// Returns true if the combo at the given position is a pit.
+bool IsPit(int position) {
+	int combo=Screen->ComboT[position];
+	if(combo==CT_PIT || combo==CT_PITR || (combo>=CT_PITB && combo<=CT_PITD))
+		return true;
+	else return false;
+}
+
+//Sets the values for combo at position 'pos' to those specified. Pass -1 to leave a value unchanged.
+void SetCombo(int pos, int data, int type, int flag, int inh_flag, int cset, int solid){
+	if ( data >=0 ) Screen->ComboD[pos] = data;
+	if ( type >= 0 ) Screen->ComboT[pos] = type;
+	if ( flag >= 0 ) Screen->ComboF[pos] = flag;
+	if ( inh_flag >= 0 ) Screen->ComboI[pos] = inh_flag;
+	if ( cset >= 0 ) Screen->ComboC[pos] = cset;
+	if ( solid >= 0 ) Screen->ComboS[pos] = solid;
+}
+
+//Sets the values for a combo on layer 'layer', at position 'pos' to the values specified.
+//Pass -1 to any value to leave it unchanged. 
+void SetLayerComboValues(int layer, int pos, int data, int type, int flag, int inh_flag, int cset, int solid){
+	if ( data >=0 ) SetLayerComboD(layer,pos,data);
+	if ( type >= 0 ) SetLayerComboT(layer,pos,type);
+	if ( flag >= 0 ) SetLayerComboF(layer,pos,flag);
+	if ( inh_flag >= 0 ) SetLayerComboI(layer,pos,inh_flag);
+	if ( cset >= 0 ) SetLayerComboC(layer,pos,cset);
+	if ( solid >= 0 ) SetLayerComboS(layer,pos,solid);
+}
+
+//Clones combo from position 'pos_a' to position 'pos_b'
+void CloneCombo(int pos_a, int pos_b){
+	Screen->ComboD[pos_b] = Screen->ComboD[pos_a];
+	Screen->ComboT[pos_b] = Screen->ComboT[pos_a];
+	Screen->ComboF[pos_b] = Screen->ComboF[pos_a];
+	Screen->ComboI[pos_b] = Screen->ComboI[pos_a];
+	Screen->ComboC[pos_b] = Screen->ComboC[pos_a];
+	Screen->ComboS[pos_b] = Screen->ComboS[pos_a];
+}
+
+//Clones combo on layer 'layer' posigtion 'pos_a' to the same layer at position 'pos_b'
+void CloneLayerCombo(int layer, int pos_a, int pos_b){
+	SetLayerComboD(layer,pos_b,GetLayerComboD(layer,pos_a));
+	SetLayerComboT(layer,pos_b,GetLayerComboT(layer,pos_a));
+	SetLayerComboF(layer,pos_b,GetLayerComboF(layer,pos_a));
+	SetLayerComboI(layer,pos_b,GetLayerComboI(layer,pos_a));
+	SetLayerComboC(layer,pos_b,GetLayerComboC(layer,pos_a));
+	SetLayerComboS(layer,pos_b,GetLayerComboS(layer,pos_a));
+}
+
+//Clones a combo on layer 'layer_a' at position 'pos_a', to layer 'layer_b" at position 'pos_b'.
+void CloneLayerCombo(int layer_a, int layer_b, int pos_a, int pos_b){
+	SetLayerComboD(layer_b,pos_b,GetLayerComboD(layer_a,pos_a));
+	SetLayerComboT(layer_b,pos_b,GetLayerComboT(layer_a,pos_a));
+	SetLayerComboF(layer_b,pos_b,GetLayerComboF(layer_a,pos_a));
+	SetLayerComboI(layer_b,pos_b,GetLayerComboI(layer_a,pos_a));
+	SetLayerComboC(layer_b,pos_b,GetLayerComboC(layer_a,pos_a));
+	SetLayerComboS(layer_b,pos_b,GetLayerComboS(layer_a,pos_a));
+}
+
+//Returns the centre coordinates of a combo at position 'loc' similar to Center*() functions, and ComboX/Y.
+int CenterComboX(int loc){
+	return (loc%16*16) + 8;
+}
+
+int CenterComboY(int loc){
+	return (loc&0xF0) +8;
+}
+
+
+//Use SetCombo* on Layer 0 using LayerMap()
+//A shorthand way to set a combo on the current layer.
+//Layer 0 is the screen itself.
+//Set layer0 to true to use LayerMap() to handle layer 0 combos. This should allow changes to remain static. 
+void SetLayerComboD(int layer, int pos, int combo, bool layer0) {
+	if (layer==0 && !layer0) Screen->ComboD[pos] = combo;
+	else Game->SetComboData(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, combo);
+}
+
+
+//A shorthand way to set a combo flag on the current layer.
+//Layer 0 is the screen itself.
+//Set layer0 to true to use LayerMap() to handle layer 0 combos. This should allow changes to remain static. 
+void SetLayerComboF(int layer, int pos, int flag, bool layer0) {
+	if (layer==0 && !layer0) Screen->ComboF[pos] = flag;
+	else Game->SetComboFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, flag);
+}
+
+//Layer 0 is the screen itself.
+//Set layer0 to true to use LayerMap() to handle layer 0 combos. This should allow changes to remain static. 
+void SetLayerComboI(int layer, int pos, int flag, bool layer0) {
+	if (layer==0 && !layer0) Screen->ComboI[pos] = flag;
+	else Game->SetComboInherentFlag(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, flag);
+}
+
+
+//A shorthand way to set a combo CSet on the current layer.
+//Layer 0 is the screen itself.
+//Set layer0 to true to use LayerMap() to handle layer 0 combos. This should allow changes to remain static. 
+void SetLayerComboC(int layer, int pos, int cset, bool layer0) {
+	if (layer==0 && !layer0) Screen->ComboC[pos] = cset;
+	else Game->SetComboCSet(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, cset);
+}
+
+
+//A shorthand way to set a combo type on the current layer.
+//Layer 0 is the screen itself.
+//Set layer0 to true to use LayerMap() to handle layer 0 combos. This should allow changes to remain static. 
+void SetLayerComboT(int layer, int pos, int type, bool layer0) {
+	if (layer==0 && !layer0) Screen->ComboT[pos] = type;
+	else Game->SetComboType(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, type);
+}
+
+
+//A shorthand way to set a combo's solidity on the current layer.
+//Layer 0 is the screen itself.
+//Set layer0 to true to use LayerMap() to handle layer 0 combos. This should allow changes to remain static. 
+void SetLayerComboS(int layer, int pos, int solidity, bool layer0) {
+	if (layer==0 && !layer0) Screen->ComboS[pos] = solidity;
+	if ( MIN_CONSTANT > -214747.9999 ) { //Not compile don 2.50.3
+		if ( layer == 1 ) 
+		Game->SetComboSolid(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, solidity);
+		else if ( layer > 1 ) {
+			int str[]="Setting solidity on layers higher than 1 causes this version of ZC to crash.";
+			TraceS(str);
+		}
+	}
+	else Game->SetComboSolid(Screen->LayerMap(layer), Screen->LayerScreen(layer), pos, solidity);
+}
+
+
+//Constants for AdjacentCombo()
+//This now uses DIR_* constants, so you can do AdjacentCombo(cmb,Link->Dir)
+//Returns the Nth combo index of a combo based on a central point, and a direction.
+//For example, combo 22 + COMBO_UPRIGHT returns '7', 
+//as combo 7 is to the upper-right of combo 22.
+int AdjacentCombo(int cmb, int dir){
+    int combooffsets[13]={-0x10, 0x10, -1, 1, -0x11, -0x0F, 0x0F, 0x11};
+    if ( cmb % 16 == 0 ) combooffsets[9] = 1;
+    if ( (cmb & 15) == 1 ) combooffsets[10] = 1; 
+    if ( cmb < 0x10 ) combooffsets[11] = 1; //if it's the top row
+    if ( cmb > 0x9F ) combooffsets[12] = 1; //if it's on the bottom row
+    if ( combooffsets[9] && ( dir == CMB_LEFT || dir == CMB_UPLEFT || dir == CMB_DOWNLEFT || dir == CMB_LEFTUP ) ) return 0; //if the left columb
+    if ( combooffsets[10] && ( dir == CMB_RIGHT || dir == CMB_UPRIGHT || dir == CMB_DOWNRIGHT ) ) return 0; //if the right column
+    if ( combooffsets[11] && ( dir == CMB_UP || dir == CMB_UPRIGHT || dir == CMB_UPLEFT || dir == CMB_LEFTUP ) ) return 0; //if the top row
+    if ( combooffsets[12] && ( dir == CMB_DOWN || dir == CMB_DOWNRIGHT || dir == CMB_DOWNLEFT ) ) return 0; //if the bottom row
+    else if ( cmb >= 0 && cmb <= 176 ) return cmb + combooffsets[dir];
+    else return -1;
+}   
+        
+
+    ///March 2016
+    
+//Constants for AdjacentCombo()
+//This now uses DIR_* constants, so you can do AdjacentCombo(cmb,Link->Dir)
+//Returns the Nth combo index of a combo based on a central point, and a direction.
+//For example, combo 22 + COMBO_UPRIGHT returns '7', 
+//as combo 7 is to the upper-right of combo 22.
+//dist is the number of combos away from cmb
+
+//! rETURNS THE COMBO id OF A COMBO BASED ON A LOCATION, IN A GIVEM DIRECTION, n COMBOS AWAY.
+int AdjacentCombo(int cmb, int dir, int dist){
+    int combooffsets[13]={-0x10, 0x10, -1, 1, -0x11, -0x0F, 0x0F, 0x11};
+    if ( cmb % 16 == 0 ) combooffsets[9] = 1;
+    if ( (cmb & 15) == 1 ) combooffsets[10] = 1; 
+    if ( cmb < 0x10 ) combooffsets[11] = 1; //if it's the top row
+    if ( cmb > 0x9F ) combooffsets[12] = 1; //if it's on the bottom row
+    if ( combooffsets[9] && ( dir == DIR_LEFT || dir == DIR_LEFTUP || dir == DIR_LEFTDOWN || dir == DIR_LEFTUP ) ) {
+	    return 0; //if the left columb
+    }
+    if ( combooffsets[10] && ( dir == DIR_RIGHT || dir == DIR_RIGHTUP || dir == DIR_RIGHTDOWN ) ) {
+	    return 0; //if the left columb
+    }
+    if ( combooffsets[11] && ( dir == DIR_UP || dir == DIR_RIGHTUP || dir == DIR_LEFTUP || dir == DIR_LEFTUP ) ) {
+	    return 0; //if the left columb
+    }
+    if ( combooffsets[12] && ( dir == DIR_DOWN || dir == DIR_RIGHTDOWN || dir == DIR_LEFTDOWN ) ) {
+	    return 0; //if the left columb
+    }
+    int cmbs[2];//needs a for loop to ensure that t returns the most valid combo
+	    
+    if ( cmb >= 0 && cmb < 176 ) {
+		cmbs[0] = cmb;
+		for ( cmbs[1] = 0; cmbs[1] < dist; cmbs[1]++ ) {
+			if ( dir == DIR_LEFT && ComboX(cmbs[0]) == 0 ) return cmbs[0];
+			if ( dir == DIR_RIGHT && ComboX(cmbs[0]) == 240 ) return cmbs[0];
+			if ( dir == DIR_UP && ComboY(cmbs[0]) == 0 ) return cmbs[0];
+			if ( dir == DIR_DOWN && ComboY(cmbs[0]) == 160 ) return cmbs[0];
+			cmbs[0] += (combooffsets[dir]);
+			if ( cmbs[0] < 0 || cmbs[0] > 175 ) return cmbs[0];
+			if ( cmb % 16 == 0 ) combooffsets[9] = 1;
+			if ( (cmb & 15) == 1 ) combooffsets[10] = 1; 
+			if ( cmb < 0x10 ) combooffsets[11] = 1; //if it's the top row
+			if ( cmb > 0x9F ) combooffsets[12] = 1; //if it's on the bottom row
+			if ( combooffsets[9] && ( dir == DIR_LEFT || dir == DIR_LEFTUP || dir == DIR_LEFTDOWN || dir == DIR_LEFTUP ) ) return cmbs[0]; //if the left columb
+			if ( combooffsets[10] && ( dir == DIR_RIGHT || dir == DIR_RIGHTUP || dir == DIR_RIGHTDOWN ) ) return cmbs[0]; //if the right column
+			if ( combooffsets[11] && ( dir == DIR_UP || dir == DIR_RIGHTUP || dir == DIR_LEFTUP || dir == DIR_LEFTUP ) ) return cmbs[0]; //if the top row
+			if ( combooffsets[12] && ( dir == DIR_DOWN || dir == DIR_RIGHTDOWN || dir == DIR_LEFTDOWN ) ) return cmbs[0]; //if the bottom row
+		}
+		return cmbs[0];
+	}
+    else return -1;
+}  

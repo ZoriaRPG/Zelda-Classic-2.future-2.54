@@ -1,0 +1,1344 @@
+/// ZScript Arrays and Strings
+/// 12-JUNE-2016
+
+/// ! from Underdtanding ZScript Arrays
+
+Understanding Arrays in ZScript
+v0.4
+Author: ZoriaRPG
+
+Part I: Basic Usage
+
+In the simplest context, arrays are a series of variables, stored in memory as one large variable table. 
+Instead of each individual value occupying memory space, the entire aray (of any given size) uses
+the same amount of space as one normal variable.
+
+For example, here we have twelve variables that we would normally store as:
+	
+int x = 0;
+int y = 1;
+int z = 2;
+int dir = 3;
+bool flying = false;
+bool swiming = false;
+bool usingRing = true;
+int screen = 30;
+int dmap = 7;
+float spaceFree = 10.30;
+int hp = 64;
+int keys = 8;
+
+Each of these uses one 'slot' available to us, for a variable.
+	
+Instead of using twelve unique variables, we can condense this into one array. Because we have variables of
+each of the three main datatypes (bool, int, float), and because of the way ZScript handles both variable types,
+and typecasting, we can use one float array for all of them:
+
+float Vars[12]={0,1,2,4,0,0,1,30,7,10.3000,64,8};
+
+In this example, the first index (position Vars[0], holding a value of '0') would take the place of int x; above.
+The second, taking the place of int y; is Vars[1], holding a value of '1'.
+The third, taking the place of int z; is Vars[2], holding a value of '2'.
+The fourth, taking the place of int dir; is Vars[3], holding a value of '4'.
+
+The fifth, was originally a boolean, bool flying;. We have that in Vars[4], the fifth position, with a value of '0'.
+Because you can typecase from float/int to boolean, ZC will interpret a '0' here as 'false', and any other value as 'true'.
+
+The sixth, Vars[5], takes the place of bool swimming; Again, the value here is '0' (false).
+The seventh, Vars[6], takes the place of usingRing. Here, we've initialised it with a value of '1' (true).
+
+The eigHth, Vars[7] replaces int screen. We've initialised this with a value of '30'.
+The ninth, Vars[8], replaces int dmap, and is initialised with a value of '7'.
+
+For the tenth position, Vars[9], is replacing float freeSpace; and holds a value of '10.3000'.
+
+In this case, we are genuinely using a float. Because ZC uses ints and floats interchangably, it is best to 
+	use float arrays so that you may use all three datatypes in the same place.
+
+The eleventh position, Vars[10], replaces int hp;, and is initialised with a value of '64'.
+The twelvth, and final position, Vars[11], replaces int keys;, and holds a value of '8'.
+
+Indices:
+
+Positions in an array, are defined as 'indices' (singular: 'index'), a.k.a. 'elements' (singular: 'element'). 
+
+In maths, an array, or set, is noted by representing a series of limnked values between two curled braces, but it
+can often be more useful to imagine it as a table; in this case, of twelve SLOTS...
+
+Vars[][][][][][][][][][][][]
+
+The first position, is index '0', represented as Vars[0].
+
+When we reference that, we target index 0, which is the first slot, indicated here with a star:
+
+        Vars[*][][][][][][][][][][][]
+        ...
+            or in this SET , as '1' 
+                vars[12]= { 1,0,0,0,0,0,0,0,0,0,0,0 };
+                    ...
+                        This is how you will *initialise arrays*, which we will soon explore, so keep it in mind.
+
+The number between the braces is the index number, starting with '0': The last index of the array, is always 
+its size *less one*, so in the case of Vars[], the last inddex (or element, or slot), is eleven, and we reference it as
+Vars[11].
+
+In visual terms, that would be this slot (marked with a star):
+    When we reference that, we target index 0, which is the first slot, indicated here with a star:
+
+        Vars[][][][][][][][][][][][*]
+        ... again, in this SET, marked as '1'
+                vars[12]= { 0,0,0,0,0,0,0,0,0,0,0,1 };
+                
+Always remember that array index mumbering BEGINS AT ZERO, and ends at 'ARRAY SIZE - 1'. 
+    * This is critical in using the function, SizeOfArray(), and why we use <= when making loops based on the array size.
+            
+An array with 512 indices ( e.g. arr[512] ) will have indices arr[0] through arr[511].
+
+Unfortunately, we do not want to remember all of this using raw numerals to represent the array indices, on a regular basis.
+Instead, we want to asign some constants to these INDEX values:
+
+//Constant		Index
+const int POS_X 	= 0;
+const int POS_Y 	= 1;
+const int POS_Z 	= 2;
+const int DIR 		= 3;
+const int FLYING 	= 4;
+const int SWIMMING 	= 5;
+const int USINGRING 	= 6;
+const int SCREEN 	= 7;
+const int DMAP 		= 8;
+const int FREESPACE	= 9;
+const int HP		= 10;
+const int KEYS		= 11;
+
+In so doig, we can reference an array index using language, instead of numbers...
+
+The constant (on the left), matches the index number, on the right.
+Thus, Vars[DIR] is Vars[3], and Vars[KEYS] is the same as Vars[11].
+
+This is far more convienent, in that it makes your code easier to read (and comprehend), and that it makes it brutally easy
+to change the purpose of an index. 
+
+Say for example, that you make a lot of code that uses Vars[DMAP], and you decide that you (for whatever reason) wish to change
+the array index holding the value of vars[DMAP] from vars[8] to Vars[6]. If you did that, with *hardcoded values*, you would
+need to search through all of your code for every instance of Vars[8] (you are bound to miss some instances), and change
+every single one to read as Vars[6].
+
+With the values assigned as constants, and by always referencing them in your code using those constants 
+(i.e. always referencing this index as Vars[DMAP], and NEVER as vars[8]. all you need do is change the conatant:
+const int DMAP = 8
+...to
+cont int DMAP = 6.
+
+THen, every instance in your code that calls that index will be automatically updated when you compile.
+
+Using *well-named* constants will also healp you immensely when debugging your code, as it's easy to become lost in a sea of 
+numbers in braces.
+
+//! Initialising Arrays with SETS
+
+//A set is represented hen declaring an array, as a series of numbers, separated by commas, beteen a paid of curly braces:
+{    }
+
+
+
+
+
+////////////!!! FINISH SECTION
+
+Im the following example, the number between the braces [ x ] is the index, whereas the corresponding value
+between the curly braces, is the value OF that index, so:
+
+float Vars[12]={0,1,2,5,0,0,1,30,7,10.3000,64,8};
+
+Vars[DIR] is INDEX 3, which is the FOURTH position here, holding a value of '5'.
+
+The value of INDEX 9 (Vars[9]), is the tenth position here, and is '10.3000'.
+
+
+Assigning constants allows us to access information in the array, using that constant, to represent the index 
+number, so that we never again need to remember it.
+
+Thus, Vars[KEYS] is the same as Vars[11].
+
+Thus, we can wasily make a call using the information int he array, as we would a normal variable:
+
+if ( Vars[SWIMMING] ) 
+	
+would be used, instead of if ( swimming )
+
+...
+
+Of course, sometimes the name of an array can be long, and we don;t always want to type all of that out in detail,
+so we instead, use a special function, designed to read into the array, as a shortcut:
+
+float Is(int pos){
+	return Vars[pos];
+}
+
+This function returns the value of Vars[ pos ]. It accepts one argument ('pos') and passes that argument to the return 
+instruction, so that we may call:
+
+if ( Is(SWIMMING) )
+
+This is identical to calling ( if Vars[SWIMMING] ) because we are passing the constant 'SWIMMING' to the 
+function as an argument, and it is using that constant when returning the value held in that array index.
+
+Now, that usage is as a boolean, but we can also do:
+	
+if ( Is(DMAP) > 20 ) 
+	
+That is a fully valid expression, and because Vars[DMAP] will return a value of '30', the expression is evaluated 
+as 'true'. 
+
+We can also invert this, with a not ( ! , bang ) :
+
+if ( !Is(DMAP) > 20 )
+	
+The value held in Vars[DMAP] is still 30, so this would evaluate as 'false'.
+
+Those are some basic models, for using arrays. 
+	
+Likewise, we can also create a function to store, or change a value in an array:
+
+void UpdateSwimming(float set){
+	Vars[SWIMMING] = set;
+}
+
+Using this:
+
+UpdateSwimming(1);
+
+This changes the value of Vars[SWIMMING] from '0' to '1'.
+
+void AddKey(){
+	Vars[KEYS]++;
+}
+
+//Adds +1 to Vars[KEYS].
+
+
+//////////////////////////
+/// Part II: For Loops ///
+/////////////////////////////////////////////////////////
+/// The 'for loop' is one of the most powerful tools at your disposal, particularly when dealing with arrays.
+/// In conrast to a while loop, that runs while a condition is evaluated as true, or false, a FOR LOOP runs
+/// **for** a specific duration, expressed as follows:
+
+for ( int i = 0; i < min; i++ )
+
+/// In this example, we create a for loop, starting at 0. It runs, increasing the value of 'i' each cycle
+/// until i == min.
+
+
+A for loop, has three components. The base declaration (int i = 0 above), followed by a separator ';'.
+Then, the operating limit, declared as i < min above, where min is an external variable, followed by the separator ';'.
+Finally, an operational factor (increment, or decrmement; stated above as i++, which increases the value of 'i'
+each pass. Thus, the loop will run through every index of the array, allowing you to perform batch operations.
+
+/// Note: If you have an external variable that you wish to use as the main variable in a for loop, you can do this:
+int i = 10;
+for (; i < 0; i--)
+
+/// The already-declared value of 'i' (10) us used here. Instead of declaring it in the for loop, you may just add a leading separator ';'
+/// and the rest of the instructions follow.
+
+/// This is useful when you are running multiple loops that operate on one main variable; but this is a rare occurence.
+
+// ! Iteration 
+
+Here is a practise routine, to learn, and practise making arrays for use
+with iterative for loops:
+
+First, a reminder: Many of the internal ZScript variables, are arrays. 
+In this example, we will make use of Link->Counter[], which is an array
+with a size of [32]. 
+
+Here is a list of the indices used by Game->Counter[32]:
+
+Game->Counter[32]=
+        {   CR_LIFE,        CR_RUPEES,      CR_BOMBS,       CR_ARROWS,      
+            CR_MAGIC,       CR_KEYS,        CR_SBOMBS,      CR_SCRIPT1,     
+            CR_SCRIPT2,     CR_SCRIPT3,     CR_SCRIPT4,     CR_SCRIPT5,  
+            CR_SCRIPT6,     CR_SCRIPT7,     CR_SCRIPT8,     CR_SCRIPT9, 
+            CR_SCRIPT10,    CR_SCRIPT11,    CR_SCRIPT12,    CR_SCRIPT13,
+            CR_SCRIPT14,    CR_SCRIPT15,    CR_SCRIPT16,    CR_SCRIPT17,    
+            CR_SCRIPT18,    CR_SCRIPT19,    CR_SCRIPT20,    CR_SCRIPT21,    
+            CR_SCRIPT22,    CR_SCRIPT23,    CR_SCRIPT24,    CR_SCRIPT25     };
+            
+Knowing that each player uses 32 indices to hold their stats, we will set a constant for that, so that we may call it in our loops.
+This is extremely prudent, as if we expand the size of any given set, we can simply update the value of this one consstant.
+rather than updating any instance sof a hardcoded value for it.
+
+const int PLAYER_STATS_INDICES_PER_CHAR = 32;
+
+For this example, let us presume that we will be making a quet with three player characters: Link, Marty, and Jennifer.
+
+in  doing, we have a function that sets the present character:
+    void SetPlayerChar(int character_id); //Sets the present (selected character) to character_id.
+...
+and a function to read the present player character:
+    int getPlayerChar(); //Returns the ID of the present (selected character)
+    
+    
+//Constant for the backup set of values 
+
+
+We know that we use 32 values to store the counters for Link, and as we will be needing a backup set for each character, 
+we'll be using a routine to store, and read the backup values. The number of these will be the same as the number of main
+values, so in addition to the 32 counter values, we'll need another 32 to hold backups.
+
+Therefore, we make a constant with the offset (the first index that wills tore a backup value). In this case, the offset is 
+'32', as we use indices 0 through 31 for the first set of values, and indices 32 through 63 for the backups. 
+
+In this way, we can make a function that calls : index+PLAYER_STATS_BAK 
+
+//Sets the backup value of a single stat in the array t a specified value.
+void SetStatBackup(int stat, int val){
+    PlayerStats[stat+PLAYER_STATS_BAK] = val;
+}
+
+
+In sl doig, we can easily modify the values stored in this subset of the main array, by using this OFFSET as an adjustment.
+
+const int PLAYER_STATS_BAK = 32; //32 attribs duplicated, = +32
+
+//! Constants for the characters
+const int CHARACTER_LINK = 0; //32 indices for stats, plus 32 backups = indices 0- through 63.
+const int CHARACTER_MARTY = 64; //Link's indices end at 63, so the next index becomes the FIRAT INDEX of the next character.
+                                //...thus, index 64 is the '0' index for character 2. THis means that we can reference in in for loops
+                                //without needing to make special adjustments tot he loop. The loop remains the same size, and calls
+                                //using the Marty's constant, so instead of starting at zero, the loop starts at 64.
+                                //Marty uses indices 64 through 127.
+const int CHARACTER_JENNIFER = 128; //Likeise, the next player starts at index 128. THe size used by any one of the characters is 64 indices.
+                                    //Therefore, our required array size is 64* ( number of characters ) 
+                                    //In this example, we have three characters, so the array size is 64 * 3, or 192.
+                                    
+float PlayerStats[192];
+
+
+
+//! Making an interation function using this array, and comstants.
+
+Now, let's use a for loop to make a function t store the present values of each counter, into the backup slots in the array.
+
+void BackupPlayerStats(int char_id){
+    for ( int q = 0; q <= PLAYER_STATS_INDICES_PER_CHAR; q++ ){
+        PlayerStats[char_id+q+PLAYER_STATS_BAK] = Game->Counter[q];
+    }
+}
+
+In this example, we use our offsets, tp copy the entire set of counters from Game->Counter[q] to the backup set
+for any character. 
+
+Let's break that down:
+
+The function uses char_id as an input to define what character to use, so let's consider that we're using marty.
+
+We assigned Marty an offset of 64, in the constant CHARACTER_MARTY, so we'll call the function as follows:
+
+BackupPlayerStats(CHARACTER_MARTY);
+
+As an instruction, this would become:
+
+for ( int q = 0; q <= PLAYER_STATS_INDICES_PER_CHAR; q++ ){
+        PlayerStats[CHARACTER_MARTY+q+PLAYER_STATS_BAK] = Game->Counter[q];
+}
+
+Let's further break this down,a nd see how these constants are doing our work for us:
+
+PLAYER_STATS_INDICES_PER_CHAR = 32
+CHARACTER_MARTY = 64
+PLAYER_STATS_BAK = 32
+
+Thus, our for loop would look like this, with hardcoded values:
+for ( int q = 0; q <= 32; q++ ){
+        PlayerStats[64+q+32] = Game->Counter[q];
+}
+
+Therefore, if we assume that q = 0l as it would on the first pass, the value of Game->Counter[CR_LIFE] will be copied into
+PlayerStats[64+0+32]
+...or
+PlayerStats[96]
+
+That's precisely where we want it, and the function will copy the values of ALL 32 COUNTERS  T THEIR RESPECTIVE POSITIONS
+in the array, in one stroke.
+
+Nnote however, hw useful our constants have become...
+
+If we need to change the number of total indixes, or the offsets, for anything, all it takes is adjusting one constant, rather
+than chasing down hardcoded values.
+
+Note also how the use of a constant for the character offset allows us to use the same function to back up the stata for any
+of our three chARACTERS, BY CALLING that function and using the named constant for the desired character as its argument:
+
+BackupPlayerStats(CHARACTER_LINK);
+
+That would do precisely the same backup, again, in one command, reading every counter, and backing the up, but for the Link character.
+No additional function is needed, all action is swift, and it is stored int he same array as Marty's information, in its own 
+block of indices.
+
+See how the maths change. using the Link constant... For Marty, the information was stored in indices 96 through 127, but
+for Lin, with a character ID offset of zero:
+
+for ( int q = 0; q <= PLAYER_STATS_INDICES_PER_CHAR; q++ ){
+        PlayerStats[CHARACTER_LINK+q+PLAYER_STATS_BAK] = Game->Counter[q];
+}
+
+PLAYER_STATS_INDICES_PER_CHAR = 32
+CHARACTER_LINK = 0
+PLAYER_STATS_BAK = 32
+
+Thus, our for loop would look like this, with hardcoded values:
+for ( int q = 0; q <= 32; q++ ){
+        PlayerStats[0+q+32] = Game->Counter[q];
+}
+
+This stores his datum in indices 32 through 63. 
+
+Thus, the table looks like this:
+
+Game->Counter[32]
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+-----> Copied into:
+
+//Playertats[192]                                                //Values                   ( Indices )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //Link Main Stats          ( 0 to 31 )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //Link Backup Stats        ( 32 to 63 )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //MARTY's Main Stats       ( 64 to 95 ) 
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //MARTY's BACKUP Stats     ( 96 to 127 ) 
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //Jennifer's Main Stats    ( 128 to 159 )
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] //jennifer's Backup Stats  ( 160 to 191 )
+
+
+//! WhaT IF WE WANT TO ADD ANOTHER CHARACTER
+//Add another conatnt for it
+
+//! Why to make arrays larger than needed.
+
+
+///////////////////////////////
+//// SizeOfArray() Function ///
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Another critical component when using for loops, with arrays, is the function SizeOfArray(int array).
+To use this, you specify the aray ny name as the argument for SizeOfArray(). Thus, if you are checking
+against the aray Vars[12], you instruct as follows:
+
+for ( int q = 0; q <= SizeOfArray(Vars); q++)
+
+/// SizeOfArray() always uses one argument, the identifier name of the array, as declared. You enter this as the name only
+/// without braces. Thus, SizeOfArray(Vars) is correct, **not** SizeOfArray(Vars[]).
+
+/// You need to ensure that you use <= or >= here, so that the last, or first index position is read.
+/// ***An alternative to this, a custom function in RPG.zh, Array(int arr) simplifies this, by automatically adding +1 to the array size.
+/// If you use my custom Array(int arr) function, you can use < or > as normal.
+
+/// With an array, you want to run loops like this:
+
+for ( int q = 0; q <= SizeOfArray(arrName); q++ )
+
+/// This will run a loop, starting at index '0', until the loop reaches the last index of the array.
+
+/// You may also decrement the loop, as follows:
+
+for ( q = SizeOfArray(arrName); q >= 0; q-- );
+
+/// Normally, you want an increment type (var++) return; as this reads indices starting at '0' and is useful
+/// in performing Trace() functions, based on the pass. 
+/// However, should you want to run special decremented versions, for a particular application, you may do this.
+
+/// You may also specify a specific starting index, and a specific decrment.
+/// Thus, if you have:
+
+int Table[100]; and you want to read each TENTH position, you would do:
+for ( int q = 0; q <= SizeOfArray(Table); q+10 )
+ ...which will return index 0, 10, 20, 30, 40, 50, 60, 70, 80, and 90.
+
+/// You may also begin reading at a specific index:
+for ( q = 10; q <= SizeOfArray)Table); q+10 )
+...which will return values of index 10, 20, 30, 40, 50, 60, 70, 80, and 90.
+
+/// For the interim, you need only worry about incremental arrays, starting at 0,a nd reading the entire array.
+
+//////////////////////////
+/// Why this is useful...
+/// Practical Applications
+///
+/// Let's say that you have an array, acting as a table of enemies possible on a screen.
+/// ...and you want to check is a given screen enemy is from that table:
+
+int EnemyTable[10]={3,16,17,18,24,27,40,45,60,131};
+	for ( int q = 1; q <= Screen->LoadNPCs(); q++ ) { //Reads all enemies on the screen.
+	npc enem = Game->LoadNPC(q); ///Uses the present value of 'q' (the pass number), to identify a specific NPC.
+	for ( int w = 0; w <= SizeOfArray(EnemyTable); w++ ){
+		int listenem = EnemyTable[w]; //Assigns the value held in the index of EnemyTable, at the current pass to a variable.
+		if ( enem->ID == listEnem ) { //If the present pass reading screen enemies, matches a value in the array holding enemy numbers...
+			enem->HP = 100; //Changes that enemy's HP to 100.
+		}
+	}
+}
+
+/// This is an example of a NESTED FOR LOOP. The main loop (operating on variable q) is running, and in each
+/// pass of that for loop, a SECOND for loop checks the array EnemyTable, operating on the value 'w'.
+/// If the value of EnemyTable[w] matches the value of LoadNPC[q], it gives it 100 HP.
+
+/// This is a prime example of how to use for loops with arrays, to accomplish a goal.
+/// You can next as many for loops as you want. 
+/// Without a Waitframe() instruction in a for loop, all of its passes occur in ONE FRAME. You want this
+/// for these types of operations; but not for DRAWING commands (to be explained in 'How To: Draw Commands').
+///
+///
+
+
+/////////////////////////////////////////////////////
+/// Part III: Building and Using Table Structures ///
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+We have covered using arrays to do basic checks, but what if you want to check a host of things, by making a 
+	table, such as matching XP to a given enemy by ID, and assigning drops?
+
+To do this, we need to make the array a 'virtual structure'.
+	When doing this, imaging making a table in a spreadsheet:
+
+int EnemTable[100] = { 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			
+Here, we essentially have a structure/table, with ten rows. Each row has ten elements, for a total of 100 indices.
+In this case, we will start with that each property is for the first row (indices 0 to 9):
+
+Index 0: Enemy ID
+Index 1: Enemy HP
+Index 2: Enemy Tile
+Index 3: Enemy CSet
+Index 4: Enemy X
+Index 5: Enemy Y
+Index 6: Enemy Direction
+Index 7: Enemy touch damage.
+Index 8: Enemy Weapon
+Index 9: Enemy Weapon Damage
+
+Now, each of the nine following rows, will maintain the same information for an additional enemy. 
+	Thus, we can store all ten of these details, for ten enemies, in one structure. 
+		
+Next, we need to assign constants:
+	
+const int ENEMYROW = 10; //This is used in combination with PASS, in calculating table position.
+
+//Table Columns: Each of these corresponds to a virtual 'column' in our structure. 	
+const int ENEMY_ID = 0;
+const int ENEMY_HP = 1;
+const int ENEMY_TILE = 2;
+const int ENEMY_CSET = 3;
+const int ENEMY_X = 4;
+const int ENEMY_Y = 5;
+const int ENEMY_DIR = 6;
+const int ENEMY_TOUCH = 7;
+const int ENEMY_WEAP = 8;
+const int ENEMY_WDAMAGE = 9;
+	
+Let us assume that we want to read something from this array. 
+
+	
+int pass = 0;
+for (; pass <= SizeOfArray(EnemTable); pass++){
+	npc enem = Game->LoadNPC(q); ///Uses the present value of 'q' (the pass number), to identify a specific NPC.
+	enem->HP = EnemTable[pass*ENEMYROW + ENEMY_HP];
+}
+
+//This uses the variable pass, as a basis. For the first ten screen enemies, we change the HP of those enemies to 
+//the value of EnemTable[ENEMY_HP] for each row (0 to 9).
+
+We use basic math, for the main calculations in specifying the array index in the for loop:
+	pass (starting with 0, ending at 9) is the base value, multiplied by ENEMROW (a value of 10).
+Thus, on the first pass, the first value in the calculation [EnemTable pass*ENEMROW] is 0, the next pass, '10'
+and so forth.
+
+The second part of the calculation, is '+ENEM_HP'. This moves the pointer, from index 0 on the first pass, 
+to index 1 on the first pass (the enemy HP for the first row).
+
+On the next pass, the value of the variable 'pass' becomes '1'. 
+
+Thus, we calculate: EnemTable[pass*10 + ENEM_HP]
+as
+EnemTable[1*10 + ENEM_HP]
+...or...
+EnemTable[10 + ENEM_HP]
+...or...
+EnemTable[11].
+
+..thus assigning the value held in EnemTable[11], HP for the second row, to that enemy.
+	
+Using rows, and columns as constants, we can perform calculations with our for loops, and assign the needed 
+datum en masse. 
+
+	///////////FINISH THIS SECTION
+
+Now, we set up a for loop, that
+	
+for ( int pass = 0; pass
+
+         ////////////////////////////
+
+//////////////////////////////////////
+///            Part IV             ///
+///  COLUMS, and ROWS = STRUCTURES ///
+//////////////////////////////////////
+
+Traditional programming languages allow the user to make *structures*, which you can think of, as arrays built 
+out of arrays. These fall into a few categories, including the 2D array, and 3D array. I shall explain both of 
+those presently, but it is important to note that NEITHER are POSSIBLE with ZC.
+
+A 2D array is built like this:
+
+int Table[5]={ int characters[20], int powers[50], int spells[100], int items[256], int statistics[9] };
+
+A 3D array might look like this:
+
+
+int Table[5]={ int characters[20], int powers[50], int spells[100], int items[256], int statistics[3]={ int Mental[2], int Physical[2], int Spiritual[3] } };
+
+My goodness, that looks complicated; hmm?
+
+Well, the way it works, is that each of those, has arrays, inside arrays, allowing someone to cross-index 
+elements easily.
+
+In ZC, we can;t build structures, but we can develop TABLES that work in a way that is useful, to bind together 
+related bits of information.
+
+Let us say that you want to make a structure, that has 20 characters.
+Each character, can have 50 powers, 100 spells, 256 items, and nine total statistics. 
+
+Instead of storing all of these in many small arrays, we can out them ALL into ONE array.
+
+Then you ask, 'How will we ever find anything? Won;t it be too confusing?'
+
+The short answer, is 'No, not confusing to use', but it does require some set-up.
+
+The first thing that we do, is to determine the total number of variables PER CHARACTER:
+
+We may need 
+
+Add up the total nunber of additional fields that we will need. In this case:
+powers : 50
+spells : 100
+items: 256
+stats : 9
+
+-------------
+415
+
+
+THus, we need 415 index positions, PER CHARACTER< to store everything.
+
+Now, we need to put up some constants, as identifiers for where each set of values starts:
+	
+const int POWERS = 0; //This starts at arr[1], and ends at arr[50]
+const int SPELLS = 50; //This starts at arr[51] and ends at arr[151]
+const int ITEMS = 150; //This starts at arr[151] and ends at arr[406]
+const int STATS = 405; //This starts at arr[406] and ends at arr[415]
+
+These form our MAIN IDENTIFIER constants!
+
+Now, let us look at our array:
+
+CharStats[415];
+
+CharStats, now holds enough information, to store the datum for one character. 
+	We shall call this ONE ROW of datum. 
+
+The next step, is to start giving useful constants to the indivisual elements. 
+
+***We DO NOT want to do this by their exact array index position!***
+	
+Instead, we want to give them more logical values, AS IF they were in THEIR OWN arrays.
+
+Thus, 
+/// Powers
+const int FLIGHT = 0;
+const int HEATVISION = 1;
+const int SUPERSTRENGTH = 2;
+const int SUPERSPEED = 3;
+const int XRAYVISION = 4;
+const int PHASING = 30;
+///etc
+
+/// Spells
+
+const int FIREBALL = 0;
+const int RAYOFFROST = 1;
+const int DEATHBOLT = 2;
+const int DOOMFINGER = 3;
+const int RECOVERY = 4;
+const int DRAGONSLAVE = 80;
+const int NIGHTFALL = 91;
+///etc
+
+/// Items
+const int IT_SWORD = 0;
+const int IT_LASERGUN = 1;
+const int IT_POTLAUNCHER = 2;
+const int IT_BATARANG = 3;
+const int IT_CRIBBAGEDECK = 4;
+const int IT_LUCKYCOIN = 50;
+const int IT_ATOMICBOMB = 201;
+//etc
+
+/// Stats
+const int MUSCLE = 0;
+const int STAMINA = 1;
+const int AGILITY = 2;
+const int BALANCE = 3;
+const int SPEED = 4;
+const int INTELLECT = 5;
+const int SOUL = 6;
+const int PERCEPTION = 7;
+const int INFLUENCE = 8;
+
+//!* These form our GROUP IDENTIFIER constants.
+
+Now, we can COMBINE these constants, in each groupm with one of the MAIN IDENTIFIER constants like this:
+
+POWERS+DEATHBOLT
+
+Thus, ( POWERS = 0 ) + ( SUPERSPEED = 3 ) = 3. Index position 3 is the spell, the Super Speed Power.
+
+SPELLS+DRAGONSLAVE
+
+Thus, ( SPELLS = 50 ) + ( DRAGONSLAVE = 80 ) = 130. index position 130, is the spell, Dragonslave.
+
+ITEMS+CRIBBAGEDECK 
+
+Thus, ( ITEMS = 150 ) + ( CRIBBAGEDECK = 4 ) = 154. Index position 154 is the Cribbage Deck item.
+
+STATS+SOUL
+
+Thus, ( STATS = 405 ) + ( SOUL = 6 ) = 411. Index position 411, is the value of the Soul stat.
+
+
+To access this, for our character, we would do:
+	CharStats[ITEMS+CRIBBAGEDECK] = x;
+
+This would set the value of the cribbage deck item, to X.
+
+In an statement: if ( CharStats[POWERS+BEATHBOLT] ) {
+			//Do something
+	This would evaluate if index 155 has a value of 0, or a non-zero value. 
+
+Thus, not only have we set up COLUMNS for the individual items, spells, and powers, but we have set up a 
+	structure so that we can access them as GROUPS.
+
+Yet, we have twenty characters. Does this mean that we need twenty arrays with all this information in each?
+
+Thankfully, no. There is a safe, easy, and simple way to handle all twenty of our marching men.
+
+Multiply the index size of the array, by 20:
+Each row is for a single character, so we make 20 (virtual) ROWS.
+	
+Thus, we change: CharStats[416];
+to
+CharStats[8320];
+
+(Note: You cannot declare an array using a formula, or a constant. the number between the braces [ ] needs to be
+a numeral in ZC. Thus, CharStats[8320]; is valid, but CharStats[416*20]; is not valid. You **can do this**
+when *USING* an array, but **not** when *declaring* it)
+
+Now that we have CharStats[8320]; we may proceed, to assign constants to our characters:
+
+const int CHAR_MURRAY = 0;
+const int CHAR_LARRY = 1;
+const int CHAR_CURLEY = 2;
+const int CHAR_MOE = 3;
+const int CHAR_SHEMP = 4;
+const int CHAR_CLARK = 5;
+const int CHAR_ANNA = 6;
+const int CHAR_LEXI = 7;
+const int CHAR_SAM = 8;
+const int CHAR_LUCY = 9;
+///etc
+
+Now, at last, we have COLUMS (GROUPS, and SUBGROUPS), and ROWS.
+
+To find something in this table, for a *SPECIFIC CHARACTER*, we need one more, CHARACTER_ID, and we do this:
+
+Thus, we declare a constant:
+
+constant int CHARACTER_ID = 416;
+
+That is fair enough. We can read into an array, using CHARACTER_ID, and always return the value of arr[416].
+
+'Wait', you ask.., 'how does that help us?'
+
+This little gen of an identifier, allows us to use multiplication inside the index fields, when we want to *USE*
+the array.
+
+
+Note, that this is not the character NAME, it';s a token that we're goint to use to index all twenty ROWS:
+( CHARACTER_ID * CHAR_MURRAY ) == ( 416 * 0 ) 
+This puts our magic pointer, at index 0, which is where all the things associated with Character Murray, 
+begin (at row '0'). 
+
+( CHARACTER_ID * CHAR_MURRAY ) + SPELLS + FIREBALL 
+This puts us at the index of the fireball spell, for Murray.
+
+( CHARACTER_ID * CHAR_MOE ) == ( 416 * 3 ) 
+This puts us at the start of the attributes for Moe. Thus, pointing us to row 3 (the fourth row, as we count 
+	from zero).
+( CHARACTER_ID * CHAR_MOE ) + ITEMS + IT_LUCKYCOIN 
+This points to the index of the lucky coin item *FOR* Moe. 
+
+Let us see that in math:
+
+ CHARACTER_ID * CHARACTER_MOE = 1248
+ITEMS + IT_LUCKYCOIN = 200
+
+Therefore, we're using these token words, to point to index 1448. We don't need to remember that value, ever, 
+ever. 
+We only need to remember our special CONSTANTS, and use them wisely. 
+
+if ( CharStats[ ( CHARACTER_ID * CHARACTER_LUCY ) + ITEMS + ATOMICBOMB ] && CharStats[ ( CHARACTER_ID * CHARACTER_SHEMP ) + POWERS + SUPERSPEED ] ) {
+	//The world is over. 
+	
+void SetCharItems(int character){	
+	int pass = 0;
+	for ( int q = ( (CHARACTER_ID*character) + ITEMS); q < (q + 255); q++ ) {
+		if ( CharStats[q] && !Link->Item[pass] ) {
+			Link->Item[pass] = true;
+		}
+		if ( !CharStats[q] && Link->Item[pass] ) {
+			Link->Item[pass] = false;
+		}
+		pass++;
+	}
+}
+
+///**************************************************************************************
+
+/// Arrays_Tutorial_Ext
+
+//We make two arrays, for Relatives, and Relations
+
+int Relatives[10];
+int Relations[10];
+
+//We map constants for Relatives, with the first index used as temp memory.
+const int MEMORY = 0;
+const int MUM = 1;
+const int DAD = 2;
+const int GRAN = 3;
+const int GRAMPS = 4;
+const int SIS = 5;
+
+//..and repeat bfor Relations. MEMORY is pre-defined as Index[0] and will remain valid for both arrays. 
+const int HARRY = 0;
+const int LIZ = 1;
+const int TOM = 3;
+
+//..and set some states. 
+const int ALIVE = 1;
+const int DEAD = 0;
+
+void ( CheckLivingStatus(){ //We can accept inputs here, which we can type as English text, too...see below.
+	if ( Relatives[MUM] == ALIVE ) Relatives[MEMORY] = MUM;
+	if (Relations[HARRY] == ALIVE 0 ) Relations[MEMORY] = HARRY;
+}
+
+void ( CheckLivingStatus(int relative, int relation){ //We can accept inputs here, which we can type as English text, too...see below.
+	if ( Relatives[relative] == ALIVE ) Relatives[MEMORY] = relative;
+	if ( Relations[relation] == ALIVE ) Relations[MEMORY] = relation;
+}
+
+//Now we combine them
+
+int Relatives[20];
+
+const int MEMORY = 0; //We ret5ain the MEMORY index, as a catch-all, then...
+const int MEMORY_RELATIVES = 1; //Add a specific one for relatives, and...
+const int MEMORY_RELATIONS = 2; //...a specific one for relations, so that we can segregate them, as we did above. 
+
+//We adjust the index constants as needed\, merging them.
+const int MUM = 2; 
+const int DAD = 4;
+const int GRAN = 4;
+const int GRAMPS = 6;
+const int SIS = 7;
+const int HARRY = 8;
+const int LIZ = 9;
+const int TOM = 10;
+
+//Status remains unchanged.
+const int ALIVE = 1;
+const int DEAD = 0;
+
+//Then we do Search and Replace, as follows:
+// Find Relatives[MEMORY]
+//...replace with Relatives[MEMORY_RELATIVE]
+
+// Find Relations[MEMORY]
+//...replace with Relatives[MEMORY_RELATION]
+
+// Find Relations[
+//...replace with Relatives[
+
+//! Changed Code! If this was thousands of lines, that made calls to these arrays,
+//it would take hours, or days to change it if we used fixed values, but we can do it
+//mere *seconds* this way.
+
+void ( CheckLivingStatus(){ //We can accept inputs here, which we can type as English text, too...see below.
+	if ( Relatives[MUM] == ALIVE ) Relatives[MEMORY_RELATIVE] = MUM;
+	if (Relations[HARRY] == ALIVE ) Relatives[MEMORY_RELATION] = HARRY;
+}
+
+void ( CheckLivingStatus(int relative, int relation){ //We can accept inputs here, which we can type as English text, too...see below.
+	if ( Relatives[relative] == ALIVE ) Relatives[MEMORY_RELATIVE] = relative;
+	if ( Relatives[relation] == ALIVE ) Relatives[MEMORY_RELATION] = relation;
+}
+
+
+//You'll see here, that both are absolutely identical in operation, but we use
+//one fewer gd register, by merging the arrays.
+
+//Because we have the variables assigned to constants, we can do code changes more freely,
+//and we can assign the constants to appropriate array indices on-the-fly, before compilation. 
+
+
+///*******************************************************************************************
+
+/// Arrays for Global Vars
+
+Use Arrays Instead of Global vars to Avoid Save File Problems
+Tags: scripting, arrays, save file, global, variables, strings, cheat limitations. 
+
+[u][b]How to Use Arrays, Instead of Global Vars [/b][/u]
+[i]....to Avoid Needing New Save Files When Updating a Quest[/i]
+ 
+As some of you may know, if you add a global variable to a quest, when modifying your scripts, it will necessitate a new save slot for your quest. Failing to use a new (fresh) save slot, will almost assuredly mean that whatever you added, won;t work.
+ 
+Coupled with this, is the nasty problem of a limit of 255 global variables--in practical terms, because of how the ZASM registers work, half of that, for around 128 (!) at most.
+ 
+In this tutorial, I'm not only going to teach you how to use arrays and constants to avoid both of these pitfalls, but also a few other tips, and tricks for using 'global strings' without eating up global registers, and how to use constants, coupled with a few handy functions, to make it all work as if it were simple, ordinary variables--at least as much as possible.
+
+The most crucial point to understand, is that when you declare an array, ZQuest reats it as a single global variable, no-matter what index size you assign to it. In addition, arrays are dynamically read, and written, so you won;t need to worry about a large array slowing ZC down to a crawl. It's no slower than any other variable usage, in general, or in practise. 
+
+THus, the first step, is to consider how many global variables you will ever need, and then multiply that, by a factor of no less than ten. Trust me, plan ahead and you won;t have regrets about not doing it, later. 
+
+For this purpose, I tend to declare this sort of array with a size of NO LESS than 8192. 
+
+'8,192!?', you ask, 'I will never need that many variables!'. Probably not, but why not play it safe, and assume that you may, hmm?
+
+So, let's go ahead and make that array. For the purose of this article, we'll call it GameVariables:
+
+[code]
+float GameVariables[8192];
+[/code]
+
+Before we get into this too deeply, let's examine how ZC pre-allocates space for your global variables, and arrays...
+
+//! Explaining Arrays and variables for Dummies
+Often, newcomers, and veterans alike may have trouble comprehending how variables (including arrays) are stored. I'll try to 
+simplify this with a metaphoric explanation...
+
+Imagine that ZC has 255 'postboxes'. Each one can hold a value, and they are numbered from 1 to 255. 
+
+Each time you declare a global variable, or a global array, it is assigned a 'postbox'. That 'postbox' is then stored in the
+quest save, both as being used, and as having an address number.
+
+Thus, let's say you declare this:
+
+int myvar;
+int myvar2;
+int myvar3;
+
+Each of these three declarations is given its own postbox. They are assigned an address NUMBER IN THE ORDER IN WHICH YOU DECLARE THEM, 
+so myvar is postbox 1, myvar2, is postbox 2, and myvar3 is postbox 3. 
+
+When you are done, and load this quest, ZC will read these, and PERMANANTLY allocate a postbox to them, in the SAVE FILE. 
+
+The rest of the available 252 postboxes are set to store TEMPORARY values, like sorting bins. They can;t be used to hold
+any permanant value. 
+
+Therefore, if we start the game, boxes 1, 2, and 3, are locked to the address (pointer IDs) of the declared variables.
+
+If you later go in and add int myvar4, recompile, and save the quest file, the quest file ITSELF will have an address for 
+postbox 4, but because it did not exist when you saved the game, ZC won;t know how to deliver post to it!
+
+Next, we must consider how an array (of any type) is stored. 
+
+Let's say that you declare MyArray[256]; That is, an array with 256 indices, numbered from 0 to 255. 
+Each of those indices is like its own little postbox, but RATHER THAN using one of the main postboxes for each index, 
+ZScript stores ALL of the indices in one of its postboxes. So, picture it like a big postbox, with many small compartments inside, each directed to a flat (apartment) number. 
+The array itself is in the address '4', but the indices are in 4-0, 4-1, 4-2, 4-3, and so forth, through 4-255. 
+
+This means that we can safely tuck 256 variables into one postbox. 
+
+Where this matters, is that you can declare a very large array--one with far more space than you believe that you need. I usually make these a size of 4096, which looks like this
+when declaring it:
+
+float ArrayName[4096];
+
+That is 4096 compartments, in one postbox. Each of the indices 'compartments' is given its own address too, when created, so, if you want to make it BIGGER by adding compartments (indices) later, you can;t.
+This is why we want to start big: Far bigger than we need, as the indices that you do not use, don;t actually take up any extra space. 
+
+Now, you will probably not need that many--although very complicated scripts certainly MAY--but the nice thing is that while ZScript cannot add more postboxes or compartmwnts
+later, BECAUSE the compartments are already there, just not in use, it can assign them to new 'tenants' that need to occupy their space.
+
+Thus, if you later need to add variables, you can do so, SAFELY, without needing a new save file, as the compartments to store
+whatever you want to store in then, have already been allocated. They're just waiting to be occupied. Thus, by making the array OVERSIZED< we ensure that we have room for FUTURE EXPANSION. 
+
+
+Wait a moment, you may be thinking. Why did you make that a float, and what do I do when i need booleans? The answer to both of these questions, is that you never* need to declare a boolean array. I learnt that lesson the hard way, and I'm saving you time, right here and now. ZC treats floats, when returning values, juis as it woud for both ints, and bools. The ZC typecasting will treat any 0-value as 'dfalse', and any non-zero value as 'true', so that takes care of your booleans. As for ints, you can always store an int, in a float type variable, or array in ZScript. The reverse however, is NOT true. If you make the array an int type, then you will not be able to store the decimal portion of floating point vakues in it. Thus, by starting with a float declaration, we can safely use all three types at our leisure. 
+
+Use of Constants
+
+One of the common complaintd with array usage, is that it's harder to remember what something like MyVars[1240] is, or does. That is absolutely true, and in fact, it's highly advisable not to HARDCOSE numeric values when calling these indices to read them.
+
+Instead, we make it easy, by declaring constants, with a name that helps us esaily identify what the index holds.
+
+let's say for example, that an array index, maybe 1260, holds the ID of the last item Link used. Wehat we do here, is declare a constant with a USEFUL NAME
+such as:
+
+const int LINK_LAST_A_ITEM = 1260;
+
+Now, instead of calling MyVars[1260] we can instead, call MyVars[LINK_LAST_A_ITEM]
+
+This has multiple :
+
+it makes code easier to read. Instead of a garbled mess of numbers, we now explicitely state what the value is that we want to read, or modify
+when we call it.
+
+It makes it easier to change things. if you want to add a variable, but you want it in index 1260, say
+const int LINKS_PANTS = 1260;
+
+...you can MOVE the references in ALL of your scripts to MyVars[LAST_A_ITEM_USED] simply by changing the value assigned TO THE CONSTANT. Thus, is we now want 
+LINK_LAST_A_Item to use Array index 3011, we change:
+
+const int LAST_A_ITEM_USED = 1260;
+to 
+const int LAST_A_ITEM_USED = 3011;
+
+When we recompile, every reference in all of your scripts to MyVars[LAST_A_ITEM_USED] is AUTOMATICALLY updated to use index 3011 instead of 1260.
+This ensures that we don;t need to go through thousands of lines of code to find, and change a pile of hardcoded values, as we would if we instead called MyVars[126];
+
+All you need do, is change ONE VALUE, and you are DONE.
+
+It makes code easier for other people to comprehend, by using natural language.
+
+It is much easier for someone reading your script, to look at MyVars[LAST_A_ITEM_USED} than MyVars[1260[. The former explicitely tells them
+what that value is for, while the latter requires them to spend unholy smounts of time, FIGURING IT OUT. 
+
+It allows us to get the data of an array index, with a function, very easily. Consider that you want to make a function that RETURNS the value of an array index. 
+
+With this method, we can make a function like this:
+
+int Value(int index){
+	return MyVars[index];
+}
+
+Now, when we want to know the vaslue of MyVars[LAST_A_ITEM_USED] , we AGAIN use the constant, but this time, when we CALL
+that function:
+
+Val(LAST_A_ITEM_USED);
+
+That gives us a lot of fluidity in how we read values, set values, and change values. Again, it also makes our code
+much easier to read, and it saves us from hardcoding NAMED functions such as:
+
+LastAItemUsed(){
+	return MyVars[3011];
+}
+
+In fact, this is so powerful, that it gives us incredibly useful shortcuts. Instead of doing:
+
+if ( MyVars[LAST_A_ITEM_USED] != 0 ) 
+	we can do
+if ( Val(LAST_A_ITEM_USED) != 0 )
+	
+That may not seem signifigant, but if the array has a long name, such as EnemyCollisionRoutineValues[], we don;t want to type that over an over.
+
+Likewise, we can use multiple shortcut names for these functions, and give them purpose by name. I personally prefer using Is(int index) to get a value, as
+	this reads as either an integer, or boolean type return very easily. To do this, we OVERLOAD the function as follows:
+		
+int Is(int index){
+	return MyVars[index];
+}
+
+int Is(int index, int value){
+	return MyVars[index] == value;
+}
+
+Now we can call:
+
+Is(SWIMMING) to find out if Link is swimming (by storing a value other than 0 when he is in this index, and 0 if he is not...
+or
+Is(LAST_A_ITEM_USED,I_MAGIC_THING);
+
+Which will return true if the last item used (as stored in our array) is that item. 
+	
+It's also useful to have a set of functions to modify the values:
+
+//Sets an array value to a specific number.
+void Set(int index, int value){
+	MyVars[index] = value;
+}
+
+//Increases the value of an index by +1
+void Inc(int index){
+	MyVars[index]++;
+}
+
+//Reduces the value of an index by -1
+void Dec(int index){
+	MyVars[index]--;
+}
+
+//Increases the value of an index by 'amount'
+void Inc(int index, int amount){
+	MyVars[index] += amount;
+}
+
+//Reduces the value of an index by 'amount'
+void Dec(int index, int amount){
+	MyVars[index]-= amount;
+}
+
+We call them simply:
+
+Instead of calling 
+MyVars[LINK_IS_SPINNING] = 1;
+
+we call 
+Set(LINK_IS_SPINNING,1);
+
+or instead of 
+
+Using constants for Array Pointers
+	
+//! No you can't, pudding brain. ZScript doesn;t support assigning anything to a constant other than a raw numeric literal!
+	
+All arrays have a pointer, assigned as a unique integer ID when declared. This is very useful, as if we have a long array
+	name that we need to use often, we can make a constant s a short name, like this:
+
+const int LINKSTATS = LinkStatsAndvariables;
+
+The pointer for LinkStatsAndVariables, whatever it may be, is assigned to the constant, and all future calls for that constant
+	will automatically point to that array.
+
+Example:
+
+//Returns the value of 'index' in the array with pointer 'arr'
+int Val(int arr, int index){
+	return arr[index];
+}
+
+//Increases the value of index 'index' of array 'arr' by +1
+void Inc(int arr, int index){
+	arr[index]++;
+}
+
+if we want to know the value of LINK_LAST_X in the array LinkStatsAndvariables[], we call this as:
+	
+Val(LINKSTATS,LAST_LINK_X);
+
+In use, :
+if ( Val(LINKSTATS,LAST_LINK_X) > 20 ) 
+	
+
+COmpare the length of that in characters to:
+if ( LinkStatsAndVars[LAST_LINK_X] > 20 )
+	
+
+or Inc(LINKSTATS,LAST_LINK_X);
+
+
+You'll see that we save a few characters, so you may do this with arrays tha have long names, for which you wish to add an abbreviation to call in your statements, or instructions. 
+
+In addition, it means that when we are writing out instructions, we will only need to use parens, not braces '[ ]'
+in our instructions. This has the benefit of not needing an additional character, so that there is a smaller chance of error. It's also faster, as in a statement, 
+we usually have fingers hovering over left and right parens, not (square) braces, so every time you need to call something, you save a second, or two. Those truly do add up fast.
+
+Each Index, One Constant
+
+Returning Values With Functions
+
+Creating Functions for this Application
+
+Reading our Values
+
+Setting Values
+
+Value Increments (use of '++' and '--')
+
+const int LESS = -214747.9999;
+const int PLUS = 214747.9999; 
+
+
+----------------------------------------
+Part II: Initialising Values as Non-Zero
+----------------------------------------
+		Ensuring that these arrays can be read in a modified script set.
+		Initialising as an arbitrary value to know if an array index has been set.  
+		
+One thing that it is prudent to do, if you want to be able to easily call boolean checks against indices in arrays that
+	you make for this purpose, is to set all of their indices to an arbitrary value that you are unlikely to ever have in a game.
+		
+	For example: -20967.3812
+	It's very unlikely that this EXACT value will ever be used. 
+	Thus, if you declare the array, and set all of its indices to this value as part of your standard format, you can then
+		declare a constant:
+	const float NOT_INIT = -20967.3812;
+	
+	Than, in your scripts, if you need to check if an array value was never used, where it could be '0' either way, you can
+		check against this value first:
+	if ( MyArray[INDEX] == NOT_INIT ) 
+		If it matches that value, it was never used, and you can set it to '0' to establish it as an initial false return, or any other vakue that
+	you desire, which will return true. 
+	
+	You can easily initialise these values in a global ~init script with one for loop:
+		
+	for ( int q = 0; q < SizeOfArray(MyVars); q++ ) MyVars[q] = NOT_INIT;
+	
+	THis will set all the indices to the desired values when the game loads.
+	
+	This becomes very important when you have general checks that return if an index is 0/false. 
+		
+	For example, if you make an entry for : ... //! [[ADD EXPLANATION AND EXAMPLE ]]
+	
+	Then, in a global active script, you can check if a value that you added by adding a constant was never initialised, 
+		and if so, set it to whatever value you want it to be as a starting value, or otherwise work with it. 
+			
+		This becomes important 
+		
+
+/* 
+----------------------------------------------------------
+Part III : Abusing Screen->D In The Stead of Global Arrays
+----------------------------------------------------------
+*/
+
+But what if you are modifying a project, where you would need a global array, but you didnlt originally have one? Clearly, 
+	you can;t just add one in, and expect it to work, as it would require a global register to be reserved in the save file, 
+and as that won;t be reserved, the array will never have a valid pointer in operation.
+
+If we are already locked into a project, that did not have a vast global array, adding one is effectively the same as adding a global variable.
+People with saved games, can;t use the update, without starting over. Thus, if you failed to plan ahead for this contingency, there is a somewhat cheap way around it.
+
+How do we do this, if we CANNOT use global arrays?!
+	
+The way to handle this is easy, or well, at least, simple.... What is that, you ask?
+
+Why, Screen->D of course.
+
+Every screen on every DMap of a game, has its own array, and these are both accessibly globally, and are *retained through saved games* (unlike local arrays, and most other screen properties).
+
+If we need to store some new values, and don;t wish to invalidate save files, we can abuse these to meet that need.
+
+Simply find some screens on any DMap that have free Screen->D[registers], and use those. This works in muc the same way as using a global array, except that it's more logical to make functions specifically to return values from them.
+
+Let's say that we need to store a variable for a script that makes Link jump, on a timer. 
+
+ordinarily, we could use int JumpTimer; or an array index in a global array to store this, but as we don;t have that luxury, a ZScript function--SetDMapScreenD(), and its counterpart GetDMapScreenD() will help us store, and retrieve that information.
+
+Using the above example, we make some constants:
+
+const int JUMP_TIMER_REG_DMAP = 0; //DMap 0 
+const int JUMP_TIMER_REG_SCREEN = 79; //Screen 79 of DMap 0
+const int JUMP_TIMER_REG = 3; //Screen->D[3] on Screen 79 of DMap 0
+
+Now, to set this value, or read it, we make a function set:
+
+void SetLinkJumpTImer(int value){
+	Game->SetDMapScreenD(JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG,value);
+}
+
+int GetLinkJumpTimer(){
+	return Game->GetDMapScreenD((JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG);
+}
+
+int GetLinkJumpTimer(int value){
+	return Game->GetDMapScreenD((JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG) == value;
+}
+
+int IncLinkJumpTimer(){
+	int val = Game->GetDMapScreenD((JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG) += 1;
+	Game->SetDMapScreenD(JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG,val);
+}
+
+int IncLinkJumpTimer(int amount){
+	int val = Game->GetDMapScreenD((JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG) += amount;
+	Game->SetDMapScreenD(JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG,val);
+}
+
+int DecLinkJumpTimer(){
+	int val = Game->GetDMapScreenD((JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG) -= 1;
+	Game->SetDMapScreenD(JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG,val);
+}
+
+int DecLinkJumpTimer(int amount){
+	int val = Game->GetDMapScreenD((JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG) -= amount;
+	Game->SetDMapScreenD(JUMP_TIMER_REG_DMAP,JUMP_TIMER_REG_SCREEN,JUMP_TIMER_REG,val);
+}
+
+Now, in any script that we have, in which we need to manipulate this data, we can quick;y call it:
+
+if ( GetLinkJumpTimer(16) ) 
+	that would return true if our faux globsal variable is exactly 16
+		
+if ( GetLinkJumpTimer() > 16 ) 
+	this would evaluate true if it is 16 or more.
+		
+Example in use:
+	
+	const int JUMP_TIME = 
+if ( GetLinkJumpTimer() > 1  ) {
+	if ( Link->Jump > 0 ) Link->Jump = 0;
+	//prevent Link from Jumping again until the cooldown timer expires. 
+	DecLinkJumpTimer();
+	//If the timer has a value over 0, decreases the timr by '1' every frame. 
+if ( GetLinkJumpTimer <= 0 && Link->Jump > 0 ) SetLinkJumpTimer(JUMP_TIME);
+	//If Link is jumping and the timer is 0, allow the jump, and set the timer to '100'.
+
+
+To ensure the highest level of compatibility, we occasionally want to insure that registers do not old values of exactly 0. This allows us to know, each time that we load the game
+	if the register was previously used. To do this, we set its value inside the run function of the global active script, to -1.
+		Then, if it is -1, we know it was never initialised. 
+			
+		
+
+/*		
+---
+		Part IV :
+		What We Can Always Add
+		*/
+		
+		Another important thing to remember, is that you can always add instructions to any script, including *local variables, or arrays of any type*
+		without invalidating a svae file. You may add anything inside the run() function in any script, and not need to worry about it.
+		Furthermore, you may add new functions--including global functions, and constants, without invalidating a quest save file.
+		
+		Functions are store in the .qst file and accessed directly, while constants are converted to their numeric literal, during compilation. 
+			
+		This may, or may not be true of headers, as headers may create their own global variables, and arrays. 
+		
+		For headers, see Chapter V.
+		
+		
+	/*
+		Chapter V: Modifying Headers
+	*/
+		
+		If you decide to add a header to a quest, you may encounter the same problem as adding a global variable,
+		except it is multipled many times, based on the number off vars that the header uses, and the complexity of the header.
+		
+		In this case, the only solutution is to modify the header, pointing it to global arrays, or Screen->D. 
+			
+		If it uses arrays, or vars that do not need to be global, you can also declare arrays inside the run function in your global active script, and make
+			data handling functions to push values into those.
+			
+//******************************************************************************
+

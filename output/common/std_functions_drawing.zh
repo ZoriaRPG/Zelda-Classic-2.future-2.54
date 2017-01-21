@@ -1,0 +1,140 @@
+//Copies the combos and csets from one screen to another.
+//Only copies layer 0!
+void ScreenCopy(int destmap, int destscr, int srcmap, int srcscr) {
+	for (int i = 0; i < 176; i++) {
+		Game->SetComboData(destmap,destscr, i, Game->GetComboData(srcmap,srcscr,i));
+		Game->SetComboCSet(destmap,destscr, i, Game->GetComboCSet(srcmap,srcscr,i));
+	}
+}
+
+//Swaps a row of tiles of length 'length' between positions 'first' and 'second'
+void SwapTileRow(int first, int second, int length){
+	for(int i=0;i<length;i++) SwapTile(first+i,second+i);
+}
+
+//Copies a row of tiles of length 'length' from 'source' onto 'dest'
+void CopyTileRow(int source, int dest, int length){
+	for(int i=0;i<length;i++) CopyTile(source+i,dest+i);
+}
+
+//Clears a row of tiles of length 'length' starting from tile 'ref'
+void ClearTileRow(int ref, int length){
+	for(int i=0;i<length;i++) ClearTile(ref+i);
+}
+
+//Swaps a block of tiles defined by diagonal corners 'first' and 'last'
+//with the block starting with top left tile 'second'
+void SwapTileBlock(int first, int last, int second){
+	if(last < first){
+		int swap = first;
+		first = last;
+		last = swap;
+	}
+	int w = last%20-first%20;
+	if(w < 0){
+		first -= w;
+		last += w;
+		w = -w;
+	}
+	for(int i=0;i<=last-first;i++) if(i%20 <= w) SwapTile(first+i,second+i);
+}
+
+//Copies a block of tiles defined by diagonal corners 'sourcefirst' and 'sourcelast'
+//onto the block starting with top left tile 'destfirst'
+void CopyTileBlock(int sourcefirst, int sourcelast, int destfirst){
+	if(sourcelast < sourcefirst){
+		int swap = sourcefirst;
+		sourcefirst = sourcelast;
+		sourcelast = swap;
+	}
+	int w = sourcelast%20-sourcefirst%20;
+	if(w < 0){
+		sourcefirst -= w;
+		sourcelast += w;
+		w = -w;
+	}
+	for(int i=0;i<=sourcelast-sourcefirst;i++) if(i%20 <= w) CopyTile(sourcefirst+i,destfirst+i);
+}
+
+//Clears a block of tiles defined by diagonal corners 'reffirst' and 'reflast'
+void ClearTileBlock(int reffirst, int reflast){
+	if(reflast < reffirst){
+		int swap = reffirst;
+		reffirst = reflast;
+		reflast = swap;
+	}
+	int w = reflast%20-reffirst%20;
+	if(w < 0){
+		reffirst -= w;
+		reflast += w;
+		w = -w;
+	}
+	for(int i=0;i<=reflast-reffirst;i++) if(i%20 <= w) ClearTile(reffirst+i);
+}
+
+
+//Overload to Screen->DrawString which includes a position to start drawing from in the string
+//Does not check for overflow
+void DrawString(int layer, int x, int y, int font, int color, int background_color, int format, int opacity,
+				int string, int start){
+	int buffer[256];
+	for(int i=start;string[i]!=0;i++) buffer[i-start] = string[i];
+	Screen->DrawString(layer,x,y,font,color,background_color,format,opacity,buffer);
+}
+
+//Overload to Screen->DrawString which includes a start and end position to draw the string
+//Does not check for overflow
+void DrawString(int layer, int x, int y, int font, int color, int background_color, int format, int opacity,
+				int string, int start, int end){
+	int buffer[256];
+	for(int i=start;i<end;i++) buffer[i-start] = string[i];
+	Screen->DrawString(layer,x,y,font,color,background_color,format,opacity,buffer);
+}
+
+
+// A very simple layer 0 tile drawing routine.
+void DrawTileSimple(int x, int y, int tile, int color) {
+	Screen->FastTile(0, x, y, tile, color, 128);
+}
+
+
+//Draws a screen specified by 'sourceMap and sourceScreen;, from layers specified by 'layerMin and layerMax', 
+//at a desired opacity, to the layer specified by 'destLayer' of the current screen.
+void ScreenToLayer(int sourceMap, int sourceScreen, int layerMin, int layerMax, int drawOpacity, int destLayer){
+	for (int i = layerMin; i < layerMax; i++){
+		Screen->DrawLayer(destLayer, sourceMap, sourceScreen, i, 0, 0, 0, drawOpacity);
+	}
+}
+
+//Draws all layers of a screen specified by 'sourceMap and sourceScreen;,
+//at a desired opacity, to the layer specified by 'destLayer' of the current screen.
+void ScreenToLayer(int sourceMap, int sourceScreen, int drawOpacity, int destLayer){
+	for (int i = 0; i < 6; i++){
+		Screen->DrawLayer(destLayer, sourceMap, sourceScreen, i, 0, 0, 0, drawOpacity);
+	}
+}
+
+//Draws an ffc to a given layer. If the ffc is larger than 1x1 its graphics must all be comboed
+void DrawToLayer(ffc f, int layer, int opacity){
+	Screen->DrawCombo(layer,f->X,f->Y,f->Data,f->TileWidth,f->TileHeight,f->CSet,-1,-1,0,0,0,-1,0,true,opacity);
+}
+
+//Draws an npc to a given layer
+void DrawToLayer(npc n, int layer, int opacity){
+	Screen->DrawTile(layer,n->X,n->Y,n->Tile,n->TileWidth,n->TileHeight,n->CSet,-1,-1,0,0,0,0,true,opacity);
+}
+
+//Draws an lweapon to a given layer
+void DrawToLayer(lweapon l, int layer, int opacity){
+	Screen->DrawTile(layer,l->X,l->Y,l->Tile,l->TileWidth,l->TileHeight,l->CSet,-1,-1,0,0,0,0,true,opacity);
+}
+
+//Draws an eweapon to a given layer
+void DrawToLayer(eweapon e, int layer, int opacity){
+	Screen->DrawTile(layer,e->X,e->Y,e->Tile,e->TileWidth,e->TileHeight,e->CSet,-1,-1,0,0,0,0,true,opacity);
+}
+
+//Draws an item to a given layer
+void DrawToLayer(item i, int layer, int opacity){
+	Screen->DrawTile(layer,i->X,i->Y,i->Tile,i->TileWidth,i->TileHeight,i->CSet,-1,-1,0,0,0,0,true,opacity);
+}

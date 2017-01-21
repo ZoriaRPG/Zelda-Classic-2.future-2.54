@@ -1,0 +1,207 @@
+//Std Compare
+
+//Matching - Comparison Functions: use an array (list) of values, and compare against a pointer, or pointer variable. 
+
+//Match a given lweapon to the contents of an array 'list'
+//Returns true of any of the entries on the list match. 
+bool MatchLWeaponType(int list, lweapon l){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( l->ID == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Match a given eweapon to the contents of an array 'list'
+//Returns true of any of the entries on the list match. 
+bool MatchEWeaponType(int list, eweapon e){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( e->ID == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Match a given npc ID number to the contents of an array 'list'
+//Returns true of any of the entries on the list match. 
+bool MatchNPC(int list, npc n){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( n->ID == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Match a given NPC TYPE to the contents of an array 'list'
+//Returns true of any of the entries on the list match. 
+bool MatchNPCT(int list, npc n){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( n->Type == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Match a given item ID number to the contents of an array 'list'
+//Returns true of any of the entries on the list match. 
+bool MatchItem(int list, item i){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( i->ID == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Match the present Link->Action to those on array 'list'.
+//Returns true of any of the entries on the list match. 
+//Checks if the present Link->Action is one from a predefined list.
+bool MatchAction(int list){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( Link->Action == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Data. 
+bool MatchComboD(int list, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( Screen->ComboD[cmb] == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Type.
+bool MatchComboT(int list, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( Screen->ComboT[cmb] == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its CSet.
+bool MatchComboC(int list, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( Screen->ComboC[cmb] == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Flag.
+bool MatchComboF(int list, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( Screen->ComboF[cmb] == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Inherent Flag.
+bool MatchComboI(int list, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( Screen->ComboI[cmb] == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Solidity.
+bool MatchComboS(int list, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( Screen->ComboS[cmb] == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' on Layer 'layer' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Data. 
+bool MatchLayerComboD(int list, int layer, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( GetLayerComboD(layer,cmb) == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' on Layer 'layer' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Type.
+bool MatchLayerComboT(int list, int layer, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( GetLayerComboT(layer,cmb) == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' on Layer 'layer' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its CSet.
+bool MatchLayerComboC(int list, int layer, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( GetLayerComboC(layer,cmb) == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' on Layer 'layer' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Flag.
+bool MatchLayerComboF(int list, int layer, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( GetLayerComboF(layer,cmb) == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' on Layer 'layer' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Inherent Flag.
+bool MatchLayerComboI(int list, int layer, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( GetLayerComboI(layer,cmb) == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Compares combo 'cmb' on Layer 'layer' and compares it to the values in array 'list'. 
+//Returns true of any of the entries on the list match its Solidity.
+bool MatchLayerComboS(int list, int layer, int cmb){
+	bool match = false;
+	for ( int q = 0; q < SizeOfArray(list); q++ ) {
+		if ( GetLayerComboS(layer,cmb) == list[q] ) match = true;
+	}
+	return match;
+}
+
+//Matches a running ffc script to script_id. Returns true if they match.
+int MatchScript(int script_id){
+	for ( int q = 1; q < 32; q++ ) {
+		ffc MatchScript = Screen->LoadFFC(q);
+		if ( MatchScript->Script == script_id ) return q;
+	}
+	return 0;
+}
+
+//Compares the scripts of all running ffcs, to all indices of an array 'list' searching for
+//a match to ffc script 'script_id'.
+//If there is a match, it MatchScript() will return the first match (FFC number) found. 
+int MatchScript(int script_id, int list){
+	bool match;
+	for ( int q = 1; q < 32; q++ ) {
+		ffc MatchScript = Screen->LoadFFC(q);
+		for ( int w = 0; w < SizeOfArray(list); w++ ) {
+			if ( MatchScript->Script == script_id ) return q;
+		}
+	}
+	return 0;
+}

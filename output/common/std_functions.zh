@@ -1,0 +1,542 @@
+//std_functions.zh for 2.54
+//10th-Jan-2017
+// Since last .txtfile / docs: Added DistXY(), LeftOf(), RightOf(), Above(), Below(), FlipRef(), ReflectWeapon()
+//Fixed and updated AdjacentCombo: It now uses the same DIR_ values as everything else. 
+//
+// Some utility routines
+//
+
+import "std_functions_combos.zh"
+import "std_functions_npcs.zh"
+import "std_functions_link.zh"
+import "std_functions_prototypes.zh"
+import "std_functions_drawing.zh"
+import "std_functions_cast.zh"
+import "std_functions_distance.zh"
+import "std_functions_trace.zh"
+import "std_functions_physics.zh"
+import "std_functions_gamevalues.zh"
+import "std_functions_ffcs.zh"
+import "std_functions_movement.zh"
+import "std_functions_dmaps.zh"
+import "std_functions_screen.zh"
+import "std_functions_input.zh"
+import "std_functions_compare.zh"
+import "std_functions_maths.zh"
+import "std_functions_collision.zh"
+import "std_functions_items.zh"
+import "std_functions_weapons.zh"
+
+//import "std_functions_itemdata.zh"
+//import "std_functions_misc.zh"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+	
+
+////////////////
+
+
+
+
+
+//Added: CenterX(item anItem) and CenterY(item anItem) 06-Jan-2016
+
+
+
+
+
+
+
+
+//! We need to add versions for every object type, too. 
+
+
+//! Array memory management Utilities
+//now in mem.zh
+	
+	
+//Returns the centre of a given hitbox.
+int CenterHitX(){}
+int CenterHitY(){}
+	
+	
+
+
+
+
+//! Need Proximity X/Y between pointers and combos without centre option, and combo / Link Proximity
+
+int CenterProximityX(ffc a, ffc b) { }
+
+int PreciseCenterX(ffc f) {}
+	//Find the precise centre of an ffc using its hitboxes. 
+	//CenterFX and CenterFY ?
+	//Thing that Alucard wants. 	
+	
+int RelativeProximityX(ffc a, ffc b) {}
+	//If I lose some more sanity, make a version of Proximity*() that returns a relative value. 
+
+	//!Z Unfinished Pixel Collision Functions
+	
+//int PixelCollision(ffc a, int pixel, int height, int width, ffc b, int pixel, int height, int width) {} 
+
+	
+	int PixelCollision(ffc a, int pixelA, ffc b, int pixelB) {} 
+	//Return if two specific pixels occupy the same coordinates
+	//We should automate reading the object size based on its properties, such as its TileHeight, or Extend value,
+	//...but how do we want to define 'pixel' for objects larger than one tile?
+	//...with one tile, it's 00 to FF, which is super-easy; but ... I suppose 0000 to FFFF? 
+	//...thus, up to four tiles in each dir, with the third/fourth digits representing the tile, and the first/second the pixel of that tile?
+	//Even thus, do we want to include a *range* for each object?
+	
+
+int DistanceX(ffc a, ffc b) {}
+//As Proximity, but returns the difference between the pointers as a signed value, instead of an absolute. 
+	
+
+
+
+//Returns the VISIBLE centre of lweapon (sprite/tiles), with option to include its HitYOffset
+//int VisCenterY(lweapon anLWeapon, bool trueoffset) {
+//	if ( trueoffset ) return anLWeapon->Y+HitHeight/2 + anLWeapon->HitYOffset;
+//	else return return anLWeapon->Y+HitHeight/2;
+//}
+
+//Returns the VISIBLE centre of eweapon (sprite/tiles), with option to include its HitXOffset
+//int VisCenterX(eweapon anEWeapon, bool trueoffset) { 
+//	if ( trueoffset ) return anEWeapon->X+HitWidth/2 + anEWeapon->HitXOffset;
+//	else return return anEWeapon->X+HitWidth/2;
+//}
+
+//Returns the VISIBLE centre of eweapon (sprite/tiles), with option to include its HitYOffset
+//int VisCenterY(eweapon anEWeapon, bool trueoffset) {
+//	if ( trueoffset ) return anEWeapon->Y+HitHeight/2 + anEWeapon->HitYOffset;
+//	else return return anLWeapon->Y+HitHeight/2;
+//}
+
+//Returns the VISIBLE centre of npc (sprite/tiles), with option to include its HitXOffset
+//int VisCenterX(npc n, bool trueoffset) { 
+//	if ( trueoffset ) return n->X+HitWidth/2 + n->HitXOffset;
+//	else return return n->X+HitWidth/2;
+//}
+
+//Returns the VISIBLE centre of npc (sprite/tiles), with option to include its HitYOffset
+//int VisCenterY(npc n, bool trueoffset) {
+//	if ( trueoffset ) return n->Y+HitHeight/2 + n->HitYOffset;
+//	else return return n->Y+HitHeight/2;
+//}
+
+//Returns the VISIBLE centre of npc (sprite/tiles), with option to include its HitXOffset
+//int VisCenterX(item i, bool trueoffset) { 
+//	if ( trueoffset ) return i->X+HitWidth/2 + i->HitXOffset;
+//	else return return i->X+HitWidth/2;
+//}
+
+
+//! Functions to read all screen flag and enemy flag types
+
+
+
+
+
+
+
+
+    
+    
+    
+    ///March 2016
+ 
+
+
+//We need facing checks for poiner vs pointer
+
+//NPC facing 'l'
+bool Facing (npc n, ffc l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+	
+bool Facing (npc n, lweapon l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+bool Facing (npc n, eweapon l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+bool Facing (npc n, item l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+
+//npc vs. npc
+bool Facing (npc n, npc l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+				//Facing Link
+bool Facing (npc n){
+	if ( n->Dir == DIR_UP && n->Y < Link->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > Link->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > Link->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < Link->X ) return true;
+	return false;
+}
+
+bool Facing (npc n, int combo_pos){
+	int posX = ComboX(combo_pos);
+	int posY = ComboY(combo_pos);
+	if ( n->Dir == DIR_UP && n->Y > posY ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y < posY ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X < posX ) return true;
+	if ( n->Dir == DIR_LEFT && n->X > posX ) return true;
+	return false;
+}
+
+
+//lweapon facing 'l'
+bool Facing (lweapon n, ffc l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+	
+bool Facing (lweapon n, npc l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+bool Facing (lweapon n, eweapon l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+bool Facing (lweapon n, item l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+
+
+//lweapon vs. lweapon
+bool Facing (lweapon n, lweapon l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+				//Facing Link
+bool Facing (lweapon n){
+	if ( n->Dir == DIR_UP && Link->Y < n->Y ) return true;
+	if ( n->Dir == DIR_DOWN && Link->Y > n->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && Link->X > n->X ) return true;
+	if ( n->Dir == DIR_LEFT && Link->X < n->X ) return true;
+	return false;
+}
+
+bool Facing (lweapon n, int combo_pos){
+	int posX = ComboX(combo_pos);
+	int posY = ComboY(combo_pos);
+	if ( n->Dir == DIR_UP && n->Y > posY ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y < posY ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X < posX ) return true;
+	if ( n->Dir == DIR_LEFT && n->X > posX ) return true;
+	return false;
+}
+
+//eweapon facing 'l'
+bool Facing (eweapon n, ffc l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+	
+bool Facing (eweapon n, npc l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+bool Facing (eweapon n, lweapon l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+bool Facing (eweapon n, item l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+
+
+//eweapon vs. eweapon
+bool Facing (eweapon n, eweapon l){
+	if ( n->Dir == DIR_UP && n->Y < l->Y ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y > l->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X > l->X ) return true;
+	if ( n->Dir == DIR_LEFT && n->X < l->X ) return true;
+	return false;	
+}
+				//Facing Link
+bool Facing (eweapon n){
+	if ( n->Dir == DIR_UP && Link->Y < n->Y ) return true;
+	if ( n->Dir == DIR_DOWN && Link->Y > n->Y ) return true;
+	if ( n->Dir == DIR_RIGHT && Link->X > n->X ) return true;
+	if ( n->Dir == DIR_LEFT && Link->X < n->X ) return true;
+	return false;
+}
+
+bool Facing (eweapon n, int combo_pos){
+	int posX = ComboX(combo_pos);
+	int posY = ComboY(combo_pos);
+	if ( n->Dir == DIR_UP && n->Y > posY ) return true;
+	if ( n->Dir == DIR_DOWN && n->Y < posY ) return true;
+	if ( n->Dir == DIR_RIGHT && n->X < posX ) return true;
+	if ( n->Dir == DIR_LEFT && n->X > posX ) return true;
+	return false;
+}
+
+//FFCs don;t have a direction, so it'll need to be arbitrary.
+
+//const int FFC_DIR = 10; //f->Misc
+//lweapon facing 'l'
+bool Facing (ffc f, lweapon l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+bool Facing (ffc f, npc l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+bool Facing (ffc f, eweapon l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+bool Facing (ffc f, item l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+//two ffcs
+bool Facing (ffc f, ffc l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+				//Facig Link
+bool Facing (ffc f, int ffc_dir){
+	if ( ffc_dir == DIR_UP && Link->Y < f->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && Link->Y > f->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && Link->X > f->X ) return true;
+	if ( ffc_dir == DIR_LEFT && Link->X < f->X ) return true;
+	return false;
+}
+
+//Combo
+bool Facing (ffc f, int ffc_dir, int combo_pos){
+	int posX = ComboX(combo_pos);
+	int posY = ComboY(combo_pos);
+	if ( ffc_dir == DIR_UP && f->Y > posY ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y < posY ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X < posX ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X > posX ) return true;
+	return false;
+}
+
+//Do items have a dir? No, it'll also be arbitrary, then...
+
+//item facing 'l'
+bool Facing (item f, lweapon l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+bool Facing (item f, npc l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+bool Facing (item f, eweapon l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+bool Facing (item f, ffc l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+
+//two items
+bool Facing (item f, item l, int ffc_dir){
+	if ( ffc_dir == DIR_UP && f->Y < l->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y > l->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X > l->X ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X < l->X ) return true;
+	return false;	
+}
+				//Facig Link
+bool Facing (item f, int ffc_dir){
+	if ( ffc_dir == DIR_UP && Link->Y < f->Y ) return true;
+	if ( ffc_dir == DIR_DOWN && Link->Y > f->Y ) return true;
+	if ( ffc_dir == DIR_RIGHT && Link->X > f->X ) return true;
+	if ( ffc_dir == DIR_LEFT && Link->X < f->X ) return true;
+	return false;
+}
+
+//Combo
+bool Facing (item f, int ffc_dir, int cmb_pos){
+	int posX = ComboX(cmb_pos);
+	int posY = ComboY(cmb_pos);
+	if ( ffc_dir == DIR_UP && f->Y > posY ) return true;
+	if ( ffc_dir == DIR_DOWN && f->Y < posY ) return true;
+	if ( ffc_dir == DIR_RIGHT && f->X < posX ) return true;
+	if ( ffc_dir == DIR_LEFT && f->X > posX ) return true;
+	return false;
+}
+
+
+
+bool Above(npc n){ return Link->Y < n->Y; }
+bool Below(npc n){ return Link->Y > n->Y; }
+bool LeftOf(npc n){ return Link->X < n->X; }
+bool RightOf(npc n){ return Link->X > n->X; }
+
+bool Above(ffc n){ return Link->Y < n->Y; }
+bool Below(ffc n){ return Link->Y > n->Y; }
+bool LeftOf(ffc n){ return Link->X < n->X; }
+bool RightOf(ffc n){ return Link->X > n->X; }
+
+bool Above(eweapon n){ return Link->Y < n->Y; }
+bool Below(eweapon n){ return Link->Y > n->Y; }
+bool LeftOf(eweapon n){ return Link->X < n->X; }
+bool RightOf(eweapon n){ return Link->X > n->X; }
+
+bool Above(lweapon n){ return Link->Y < n->Y; }
+bool Below(lweapon n){ return Link->Y > n->Y; }
+bool LeftOf(lweapon n){ return Link->X < n->X; }
+bool RightOf(lweapon n){ return Link->X > n->X; }
+

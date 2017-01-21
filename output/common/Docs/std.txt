@@ -1,0 +1,1651 @@
+std.txt for ZC Versions 2.50.2 and higher.
+17th July, 2016
+
+=================
+--- Constants ---
+=================
+
+const float PI, PI2, E
+ * The mathematical constants pi, 2*pi and e.
+
+const int NULL
+ * Refers to an invalid array pointer, returned by ALLOCATEMEM when memory cannot be allocated
+
+const int MAX_CONSTANT, float MAX_VARIABLE, int MAX_INT, float MAX_FLOAT
+const int MAX_COUNTER, int MIN_COUNTER
+const int MAX_LWEAPONS, int MAX_EWEAPONS, int MAX_NPCS, MAX_ITEMS, int MAX_OBJECT_POINTERS, int MAX_SPRITES
+const int MAX_DRAWING
+const int MAX_GLOBAL_VARIABLES, int MAX_VARIABLES, int MAX_BITSPERVARIABLE
+const int MAX_ARRAY_POINTERS, int MAX_TILES, int MAX_COMBOS, int MAX_STRINGS
+const int MAX_SCRIPTDRAWINGCOMMANDS
+const int MAX_MESSAGES, int MAX_MESSAGELENGTH
+const int MAX_MAPS, MAX_DMAPS
+const int MAX_DMAPNAMELENGTH, MAX_DMAPTITLELENGTH, MAX_DMAPINTROLENGTH
+const int MAX_FFC_*
+ * Information about some system constraints
+ 
+const int SCREEN_WIDTH, int SCREEN_HEIGHT, int SUBSCREEN_BOTTOM, int SUBSCREEN_TOP
+ * Screen dimensions. 
+
+const float GRAVITY
+const float TERMINAL_VELOCITY
+const float JUMPING_LAYER_THRESHOLD
+ * Some defaults from Init. Data
+
+const int HP_PER_HEART, MP_PER_BLOCK
+ * Constants about how HP and MP work
+
+const int SFX_*
+ * Sound effects, can be used with Game->PlaySound.
+
+const int IC_*
+ * Itemclass IDs, can be compared against itemdata->Family
+
+const int I_*
+ * Item IDs, can be used with Link->Item, Link->Equipment, item->ID, Link->HeldItem, GetEquipmentA,
+ * GetEquipmentB, Screen->CreateItem, CreateItemAt, NumItemsOf
+
+const int LA_*
+ * Link's actions, can be used to set or compare against Link->Action
+
+const int NPCT_*
+ * NPC Types, can be used to compare against npc->Type
+
+const int NPC_*
+ * NPC IDs, can be used with npc->ID, Screen->CreateNPC, NumNPCsOf
+
+const int HP_SILENT
+ * NPC HP value, can be used to set npc->HP
+
+const int LW_*
+ * LWeapon IDs, can be used with lweapon->ID, Screen->CreateLWeapon, CreateLWeaponAt, NumLWeaponsOf
+
+const int EW_*
+ * EWeapon IDs, can be used with eweapon->ID, Screen->CreateEWeapon, CreateEWeaponAt, NumEWeaponsOf
+
+const int WDS_*
+ * Weapon DeadState Values, can be used to set or compare against *weapon->DeadState
+
+const int FFCF_*
+ * FFC Flags, can be used to set or compare against ffc->Flags[]
+
+const int DIR_*
+ * Directions, can be used with Link->Dir, npc->Dir, *weapon->Dir
+
+const int CF_*
+ * Combo Flags, can be used with Screen->ComboF[], Screen->ComboI[], Game->GetComboFlag, Game->SetComboFlag,
+ * Game->GetComboInherentFlag, Game->SetComboInherentFlag
+
+const int CT_*
+ * Combo Types, can be used with Screen->ComboT[], Game->GetComboType, Game->SetComboFlag
+
+const int IP_*
+ * Item Pickup Flags, can be used with item->Pickup, GetItemPickup, SetItemPickup
+
+const int SF_*
+ * Screen Flag Categories, can be used with Screen->Flags, GetScreenFlags
+
+const int SEF_*
+ * Screen Enemy Flag Categories, can be used with Screen->EFlags, GetScreenEFlags
+
+const int DMF_*
+ * DMap Flags, can be used with Game->DMapFlags[], GetDMapFlag, SetDMapFlag
+
+const int NPCA*_*
+ * NPC Attributes, can be used to compare against npc->Attributes[]
+
+const int NPCD_*
+ * NPC Defenses, can be used to compare against npc->Defense[]
+
+const int NPCDT_*
+ * NPC Defense types, can be used to compare against npc->Defense[]
+
+const int DS_*
+ * Draw Styles, can be used with item->DrawStyle
+
+const int WT_*
+ * Warp Types, can be used with Screen->SetSideWarp, Screen->SetTileWarp
+
+const int FONT_*
+ * Font Types, can be used with Screen->DrawCharacter, Screen->DrawString, Screen->DrawInteger
+
+const int TF_*
+ * Text Formats, can be used with Screen->DrawString
+
+const int PT_*
+ * Texture Mapping Rendering Modes, can be used with Screen->*3D
+
+const int OP_*
+ * Opacity options, can be used with all shape and tile drawing commands.
+
+const int RT_*
+ * Render targets, can be used with Screen->SetRenderTarget and Screen->DrawBitmap.
+
+const int EXT_*
+ * Sprite Extend Types, can be used with Link->Extend, npc->Extend, *weapon->Extend, item->Extend
+
+const int CR_*
+ * Counter types, can be used with itemclass->Counter, Game->Counter[], Game->MCounter[], Game->DCounter[]
+
+const int GEN_*
+ * Generic Data Types, can be used to set or compare against Game->Generic[]
+
+const int LI_*
+ * Level Item Flags, can be used with Game->LItems[], GetLevelItems, SetLevelItems
+
+cosnt int ST_*
+ * Screen States, can be used with Screen->State[], Game->GetScreenState, Game->SetScreenState
+
+const int D_*
+ * Door types, can be used with Screen->Door[]
+
+const int WPN_*
+ * Enemy Weapon Types, can be used with npc->Weapon
+ 
+const int AT_*
+ * Weapon aim types, to be used with AimEWeapon
+
+const int IS_*
+ * Item Drop Sets, can be used to set or compare against npc->ItemSet
+
+const int BPAL_*
+ * Boss Palletes, can be used to set or compare against npc->BossPal
+
+const int SL_*
+ * Sprite Lists, can be used with Screen->ClearSprites
+
+const int MB_*
+ * Mouse Buttons, can be used with Link->InputMouseB
+ 
+const int CB_*
+ * Controller input buttons
+ 
+const int NPCSF_*
+* NPC Spawn Flags
+
+const int NPCM_*
+* NPC Misc. Flags
+ 
+ const int SFM__*
+* Misc. Screen Flags
+
+const int CSET_*
+ * Values for the first colour in each CSet
+
+const int SPRITE_*
+  * Values for all default sprites
+ 
+const int AT_*
+ * Aim types for use with AimEWeapon()
+
+const int TEX_BITMAP
+ * Drawing texture Mode (2.50.3 experimental, and later)
+
+//Constants for AdjacentCombo()
+
+const int CMB_UPLEFT    = 0;
+const int CMB_UP        = 1;
+const int CMB_UPRIGHT   = 2;
+const int CMB_RIGHT     = 3;
+const int CMB_DOWNRIGHT = 4;
+const int CMB_DOWN      = 5;
+const int CMB_DOWNLEFT  = 6;
+const int CMB_LEFT      = 7;
+const int CMB_LEFTUP    = 0;
+ 
+ 
+=================
+--- Functions ---
+=================
+
+-- Mathematical Functions --
+============================
+
+float LogToBase(float x, float base)
+ * Returns the logarithm of x to the given base
+
+int Floor(float x)
+ * Truncates x to an integer
+
+int Ceiling(float x)
+ * Raises x to the nearest integer
+
+int Round(float x)
+ * Rounds x to the nearest integer
+
+int VBound(int x, int high, int low)
+ * Bounds x between two values
+
+int Div(float x, float y)
+ * Modulo's complement; returns the quotient only of x divided by y
+
+int Rand(int min, int max)
+ * Overload to rand, returning a random integer in the bounds of min and max
+
+float Randf(float n)
+ * Returns a random floating point number up to n
+
+float Randf(float n1, float n2)
+ * Overloaded to take two boundaries as arguments
+
+float DegtoRad(float d)
+ * Converts 'd' in degrees to radians
+
+float RadtoDeg(float r)
+ * Converts 'r' in radians to degrees
+
+int Sign(int n)
+ * Returns the sign of n
+
+float Distance(int x1, int y1, int x2, int y2)
+ * Returns the distance between two sets of coordinates using Pythagoras' Theorem
+
+float Angle(int x1, int y1, int x2, int y2)
+ * Returns the direction of the vector from point 1 to point 2, in degrees from -180 to 180. (0 = right)
+
+float RadianAngle(int x1, int y1, int x2, int y2)
+ * The above, but in radians.
+
+float VectorX(int len, float angle)
+ * Returns the X component of a vector with a degree angle.
+ * A length of 3 and angle of 0 returns 3.
+ * A length of 3 and angle of 45 returns approx. 1.57.
+ * A length of 3 and angle of 90 returns 0.
+
+float VectorY(int len, float angle)
+ * Returns the Y component of a vector with a degree angle.
+ * A length of 3 and angle of 0 returns 0.
+ * A length of 3 and angle of 45 returns approx. 1.57.
+ * A length of 3 and angle of 90 returns 3.
+
+float Lerp(float p1, float p2, float t)
+ * Interpolates between p1 and p2 given 't' clamped within range 0,1.
+
+float DotProduct( float x1, float y1, float x2, float y2 )
+ * Returns the dot product of two vectors.
+
+float CrossProduct( float x1, float y1, float x2, float y2 )
+ * Returns the cross product of two vectors.
+
+float DistanceSquared( float x, float y )
+ * Returns the squared distance of a vector.
+
+float Midpoint(float p1, float p2)
+ * Finds the center of p1 and p2.
+
+float SmoothStep(float p1, float p2, float t)
+ * Performs a "Smooth" Interpolation given 't' clamped within range 0,1.
+
+float WrapAngle( float radians )
+ * Wraps radian value towards the range of -PI,PI.
+
+float WrapDegrees( float degrees )
+ * Wraps degree value towards the range of -180,180.
+
+float TurnTowards( int X, int Y, int targetX, int targetY, float radian_angle, float t )
+ * Returns an angle pointing (t)percentage more accurate to the target than the specified radian_angle.
+
+-- Direction Functions --
+=========================
+ * Make sure your angles are in the range -PI to PI (with WrapAngle) before using these functions
+
+
+int AngleDir8(float angle)
+ * Converts a counterclockwise degree angle (from -180 to 180) into one of the eight
+ * standard directions (DIR_UP etc.) used by ZC.
+
+int RadianAngleDir8(float angle)
+ * The above, but for radian angles.
+
+int AngleDir4(float angle)
+ * Converts a counterclockwise degree angle (from -180 to 180) into one of the four
+ * standard directions (DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT) used by ZC.
+
+int RadianAngleDir4(float angle)
+ * The above, but for radian angles.
+
+int OppositeDir(int dir)
+ * Returns the opposite direction to 'dir'
+
+int SpinDir(int dir)
+ * Converts directions to go round in a circle rather than U, D, L, R
+
+-- Drawing Functions --
+=======================
+
+void DrawString(int layer, int x, int y, int font, int color, int background_color, int format, int opacity,
+				int string, int start)
+ * Overload to Screen->DrawString which includes a position to start drawing from in the string
+ * Does not check for overflow
+
+void DrawString(int layer, int x, int y, int font, int color, int background_color, int format, int opacity,
+				int string, int start, int end)
+ * Overload to Screen->DrawString which includes a start and end position to draw the string
+ * Does not check for overflow
+
+void DrawTileSimple(int x, int y, int tile, int color)
+ *  A very simple layer 0 tile drawing routine.
+
+void DrawToLayer(T ptr, int layer, int opacity)
+ * Draws a pointer to given layer. Overloaded to take all pointers as arguments
+
+
+-- Conditional Functions --
+===========================
+
+T Cond(bool cond, T a, T b)
+ * Returns a if cond is true, else b. Overloaded to take all types as arguments
+
+float Choose(float a, float b)
+float Choose(float a, float b, float c)
+float Choose(float a, float b, float c, float d)
+float Choose(float a, float b, float c, float d, float e)
+float Choose(float a, float b, float c, float d, float e, float f)
+ * Chooses one of the options randomly and fairly.
+
+
+-- Collision Detection Functions --
+===================================
+
+bool RectCollision(int box1_x1, int box1_y1, int box1_x2, int box1_y2, int box2_x1, int box2_y1, int box2_x2, int box2_y2)
+ * Generalized and optimized rectangle collision checking function.
+ * Returns true if the bounding box of box1 and box2 overlap.
+
+bool SquareCollision(int c1x, int c1y, int side1, int c2x, int c2y, int side2)
+ * Check for collisions of two squares given upper-left coordinates and a side length for each.
+
+bool SquareCollision2(int c1x, int c1y, int radius1, int c2x, int c2y, int radius2)
+ * Check for collisions of two squares given center coordinates and a halved side length for each.
+
+bool CircleCollision(int c1x, int c1y, int radius1, int c2x, int c2y, int radius2)
+ * Returns true if the two circles c1 and c2 overlap.
+
+bool Collision(T a, S b)
+ * Returns true if there is a collision between the hitboxes of any two pointers
+
+bool LinkCollision(T ptr)
+ * Returns true if there is a collision between Link's hitbox and any pointer's
+
+int HitboxLeft(T ptr)
+ * Returns the X coordinate of the left edge of the hitbox for any pointer
+
+int HitboxTop(T ptr)
+ * Returns the Y coordinate of the top edge of the hitbox for any pointer
+
+int HitboxRight(T ptr)
+ * Returns the X coordinate of the right edge of the hitbox for any pointer
+
+int HitboxBottom(T ptr)
+ * Returns the Y coordinate of the bottom edge of the hitbox.
+
+bool CanWalk(int x, int y, int dir, int step, bool full_tile)
+ * This should allow any scripted object to easily mimic Link styled LOZ solidity collision
+ * checking, be it Link, FFCs, or enemies.
+ * Note - You should use full_tile=true if you don't want the upper eight pixels to overlap
+ * solid combos as per LOZ1 behavior.
+
+bool OnSidePlatform(int x, int y)
+bool OnSidePlatform(int x, int y, int xOff, int yOff, int h)
+ * Returns true if the sprite at (x,y) is standing on a sideview platform on a sideview screen, as worked out
+ * by ZC's internal code.
+
+
+
+-- Functions for accessing data stored in binary format --
+==========================================================
+
+void SetScreenDBit(int dmap, int screen, int d, int bit, bool state)
+void SetScreenDBit(int screen, int d, int bit, bool state)
+void SetScreenDBit(int d, int bit, bool state)
+ * Sets bit 'bit' of Screen->D[] register 'd' to 'state', overloaded to set on other screens
+
+bool GetScreenDBit(int dmap, int screen, int d, int bit)
+bool GetScreenDBit(int screen, int d, int bit)
+bool GetScreenDBit(int d, int bit)
+ * Returns the state of bit 'bit' of Screen->D[] register 'd'
+ * Overloaded to get from other screens
+
+bool InputLeftClick()
+ * Returns true if the left mouse button is pressed
+
+bool InputRightClick()
+ * Returns true if the right mouse button is pressed
+
+int GetEquipmentA()
+ * Returns the item ID of the item equipped to Link's A button
+
+int GetEquipmentB()
+ * Returns the item ID of the item equipped to Link's B button
+
+bool UsingItem(int id)
+ * Returns true if Link is using item 'id'
+
+int ScreenFlag(int category, int flag)
+ * Returns 1 if Screen Flag 'flag' is set from category 'category', 0 if it's not and -1 if an invalid flag is passed
+ * Flags are numbered starting from 0
+
+int ScreenEFlag(int category, int flag)
+ * Returns 1 if Screen Enemy Flag 'flag' is set from category 'category', 0 if it's not and -1 if an invalid flag is passed
+ * Flags are numbered starting from 0
+
+bool GetDMapFlag(int dmap, int flag)
+ * Returns true if DMap Flag 'flag' is set on dmap 'dmap'
+
+void SetDMapFlag(int dmap, int flag, bool state)
+ * Sets a certain DMap flag to 'state'
+
+bool GetItemPickup(item i, int pickup)
+ * Returns true if an item's Pickup state is set
+ * Use the IP_ constants for the 'pickup' argument of this function
+
+void SetItemPickup(item i, int pickup, bool state)
+ * Sets an item's Pickup state to 'state'
+
+bool GetNPCMiscFlag(npc e, int flag)
+ * Returns true if an npc's Misc. flag is set.
+
+bool GetLevelItem(int level, int itm)
+bool GetLevelItem(int itm)
+ * Returns true if Link has the level item 'itm' from level 'level'
+ * Overloaded to use the current level if no 'level' arg is entered
+ * Use the LI_ constants for the 'itm' argument
+
+void SetLevelItem(int level, int itm, bool state)
+void SetLevelItem(int itm, bool state)
+ * Gives or removes a level item from Link's inventory
+
+
+-- Functions to help handling in-built pointers --
+==================================================
+
+lweapon NextToLink(int id, int distx, int disty)
+lweapon NextToLink(int id, int dist)
+ * Creates an lweapon at 'distx, disty' away from where Link is facing
+
+eweapon NextToNPC(npc n, int id, int distx, int disty)
+eweapon NextToNPC(npc n, int id, int dist)
+ * Creates an eweapon at 'distx, disty' away from where npc 'n' is facing
+
+void AimEWeapon(eweapon e, int aimtype)
+ * Aims eweapon e according to the AT_* constant passed to aimtype
+
+void AimLWeapon(lweapon l, npc n, int aimtype)
+void AimLWeapon(lweapon l, int aimtype)
+ * Aims lweapon l according to the AT_* constant passed to aimtype, overloaded to shoot
+ * at an npc or at random
+
+int WeaponTypeToID(int weapontype)
+ * Turns a WPN_* constant to an EW_* constant
+
+*weapon Duplicate(*weapon a)
+ * Creates and returns an exact copy of the passed weapon. Assumes that the passed pointer is valid.
+
+npc CreateNPCAt(int id, int x, int y)
+ * Create an NPC and set its X and Y position in one command
+
+item CreateItemAt(int id, int x, int y)
+ * Create an Item and set its X and Y position in one command
+
+lweapon CreateLWeaponAt(int id, int x, int y)
+ * Create an LWeapon and set its X and Y position in one command
+
+eweapon CreateEWeaponAt(int id, int x, int y)
+ * Create an EWeapon and set its X and Y position in one command
+
+void Remove(T n)
+ * Removes sprite 'n' from the screen. Overloaded.
+
+int NumLWeaponsOf(int type)
+ * Returns the number of lweapons of type 'type' currently on the screen
+
+int NumEWeaponsOf(int type)
+ * Returns the number of weapons of type 'type' currently on the screen
+
+int NumNPCsOf(int type)
+ * Returns the number of npcs of type 'type' currently on the screen
+
+int NumItemsOf(int type)
+ * Returns the number of items of type 'type' currently on the screen
+
+lweapon LoadLWeaponOf(int type)
+ * Returns the first LWeapon of the given type. Use the LW_ constants.
+ * If none exist, it returns an uninitialised pointer.
+
+eweapon LoadEWeaponOf(int type)
+ * Returns the first EWeapon of the given type. Use the EW_ constants.
+ * If none exist, it returns an uninitialised pointer.
+
+npc LoadNPCOfType(int type)
+ * Returns the first NPC of the given type. Use the NPCT_ constants.
+ * If none exist, it returns an uninitialised pointer.
+
+npc LoadNPCOf(int type)
+ * Returns the first NPC of the given ID. Use the NPC_ constants.
+ * If none exist, it returns an uninitialised pointer.
+
+item CreateTimeoutItem(int id, int x, int y)
+ * Creates a timeout item (such as a rupee or heart) with ID 'id' at '(x, y)'
+
+-- Position Functions --
+========================
+
+int GridX(int x)
+ * Snaps 'x' to the combo grid
+ * Equivalent to calling ComboX(ComboAt(x, foo));
+
+int GridY(int y)
+ * Snaps 'y' to the combo grid
+ * Equivalent to calling ComboY(ComboAt(foo, y));
+
+int AtFrontX(int dir)
+int AtFrontY(int dir)
+ * Returns the correct offset to be at the front of a sprite facing in
+ * the direction 'dir'
+
+int InFrontX(int dir, int dist)
+int InFrontY(int dir, int dist)
+ * Returns the correct offset to be 'dist' pixels away from the front of
+ * a sprite facing in the direction 'dir'
+
+int CenterX(ffc anFFC)
+int CenterY(ffc anFFC)
+int CenterX(npc anNPC)
+int CenterY(npc anNPC)
+int CenterX(eweapon anEWeapon)
+int CenterY(eweapon anEWeapon)
+int CenterX(lweapon anLWeapon)
+int CenterY(lweapon anLWeapon)
+int CenterLinkX()
+int CenterLinkY()
+ * Returns the X or Y coordinate at the center of the given sprite.
+
+
+-- Combo Functions --
+=====================
+
+int ComboAt(int x, int y)
+ * Finds the location of a combo, given its (x,y) coordinates on the screen
+
+int ComboX(int loc)
+int ComboY(int y)
+ * Return the coordinates of a combo on the screen
+
+bool ComboFI(int x, int y, int flag)
+bool ComboFI(int loc, int flag)
+ * Returns true if the combo at '(x, y)' or 'loc' has either an
+ * inherent or placed flag of type 'flag'
+
+int GetLayerComboD(int layer, int pos)
+ * A shorthand way to get a combo on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboD(int layer, int pos, int combo)
+ * A shorthand way to set a combo on the specified layer.
+ * Layer 0 is the screen itself.
+
+int GetLayerComboF(int layer, int pos)
+ * A shorthand way to get a combo flag on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboF(int layer, int pos, int flag)
+ * A shorthand way to set a combo flag on the specified layer.
+ * Layer 0 is the screen itself.
+
+int GetLayerComboT(int layer, int pos)
+ * A shorthand way to get a combo type on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboT(int layer, int pos, int type)
+ * A shorthand way to set a combo type on the specified layer.
+ * Layer 0 is the screen itself.
+
+int GetLayerComboS(int layer, int pos)
+ * A shorthand way to get a combo's solidity on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboS(int layer, int pos, int solidity)
+ * A shorthand way to set a combo's solidity on the specified layer.
+ * Layer 0 is the screen itself.
+ 
+int GetLayerComboI(int layer, int pos)
+ * A shorthand way to get a combo inherent flag on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboI(int layer, int pos, int flag)
+ * A shorthand way to set a combo inherent flag on the specified layer.
+ * Layer 0 is the screen itself.
+
+int GetLayerComboC(int layer, int pos)
+ * A shorthand way to get a combo's CSet on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboC(int layer, int pos, int cset)
+ * A shorthand way to set a combo's CSet on the specified layer.
+ * Layer 0 is the screen itself.
+
+int FirstComboOf(int t, int layer)
+ * Returns the position of the first instance of the given combo, or -1.
+
+int LastComboOf(int t, int layer)
+ * Returns the position of the last instance of the given combo, or -1.
+
+int FirstComboTypeOf(int t, int layer)
+ * Returns the position of the first instance of the given combo, or -1.
+
+int LastComboTypeOf(int t, int layer)
+ * Returns the position of the last instance of the given combo, or -1.
+
+int FirstComboFlagOf(int t, int layer)
+ * Returns the position of the first instance of the given combo flag, or -1.
+ * Checks inherent flags too!
+
+int LastComboFlagOf(int t, int layer)
+ * Returns the position of the last instance of the given combo flag, or -1.
+ * Checks inherent flags too!
+
+bool IsWater(int position)
+ * Returns true if the combo at the given position is water or a swim or dive warp. Shallow water doesn't count.
+
+bool IsPit(int position)
+ * Returns true if the combo at the given position is a pit.
+
+
+-- Tile Functions --
+====================
+
+void SwapTileRow(int first, int second, int length)
+ * Swaps a row of tiles of length 'length' between positions 'first' and 'second'
+
+void CopyTileRow(int source, int dest, int length)
+ * Copies a row of tiles of length 'length' from 'source' onto 'dest'
+
+void ClearTileRow(int ref, int length)
+ * Clears a row of tiles of length 'length' starting from tile 'ref'
+
+void SwapTileBlock(int first, int last, int second)
+ * Swaps a block of tiles defined by diagonal corners 'first' and 'last'
+ * with the block starting with top left tile 'second'
+
+void CopyTileBlock(int sourcefirst, int sourcelast, int destfirst)
+ * Copies a block of tiles defined by diagonal corners 'sourcefirst' and 'sourcelast'
+ * onto the block starting with top left tile 'destfirst'
+
+void ClearTileBlock(int reffirst, int reflast)
+ * Clears a block of tiles defined by diagonal corners 'reffirst' and 'reflast'
+
+
+-- Miscellaneous Functions --
+=============================
+
+void Waitframes(int n)
+ * Wait for 'n' frames
+
+void NoAction()
+ * Kills all of Link's inputs, including those from the analogue stick.
+ 
+void NoAction(bool analogue_stick)
+* As NoAction() but the analoge stick is not killed by default. 
+
+void WaitNoAction()
+void WaitNoAction(int frames)
+ * NoAction, then Waitframe or (equivalent of) Waitframes
+
+void ScreenCopy(int destmap, int destscr, int srcmap, int srcscr)
+ * Copies the combos and csets from one screen to another.
+ * Only copies layer 0!
+
+int FFCNum(ffc f)
+ * Returns the number of an FFC, and -1 for a non-valid FFC (which should never happen)
+
+int NumTriforcePieces()
+ * Returns the number of Triforce Pieces Link currently has
+
+void GetNPCName(int ID, int string[])
+ * Puts the name of an npc into a string
+
+void GetMessage(int ID, int string[])
+ * Puts string 'ID' into 'string', removing the trailing spaces.
+
+itemdata GetItemData(item i)
+ * Returns an itemdata pointer from an item pointer
+
+int GetHighestLevelItem(int itemclass)
+int GetHighestLevelItem(item i)
+ * Returns the highest level item of a given itemclass, or of the class 'i' belongs to
+
+bool IsSideview()
+ * Returns true if Link is on a sideview screen
+
+int DMapToMap(int screen, int dmap)
+int MapToDMap(int screen, int dmap)
+ * Convert between map and DMap screen coordinates
+
+ -- New Functions ( 2.50.2 ) -- 
+ ==============================
+
+int GetLayerComboI(int layer, int pos)
+ * A shorthand way to get a combo inherent flag on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboI(int layer, int pos, int flag)
+ * A shorthand way to set a combo inherent flag on the specified layer.
+ * Layer 0 is the screen itself.
+
+int GetLayerComboC(int layer, int pos)
+ * A shorthand way to get a combo's CSet on the specified layer.
+ * Layer 0 is the screen itself.
+
+void SetLayerComboC(int layer, int pos, int cset)
+ * A shorthand way to set a combo's CSet on the specified layer.
+ * Layer 0 is the screen itself.
+ 
+bool ChooseB(bool a, bool b)
+bool ChooseB(bool a, bool b, bool c)
+bool ChooseB(bool a, bool b, bool c, bool d)
+bool ChooseB(bool a, bool b, bool c, bool d, bool e)
+bool ChooseB(bool a, bool b, bool c, bool d, bool e, bool f)
+ * Fairly chooses between two or more boolean values. Overloaded for up to six options.
+ 
+bool ChooseB()
+ * Randomly returns true, or false with a 50/50% chance.. 
+ 
+bool RandB()
+ * Randomly returns true, or false with a 50/50% chance.
+ 
+bool RandB(int percentTrue)
+ * Randomly returns true, or false. uses the input of percentTrue to determine chance.
+ * Example: RandB(40) sets a 40% chance of the return being true, and a 60% chance of it being false.
+
+float SafeSqrt(int n, int spec)
+ * Returns the square root of n, and returns a specified value 'spec' if n is a negative number.
+ * Returns 0 on a failure. 
+ 
+float SafeSqrt(int n)
+ * Returns the square root of n, and returns -32768 is the value of n is a negative number.
+ * Returns 0 on a failure. 
+
+void SetLinkItem(int itm)
+ * Safely sets an item 'itm' true, if it is false, or false if it is true.
+ * Will *not* slow down ZC.
+ 
+void SetLinkItem(int itm, bool state)
+ * Safely sets an item 'itm' to the value of 'state'.
+ * Will *not* slow down ZC.
+ 
+void TraceA(int arr)
+ * Traces the contents of an array 'arr' to allegro.log. 
+ * Warning: This may slow ZC down, particulalry if called in a loop!
+
+void TraceArray(int arr)
+ * Traces the contents of an array 'arr' to allegro.log. 
+ * Warning: This may slow ZC down, particulalry if called in a loop!
+
+void EndFFC(int ffc_ID)
+* Terminates an ffc specified by 'ffc_id' and sets all of its values to 0. 
+
+bool InputMiddleClick()
+ * Returns true if the middle mouse button is pressed. 
+ * Note that not all mice have a middle button. 
+  
+float BoolToFloat(bool input)
+ * Converts variable 'input' to a floating point value of '1.000' for 'true', and '0.0000' for 'false'.
+ 
+int BoolToInt(bool input)
+ * Converts variable 'input' to a integer (0 or 1; for false, or true, respectively).
+ 
+void ScreenToLayer(int sourceMap, int sourceScreen, int layerMin, int layerMax, int drawOpacity, int destLayer){
+ * Draws a screen specified by 'sourceMap and sourceScreen;, from layers specified by 'layerMin and layerMax', 
+ * at a desired opacity, to the layer specified by 'destLayer' of the current screen.
+ 
+void ScreenToLayer(int sourceMap, int sourceScreen, int drawOpacity, int destLayer)
+ * Draws all layers of a screen specified by 'sourceMap and sourceScreen at a desired opacity
+ * to the layer specified by 'destLayer' of the current screen.
+ 
+int GetLowFloat(int n)
+ * Accepts a float as input, and returns the decimal portion as int.
+
+int GetHighFloat(int n)
+ * Accepts a float as input, and returns the integer portion as int. 
+ 
+int GetDigitValue(int n, int place)
+ * Extracts a single digit from n at the place specified. 
+ * -4 is the ten-thousandTHs place, 0 is the ones spot, and 4 is the ten-thousanDs spot.
+
+int GetPartialValue(int n, int place, int num)
+ * Extracts an integer using specific places of any value 'n', from position 'place' plus a number of places 'num'.
+
+int DecimalToInt(int v)
+ * Converts floating point value 'v', after the decimal, to an integer.
+ 
+bool Xor(bool valA, bool valB)
+ * Xor comparison of two boolean values. 
+ * Returns true if values *do not match*, otherwise false. 
+ 
+bool Collision(npc n) 
+bool Collision(ffc f)
+bool Collision(item i)
+bool Collision(lweapon l)
+bool Collision(eweapon e)
+ * Shorthand way of doing LinkCollision() and prophylactic against erroneous usage. 
+ 
+float Distance(int x1, int y1, int x2, int y2, int specify_negative_value) 
+ * Returns the distance between two sets of coordinates using Pythagoras' Theorem
+ * Use specify_negative_value to specify a number to return, if an attempt is made to resolve the square root
+   of a negative number. 
+
+void NoInput(bool analogue_stick)
+ * Kill inputs, but not from analogue stock, unless value 'analogue_stick' is set 'true'.
+ 
+int DirX(int dir)
+ * Returns factor for X-direction (1, 0, or -1), to use with lweapon/eweapon placement and/or step.
+
+int DirY(int dir)
+ * Returns factor for Y-direction (1, 0, or -1), to use with lweapon/eweapon placement and/or step.
+
+bool MatchLWeaponType(int list, lweapon l)
+ * Compare given lweapon 'l' to array 'list' and returns if its ID matches any index value.
+
+bool MatchEWeaponType(int list, eweapon e)
+ * Compare given eweapon 'e' to array 'list' and returns if its ID matches any index value.
+
+bool MatchNPC(int list, npc n)
+ * Compare given npc 'n' to array 'list' and returns if its ID matches any index value.
+ 
+bool MatchNPCT(int list, npc n)
+ * Compare given npc 'n' to array 'list' and returns if its Type matches any index value.
+ 
+bool MatchItem(int list, item i) 
+ * Compare given item 'i' to array 'list' and returns if its ID matches any index value.
+ 
+bool MatchAction(int list)
+ * Compares the present Link->Action to values in indices of array 'list' 
+ * and returns if there is a match.
+ 
+bool MatchComboD(int list, int cmb)
+ * Compares the Combo Data at location 'cmb' to values in indices of array 'list' 
+ * and returns if there is a match.
+
+bool MatchComboT(int list, int cmb)
+ * Compares the Combo Type at location 'cmb' to values in indices of array 'list' 
+ * and returns if there is a match.
+
+bool MatchComboC(int list, int cmb)
+ * Compares the Combo CSet at location 'cmb' to values in indices of array 'list' 
+ * and returns if there is a match.
+
+bool MatchComboF(int list, int cmb)
+ * Compares the Combo Flag at location 'cmb' to values in indices of array 'list' 
+ * and returns if there is a match.
+
+bool MatchComboI(int list, int cmb)
+ * Compares the Combo Inherent Flag at location 'cmb' to values in indices of 
+ * array 'list' and returns if there is a match.
+
+bool MatchComboS(int list, int cmb)
+ * Compares the Combo Solidity at location 'cmb' to values in indices of 
+ * array 'list' and returns if there is a match.
+
+bool MatchLayerComboD(int list, int layer, int cmb)
+ * Compares the Combo Data at location 'cmb' on layer 'layer' to values in indices of 
+ * array 'list' and returns if there is a match.
+
+bool MatchLayerComboT(int list, int layer, int cmb)
+ * Compares the Combo Type at location 'cmb' on layer 'layer' to values in indices of 
+ * array 'list' and returns if there is a match.
+
+bool MatchLayerComboC(int list, int layer, int cmb)
+ * Compares the Combo CSet at location 'cmb' on layer 'layer' to values in indices of 
+ * array 'list' and returns if there is a match.
+
+bool MatchLayerComboF(int list, int layer, int cmb)
+ * Compares the Combo Flag at location 'cmb' on layer 'layer' to values in indices of 
+ * array 'list' and returns if there is a match.
+
+bool MatchLayerComboI(int list, int layer, int cmb)
+ * Compares the Combo Inherent flag. at location 'cmb' on layer 'layer' to values in indices of 
+ * array 'list' and returns if there is a match.
+
+bool MatchLayerComboS(int list, int layer, int cmb)
+ * Compares the Combo Solidity. at location 'cmb' on layer 'layer' to values in indices of 
+ * array 'list' and returns if there is a match.
+ 
+int HasTriforce(int level)
+ * Returns true if Link has the Triforce piece for the level 'level'.
+ 
+int HasCompass(int level)
+ * Returns true if Link has the compass for the level 'level'.
+
+int HasMap(int level)
+ * Returns true if Link has the dungeon map for the level 'level'.
+
+int HasBossKey(int level)
+ * Returns true if Link has the boss key for the level 'level'.
+
+int DefeatedLevelBoss(int level)
+ * Returns true if Link has defeated te boss of level 'level'.
+ 
+int NumTriforcePieces(int maxlevel)
+ * Returns the total number of Triforce pieces collected.
+ * Specify the highest level in your quest that has a Triforce piece, as arg 'maxlevel'.
+ 
+void SetCombo(int pos, int data, int type, int flag, int inh_flag, int cset, int solid)
+ * Sets the values for combo at position 'pos' to those specified. 
+ * Pass -1 to leave a value unchanged.
+ 
+void SetLayerComboValues(int layer, int data, int type, int flag, int inh_flag, int cset, int solid)
+ * Sets the values for a combo on layer 'layer', at position 'pos' to the values specified.
+ * Pass -1 to any value to leave it unchanged. 
+ 
+void CloneCombo(int pos_a, int pos_b)
+ * Clones combo from position 'pos_a' to position 'pos_b'
+
+void CloneLayerCombo(int layer, int pos_a, int pos_b)
+ * Clones combo on layer 'layer' posigtion 'pos_a' to the same layer at position 'pos_b'
+
+void CloneLayerCombo(int layer_a, int layer_b, int pos_a, int pos_b)
+ * Clones a combo on layer 'layer_a' at position 'pos_a', to layer 'layer_b" at position 'pos_b'.
+
+void Remove(ffc f)
+ * Removes an FFC by zeroing out its attributes, and freeing it for other use.
+
+int DirRev(int dir)
+ * Returns the reverse of direction 'dir'
+ 
+int DirAngle(int dir)
+ * Converts a direction to an angle in degrees.
+ 
+int DirRad(int dir)
+ * Converts a direction into radians. 
+ 
+int SpeedRev(int speed, int reduceinertia)
+ * Inverts the speed of a moving object, and alters it by value of reverseinertia
+ 
+int ImpactVelocity(int mass1, int velocity1, int mass2, int velociy2 )
+ * Returns the momentum change (acceleration) of two objects. 
+
+int ImpactVelocityA(int massA, int velocityA, int massB, int velociyB )
+ * Accepts values for object A' and object 'B' then returns the acceleration change for object 'A'.
+
+int ImpactVelocityB(int massA, int velocityA, int massB, int velociyB )
+ * Accepts values for object A' and object 'B' then returns the acceleration change for object 'B'.
+ 
+void ImpactVelocity(lweapon a, eweapon b, int massA, int velocityA, int massB, int velociyB )
+ * Accepts the mass, and velocity if two weapons. Determins the acceleration on impact. 
+ * Changes the Step of both to reflect their mass on collision. 
+
+void ImpactVelocityF() 
+ * FFC version that will change the direction, and speed of moving ffcs on collision. 
+
+int CenterX(*ptr, bool usehitbox)
+int CenterX(lweapon anLWeapon, bool usehitbox)
+int CenterX(eweapon anEWeapon, bool usehitbox) 
+int CenterX(npc n, bool usehitbox) 
+int CenterX(item i, bool usehitbox)
+
+int CenterX(*ptr, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterX(lweapon anLWeapon, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterX(eweapon anEWeapon, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterX(npc n, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterX(item i, bool usehitbox, bool trueoffset, bool drawoffset)
+ * Returns the centre X position of an object.
+ * Set usehitbox to true, to calculate the centre from Hitbox proportions
+ * "  or false to use its sprites/tiles. 
+ * Set trueoffset to return the value after caqlculating its HitXOffset
+ * Set drawoffset to return the value after calculating its DrawXOffset
+
+int CenterY(*ptr, bool usehitbox)
+int CenterY(lweapon anLWeapon, bool usehitbox)
+int CenterY(eweapon anEWeapon, bool usehitbox) 
+int CenterY(npc n, bool usehitbox) 
+int CenterY(item i, bool usehitbox)
+
+int CenterY(*ptr, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterY(lweapon anLWeapon, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterY(eweapon anEWeapon, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterY(npc n, bool usehitbox, bool trueoffset, bool drawoffset) 
+int CenterY(item i, bool usehitbox, bool trueoffset, bool drawoffset)
+ * Returns the centre Y position of an object.
+ * Set usehitbox to true, to calculate the centre from Hitbox proportions
+ * "  or false to use its sprites/tiles. 
+ * Set trueoffset to return the value after calculating its HitYOffset
+ * Set drawoffset to return the value after calculating its DrawYOffset
+
+
+int CenterLinkX(bool hitoffset)
+int CenterLinkX(bool hitoffset, bool drawoffset)
+ * Returns the centre X position of Link.
+ * Set trueoffset to return the value after caqlculating his HitXOffset
+ * Set drawoffset to return the value after calculating his DrawXOffset
+ * Note: HitXOffset and DrawXOffset for Link must be set by script, and do not directly affect
+ * his hitbox or sprite. See 'Class Link' in zscript.txt for more information. 
+ 
+int CenterLinkY(bool hitoffset)
+int CenterLinkY(bool hitoffset, bool drawoffset)
+ * Returns the centre Y position of Link.
+ * Set trueoffset to return the value after caqlculating his HitXOffset
+ * Set drawoffset to return the value after calculating his DrawXOffset
+ * Note: HitXOffset and DrawXOffset for Link must be set by script, and do not directly affect
+ * his hitbox or sprite. See 'Class Link' in zscript.txt for more information. 
+ 
+int CenterComboX(int loc)
+ * Returns the centre X position of combo at location 'loc' similar to CenterX()
+
+int CenterComboY(int loc)
+ * Returns the centre Y position of combo at location 'loc' similar to CenterX()
+ 
+float Angle(int x, int y) {
+ * Simplified form of Angle(int x1, int x2, int y1, int y2)
+ * Returns the direction of the vector from (0, 0) to point, in degrees from -180 to 180. (0 = right)
+
+bool Collision(int cmb, ffc f)
+bool Collision(ffc f, int cmb)
+bool Collision(int cmb, lweapon l)
+bool Collision(lweapon l, int cmb)
+bool Collision(lweapon l, int cmb, bool checkcoldetection)
+bool Collision(int cmb, lweapon l, bool checkcoldetection) 
+bool Collision(int cmb, eweapon e)
+bool Collision(eweapon e, int cmb)
+bool Collision(eweapon e, int cmb, bool checkcoldetection)
+bool Collision(int cmb, eweapon e, bool checkcoldetection)
+bool Collision(int cmb, npc n)
+bool Collision(npc n, int cmb)
+bool Collision(npc n, int cmb, bool checkcoldetection)
+bool Collision(int cmb, npc n, bool checkcoldetection) 
+bool Collision(int cmb, item i)
+bool Collision(item i, int cmb)
+ * Check for collision between an object (ffc, *weapon, npc, item) and a combo at location 'cmb'
+ * Set 'checkcoldetection' to true if you wish to ignore objects with CollDetection disabled (excludes item types). 
+
+bool Collision(int cmb)
+bool Collision(int cmb, bool checkcoldetection)
+ * Check for collision between Link and a combo at location 'loc'
+ * Set checkcoldetection' to true if you wish to ignore collision when Link->CollDetection is false.
+ 
+void SetLayerComboD(int layer, int pos, int combo, bool layer0)
+void SetLayerComboF(int layer, int pos, int flag, bool layer0)
+void SetLayerComboI(int layer, int pos, int flag, , bool layer0) 
+void SetLayerComboC(int layer, int pos, int cset, bool layer0)
+void SetLayerComboT(int layer, int pos, int type, bool layer0)
+void SetLayerComboS(int layer, int pos, int solidity, bool layer0)
+ * As ordinary SetLayerCombo* functions, except allows user to make layer 0 changes static.
+ * Set layer0 = true to make changes on layer 0 static. 
+
+int HitboxTop()
+int HitboxLeft()
+int HitboxRight()
+int HitboxBottom()
+ * Returns the bounds of Link's Hitbox
+
+item CreateTimeoutItem(int id, int x, int y, int width, int height)
+ * Creates a timeout item, with the option to set its hitbox size.
+ 
+lweapon EWeaponToLWeaponID(int type)
+lweapon EtoLWeaponType(int type)
+ * Converts and returns the type (ID) of an EWeapon to the closest LWeapon type
+ 
+eweapon LWeaponToEWeaponID(int type)
+eweapon LtoEWeaponType(int type)
+ * Converts and returns the type (ID) of an LWeapon to the closest EWeapon type
+ 
+eweapon LWeaponToEWeapon(lweapon a, eweapon b)
+eweapon LWeaponToEWeapon(eweapon b, lweapon a)
+eweapon LToEWeapon(lweapon a, eweapon b)
+eweapon LToEWeapon(eweapon b, lweapon a)
+ * Copies the attributes of lweapon 'a' to eweapon 'b'. 
+ * Designed for reflected attacks.
+ * This works only for types legal with LWeaponToEWeaponType()
+ * Returns the pointer of the new weapon, or -1 on error.
+ * Overloaded for reversed arguments. 
+ 
+eweapon LWeaponToEWeapon(lweapon a)
+eweapon LToEWeapon(lweapon a)
+ * Creates a new eweapon with the attributes of an lweapon 'a'. 
+ * Works similarly to Duplicate(), except it changes the weapon class.
+ * This works only for types legal with LWeaponToEWeaponType()
+ * Returns the pointer of the new weapon, or -1 on error.
+
+lweapon EWeaponToLWeapon(eweapon a, lweapon b)
+lweapon EWeaponToLWeapon(lweapon b, eweapon a)
+lweapon EToLWeapon(eweapon a, lweapon b)
+lweapon EToLWeapon(lweapon b, eweapon a)
+ * Copies the attributes of eweapon 'a' to lweapon 'b'. 
+ * Designed for reflected attacks.
+ * This works only for types legal with EWeaponToLWeaponType()
+ * Returns the pointer of the new weapon, or -1 on error.
+ * Overloaded for reversed arguments. 
+ 
+lweapon EWeaponToLWeapon(eweapon a)
+lweapon EToLWeapon(eweapon a)
+ * Creates a new lweapon with the attributes of an eweapon 'a'. 
+ * Works similarly to Duplicate(), except it changes the weapon class.
+ * This works only for types legal with EWeaponToLWeaponType()
+ * Returns the pointer of the new weapon, or -1 on error.
+ 
+int ProximityX(*ptr a, *ptr b) 
+int ProximityX(int combo, *ptr)
+int ProximityX(*ptr int combo)
+int ProximityX(int comboA, int comboB)
+int ProximityX(*ptr a, *ptr b, bool fromcentre) 
+int ProximityX(int combo, *ptr, bool fromcentre)
+int ProximityX(*ptr int combo, bool fromcentre)
+int ProximityX(int comboA, int comboB, bool fromcentre)
+
+ * Returns the X-axis proximity of two pointers, or one pointer and one combo, in pixels.
+ * Overloaded to support all pointer types (npc, item, *weapon, ffc), and combo positions. 
+ * The value it returns is an absolute; not a relative value. 
+ * You mnay optionally set fromcentre to 'true' to return the proximity of the centre of both objects.
+
+int ProximityX(*ptr)
+int ProximityX(int combo)
+
+ * Returns the X-axis proximity of any pointer, and Link.
+ * Overloaded to accept all pointer types (npc, item, *weapon, ffc), and combo positions.
+ * The value it returns is an absolute; not a relative value. 
+ 
+int ProximityY(*ptr a, *ptr b) 
+int ProximityY(int combo, *ptr)
+int ProximityY(*ptr int combo)
+int ProximityY(int comboA, int comboB)
+int ProximityY(*ptr a, *ptr b, bool fromcentre) 
+int ProximityY(int combo, *ptr, bool fromcentre)
+int ProximityY(*ptr int combo, bool fromcentre)
+int ProximityY(int comboA, int comboB, bool fromcentre)
+
+ * Returns the Y-axis proximity of two pointers, or one pointer and one combo, in pixels.
+ * Overloaded to support all pointer types (npc, item, *weapon, ffc), and combo positions. 
+ * The value it returns is an absolute; not a relative value. 
+ * You mnay optionally set fromcentre to 'true' to return the proximity of the centre of both objects.
+ 
+int ProximityY(*ptr)
+int ProximityY(int combo)
+ * Returns the Y-axis proximity of any pointer, and Link.
+ * Overloaded to accept all pointer types (npc, item, *weapon, ffc), and combo positions.
+ * The value it returns is an absolute; not a relative value. 
+ 
+ //Deprecated by Formatting:
+int ProximityCenterX(ffc a, ffc b)
+ * Determines the centre of two pointers, and returls the proximity of their two central points. 
+ * The value it returns is an absolute; not a relative value. 
+ 
+float Distance(int x1, int y1, int x2, int y2, int scale)
+ * A variant of Distance() designed to handle very large distances.
+ * Returns the distance between two sets of coordinates using Pythagoras' Theorem
+ * Allows scaling for large distance determinations. 
+ * Argument 'scale' represents a ratio of 1:scale.
+ * Argument 'scale' is most precise when using powers of 10 (i.e. 1, 10, 100, 1000, 10000).
+ * If arg 'scale' is set to 0, it defaults to '1'. 
+ * Returns -1 on error. 
+
+int MatchScript(int script_id) 
+ * Compares the value 'script_id' to all running ffc scripts, and returns the screen
+ * index (1 to 32) of the ffc running that script. 
+ * Returns 0 if it finds no mach.
+ 
+int MatchScript(int script_id, int list)
+ * Compares the scripts of all running ffcs, to all indices of an array 'list'
+ * searching for a match to ffc script 'script_id'.
+ * If there is a match, it MatchScript() will return the first match (FFC number) found.
+ * Returns 0 if it finds no match.
+
+int ScreenItem()
+ * Returns the ID of the curent Screen Item, if there is one.
+ * Returns -1 if none.
+ 
+int Chance()
+ * Randomly returns true or false, with 50/50% odds.
+
+bool Chance(int percentChance){
+ * Randomly returns true, or false, using input 'percentChance' to 
+ * determine the percentage change of a 'true return'
+
+ 
+int ProximityX(ptr a, ptr b) 
+int ProximityX(int a, ptr b) 
+int ProximityX(ptr a, int b) 
+int ProximityX(int a, int b) 
+ * Returns the absolute distance on the X-axis between any two given 
+ * pointers of any type (*weapon, ffc, item, npc, combo_loc) in pixels.
+
+int ProximityY(ptr a, ptr b)
+int ProximityY(int a, ptr b)
+int ProximityY(ptr a, int b)
+int ProximityY(int a, int b)
+ * Returns the absolute distance on the Y-axis between any two given 
+ * pointers of any type (*weapon, ffc, item, npc, combo_loc) in pixels.
+ 
+int ProximityX(ptr a) 
+int ProximityX(int a) 
+ * Returns the abolute distance on the X-axis between Link and the specified
+ * pointer of any type (*weapon, ffc, item, npc, combo_loc) in pixels. 
+ 
+int Proximityy(ptr a) 
+int Proximityy(int a) 
+ * Returns the abolute distance on the y-axis between Link and the specified
+ * pointer of any type (*weapon, ffc, item, npc, combo_loc) in pixels. 
+
+int ProximityX(ptr a, ptr b, bool fromcentre) 
+int ProximityX(int a, ptr b, bool fromcentre) 
+int ProximityX(ptr a, int b, bool fromcentre) 
+int ProximityX(int a, int b, bool fromcentre) 
+ * Returns the absolute distance on the X-axis between any two given 
+ * pointers of any type (*weapon, ffc, item, npc, combo_loc) in pixels.
+ * If 'bool fromcentre' is set true, it returns the distance to the centre of both objects
+
+int ProximityY(ptr a, ptr b, bool fromcentre)
+int ProximityY(int a, ptr b, bool fromcentre)
+int ProximityY(ptr a, int b, bool fromcentre)
+int ProximityY(int a, int b, bool fromcentre)
+ * Returns the absolute distance on the Y-axis between any two given 
+ * pointers of any type (*weapon, ffc, item, npc, combo_loc) in pixels.
+ * If 'bool fromcentre' is set true, it returns the distance to the centre of both objects
+
+ 
+int ProximityX(ptr a, bool fromcentre) 
+int ProximityX(int a, bool fromcentre) 
+ * Returns the abolute distance on the X-axis between Link and the specified
+ * pointer of any type (*weapon, ffc, item, npc, combo_loc) in pixels. 
+ * If 'bool fromcentre' is set true, it returns the distance to the centre of both objects
+
+ 
+int Proximityy(ptr a, bool fromcentre) 
+int Proximityy(int a, bool fromcentre) 
+ * Returns the abolute distance on the y-axis between Link and the specified
+ * pointer of any type (*weapon, ffc, item, npc, combo_loc) in pixels. 
+ * If 'bool fromcentre' is set true, it returns the distance to the centre of both objects
+
+bool Collision(int a, ptr b, int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2)
+bool Collision(int a, int b, int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2)
+bool Collision(ptr a, ptr b, int a1, int b1, int c1, int d1, int a2, int b2, int c2, int d2)
+ * Checks Collision between two objects, as per Collision()
+ * Allows setting HITBOX constraints or offsets.
+ 
+bool CollisionDir(int a, ptr b, int dir, bool checkcoldetection)
+ * Checks Collision between a COMBO and one object, as per Collision()
+ * Allows setting a required direction for the second argument.
+ * Set checkcoldetection true if you wish weapons without collision to automatically return false.
+ 
+bool CollisionDir(int cmb, lweapon l, int dir, bool facingspecificdir, bool checkcoldetection)
+ * Silimar to CollisionDir()
+ * Set 'facingspecificdir' to true, to check only if a weapon is facing a specific direction.
+ * Set it false, if you want to check if a weapon is NOT facing a specific direction. 
+ * Set checkcoldetection true if you wish weapons without collision to automatically return false.
+
+bool Pos(int val) 
+ * Returns true if a value passed is greater than 0.
+ 
+bool Neg(int val)
+ * Returns true if a value passed is less than 0.
+ 
+int Lesser (int a, int b)
+int Lesser (int a, int b, int c)
+int Lesser (int a, int b, int c, int d)
+int Lesser (int a, int b, int c, int d, int e)
+int Lesser (int a, int b, int c, int d, int e, int f)
+int Lesser (int a, int b, int c, int d, int e, int f, int g)
+int Lesser (int a, int b, int c, int d, int e, int f, int g, int h)
+ * Returns the lesser of all values passed. 
+ * Overloaded to accept up to eight arguments.
+ 
+int Greater (int a, int b)
+int Greater (int a, int b, int c)
+int Greater (int a, int b, int c, int d)
+int Greater (int a, int b, int c, int d, int e)
+int Greater (int a, int b, int c, int d, int e, int f)
+int Greater (int a, int b, int c, int d, int e, int f, int g)
+int Greater (int a, int b, int c, int d, int e, int f, int g, int h)
+ * Returns the greatest of all values passed.
+ * Overloaded to accept up to eight arguments.
+
+bool IsLess(int a, int b)
+bool IsLess(int a, int b, int c)
+bool IsLess(int a, int b, int c, int d)
+bool IsLess(int a, int b, int c, int d, int e)
+bool IsLess(int a, int b, int c, int d, int e, int f)
+bool IsLess(int a, int b, int c, int d, int e, int f, int g)
+bool IsLess(int a, int b, int c, int d, int e, int f, int g, int h)
+ * Returns if 'a' is less than all other values passed. 
+
+bool IsMore(int a, int b)
+bool IsMore(int a, int b, int c)
+bool IsMore(int a, int b, int c, int d)
+bool IsMore(int a, int b, int c, int d, int e)
+bool IsMore(int a, int b, int c, int d, int e, int f)
+bool IsMore(int a, int b, int c, int d, int e, int f, int g)
+bool IsMore(int a, int b, int c, int d, int e, int f, int g, int h)
+ * Returns if 'a' is greater than all other values passed. 
+
+int Least(int arr)
+ * Returns the index of the lowest value in an array. 
+ 
+int Greatest(int arr)
+ * Returns the highest value in a given array.
+ 
+int LeastIndex(int arr)
+ * Returns the index number of the array index holding the lowest value in a given array.
+ * If the lowest value is present in two or more indices, this will return the
+ * lowest-numbered index of the set.
+ 
+int GreatestIndex(int arr)
+ * Returns the index number of the array index holding the highest value in a given array.
+ * If the ighest value is present in two or more indices, this will return the
+ * lowest-numbered index of the set.
+ 
+void GiveLinkItem(int itm_id)
+ * Gives Link an item specified by 'itm_id' at his position, running its pick-up
+ * script (if any). LINK DOES NOT HOLD UP THE ITEM.
+ 
+void GiveLinkItem(int itm_id, int holdtype)
+ * Creates an item specified by 'itm_id' on the screen at link's position, giving it to him,
+ * and running its pick-up script.
+ * If holdtype is set to a Link->Action for holding up an item, then Link will hold the item up as desired.
+
+int AdjacentCombo(int cmb, int dir)
+ * Returns the Nuth combo index of a combo based on a central point, and a direction.
+ * For example, combo 22 + COMBO_UPRIGHT returns '7', 
+ * as combo 7 is to the upper-right of combo 22.
+ * Use the constants defined for use with this function in std_constans.zh to pass values into this function.
+ 
+bool DistX(int a, int dist)
+bool DistX(ptr a, int dist)
+ * Returns true if Link is with a distance of 'dist' pixels on the X-axis, from the object specified.
+
+bool DistY(int a, int dist)
+bool DistY(ptr a, int dist)
+ * Returns true if Link is with a distance of 'dist' pixels on the Y-axis, from the object specified.
+
+bool DistX(int a, int b, int distance)
+bool DistX(int a, ptr b, int distance
+bool DistX(ptr a, int b, int distance)
+bool DistX(ptr a, ptr b, int distance)
+ * Returns true if two objects of any type (*weapon, ffc, item, combo_loc, npc) are
+ * within a relative distance of 'dist' pixels on the X-axis.
+ 
+bool DistY(int a, int b, int distance)
+bool DistY(int a, ptr b, int distance
+bool DistY(ptr a, int b, int distance)
+bool DistY(ptr a, ptr b, int distance)
+ * Returns true if two objects of any type (*weapon, ffc, item, combo_loc, npc) are
+ * within a relative distance of 'dist' pixels on the Y-axis.
+ 
+bool LinkFacing(ptr a)
+bool LinkFacing(int a)
+ * Returns true if Link is facing the given object (*weapon, npc, ffc, item, combo_pos)
+
+bool Facing(*ptr a, *ptr b)
+bool Facing(*ptr a, int b)
+ * Returns if 'a' is facing 'b'. 
+ * Object 'a; may be an lweapon, eweapon, or npc. 
+ * Target 'b' may be an lweapon, eweapon, npc, ffc, an item, or a combo location. 
+ 
+bool Facing(*ptr a)
+ * Returns if 'a' is facing Link. 
+ * Object 'a' may be an lweapon, eweapon, or npc. 
+ 
+bool Facing(ffc a, *ptr b, int dir) 
+bool Facing(ffc a, int b, int dir) 
+ * Returns if ffc 'a' is facing 'b'.
+ * You must specify the direction of 'a' with 'dir'.
+ * Target 'b' may be an lweapon, eweapon, npc, ffc, an item, or a combo location. 
+ 
+bool Facing(ffc a, int dir)
+ * Returns if ffc 'a' is facing Link.
+ * You must specify a direction for the ffc. 
+ 
+bool Facing(item a, *ptr b, int dir) 
+bool Facing(item a, int b, int dir) 
+ * Returns if item 'a' is facing 'b'.
+ * You must specify the direction of 'a' with 'dir'.
+ * Target 'b' may be an lweapon, eweapon, npc, ffc, an item, or a combo location. 
+ 
+bool Facing(item a, int dir)
+ * Returns if item 'a' is facing Link.
+ * You must specify a direction for the item. 
+ 
+ ==================================
+ -- Function Changes ( 2.50.2 ) -- 
+ ==================================
+ 
+ Distance() now returns special values to handle floating point rollover.
+  * If the value passed to Distance() is negative, Distance will calculate a special factor
+  * starting at 464 for it. 
+  * This type of event occurs when the values passed to its args would exceed 
+  * the maximum float value of 214748.3648. 
+  * Thus, a value of -2.3648 is actually an attempt to pass 214750.3648 to the function.
+  * To solve this, negative values are inverted, and a square root is derived
+  * then added to 464, and returned. 
+ //now uses SafeSqrt() to avoid errors when parsing negative values, or values too large for ZC 
+ //to use to perform a square root operation.
+  
+ SetLayerComboS() now refuses to set solidity for combos on layers 2 and above. Note that this is to 
+ prevent ZC crashes on 2.50.0, 2.50.1, and 2.50.2. This bug is fixed as of 2.50.3, and the changes to this
+ function will automatically account for this in 2.50.3 during compilation; but this will not prevent earlier
+ versions of ZC running code compile din 2.50.3 from potentially crashing. 
+
+ SquareCollision now properly uses 'side2' arg for its calculation. (Bugfix)
+
+ Choose() is now overloaded for up to 16 args. 
+ 
+ Collision() functions now use an array for their vars. Is this slower at all? The goal here, is to 
+ optimise variable use on functions likely to be in a nest. 
+ 
+ =============================
+ -- New Includes ( 2.50.2 ) --
+ =============================
+ std.zh now includes some new files, that you will want to review. THe outline, scope, and purpose of 
+ the new expansions is outlined below.
+ 
+/******************
+* std.zh Settings *
+*******************/
+
+std.zh now includes a SETTINGS FILE ( std.cfg ) that has a few options
+that you may enable, if you wish to change the behaviour of std.zh at compilation
+for your quests. These settings are disbaled by default, and affect only a handful of
+minimal mechanical differences as follows:
+
+
+/*********************/
+*   STRING HANDLING   * 
+/*********************/
+
+string.zh is embedded by default. This will *not* interfere with EXISTING calls to: import "string.zh".
+Furthermore, string.zh has been expanded, now consisting of string_constants.zh and string_functions.zh, with
+new functions, and a complete map of ASCII values (as constants).
+
+/*********************/
+*    LOCALISATION    * 
+/*********************/
+
+
+std.zh now includes some basic local support. These files are in */locale/std_std_'language'.zh, 
+and contain constants, and functions in other laguages. The base included locale file at this time
+is 'UK/International English', with more to follow. 
+
+
+/*************************/
+*    GENERAL-USE ARRAY   * 
+/*************************/
+
+float GlobalRAM[4096]
+ * A base, general-purpose array with a size of 4096, and a float type. 
+ 
+std.zh now includes ONE BASE ARRAY with a float type. This is to allow users who are not versed in ZScript 
+from avoiding a pitfall of either running out of global vars, by allowing you easy use of one global array
+and getter/setter functions to modify it.
+
+Furthermore, it prevents being unable to modify a quest, after releasing it, by ensuring that there is a general
+use array for expansion. The array is in std_vars.zh, and if you wish to, you may comment out this import directive
+instruction in std.zh to prevent loading the general use array, and the functions associated with it.
+
+The following functions are in the std_vars.zh file, for use with the general-use array:
+
+float GetV(int index)
+* Returns the value of the Nth 'index' of the general use array stdArray[];
+
+void SetV(int index, int value)
+* Sets the value of stdArray['index'] to 'value'.
+
+void IncV(int index)
+* Increases an index value: Equivalent to doing stdArray['index']++  
+
+void IncV(int index, int value)
+* Increases the value of stdArray['index'] by 'value'.
+
+void DecV(int index)
+* Decreases an index value: Equivalent to doing stdArray['index']--  
+
+void DecV(int index, int value)
+* Decreases the value of stdArray['index'] by 'value'.
+
+
+/*************************/
+*   SHORTCUTS & MACROS   * 
+/*************************/
+
+The file std_shortcuts.zh includes many useful, time-saving shortcut functions that are equivalent to calling
+normal ZScript functions, except that the user need not worry about the left-of-the-arrow operator. 
+
+For example, Screen->Rectangle() can now be called simply as Rectangle() using this include. 
+
+Please review this file, and the documentation for it (std_shortcuts.txt) for more information on its use,
+and on the functions contained therein. 
+
+/**************************
+* Array Memory Management *
+**************************/
+
+// mem.zh
+
+ std.zh includes some memory management untilities, for use with arrays, should you desire to use them.
+
+void Free(int arr, int startindex, int lastindex)
+ * Marks array indices in range as being freed. Only affects indices that are Malloc'd.
+
+void ForceFree(int arr, int startindex, int lastindex)
+ * Marks array indices in range as being freed.
+
+void Free(int arr, int startindex, int lastindex, int ignoreunlessvalue)
+ * Marks array indices in range as being freed. 
+ * Will ignore any indices in this range that are not 'ignoreunlessvalue'
+
+void FreeExcept(int arr, int startindex, int lastindex, int ignoreindices)
+ * Marks an range of array indices as reserved. 
+ * Will ignore any indices in this range that match 'ignoreindices'
+
+void ForceMalloc(int arr, int startindex, int lastindex)
+ * Marks a range of array indices as being reserved.
+
+void Malloc(int arr, int startindex, int lastindex)
+ * Marks a range of array indices as reserved. 
+ * Will ignore any indices in thsi range that aren't free (MALLOC_FREE).
+
+void Malloc(int arr, int startindex, int lastindex, int ignoreunlessvalue)
+ * Marks a range of array indices as reserved. 
+ * Will ignore any indices in this range that are not 'ignoreunlessvalue'
+
+void MallocExcept(int arr, int startindex, int lastindex, int ignoreindices)
+ * Marks an range of array indices as reserved. 
+ * Will ignore any indices in this range that match 'ignoreindices'
+
+void Malloc(int arr, int index)
+ * Marks a specific array index as reserved.
+
+int FindFree(int arr, int numbercont)
+ * Parses an array to find a number of contiginous FREE indices. 
+ * Returns the lowest index number, of the range that it finds. 
+ * Returns -1 on failure. 
+
+int FindMalloc(int arr, int numbercont)
+ * Parses an array to find a number of contiginous RESERVED indices. 
+ * Returns the lowest index number, of the range that it finds. 
+ * Returns -1 on failure. 
+ 
+int FreeIndex(int arr)
+ * Finds a single free index in an array. 
+ * Starts with highest numbered index.
+ 
+int ReservedIndex(int arr)
+ * Finds a single free index in an array. 
+ * Starts with highest numbered index.
+ 
+int MallocIndex(int arr)
+ * Finds a single reserved index in an array. 
+ * Starts with highest numbered index.
+
+int FreeIndexLow(int arr)
+ * Finds a single free index in an array. 
+ * Starts with lowest numbered index. 
+
+int ReservedIndexLow(int arr)
+ * Finds a single free index in an array. 
+ * Starts with lowest numbered index. 
+
+int MallocIndexLow(int arr)
+ * Finds a single free index in an array. 
+ * Starts with lowest numbered index. 
+
+bool IsFreeIndex(int arr, int index)
+ * Checks if a specific index in an array is free. 
+
+bool IsReservedIndex(int arr, int index)
+ * Checks if a specific index in an array is free. 
+
+bool IsMallocIndex(int arr, int index)
+ * Checks if a specific index in an array is free. 
+ 
+void MallocArray(int arr)
+ * Mallocs an entire array. 
+  
+void MallocFreeArray(int arr)
+ * Mallocs an entire array. Only Malloc's free values.
+
+void FreeArray(int arr)
+ * Frees an entire array. 
+ 
+ //We need FreeArrayOnly, FreeArrayExcept, MallocArrayOnly, MallocArrayExcept
+
+void FreeArrayForce(int arr)
+ * Frees an entire array. 
+ * Ignores present values.
+
+void FreeMallocArray(int arr)
+ * Frees an entire array. 
+ * Only frees Malloc'd values. 
+
+void MallocArray(int arr, int onlyvalue)
+ * Mallocs an entire array, but only indices that have the value specified by 'onlyvalue'.
+
+void FreeArray(int arr, int onlyvalue) 
+ * Frees an entire array, but only indices that have the value specified by 'onlyvalue'.
+
+void MallocArrayExcept(int arr, int exclude)
+ * Reserves an entire array, ignoring indices that have a value 'exclude'
+ 
+ //We need MallocArrayFreaterthan and IfLessThan ?
+
+
+
+///////////OLD///////////////////////////////////////////////////
+void Malloc(int arr, int startindex, int lastindex)
+ * Sets array indices in array 'arr' from range 'startindex' to 'lastindex' to a 'free' state. 
+ 
+int FindFreeArrayIndices(int arr, int numbercont)
+ * Parses an array to find a range of CONTIGINOUS free (MALLOC_FREE) indices. 
+ * Returns the lowest index number, in the range that it finds.
+ * Returns -1 on a failure. 
+ 
+int FreeIndex(int arr)
+ * Scans an array for any single free index, starting with the highest numbered index.
+ 
+int FreeIndexLow(int arr) 
+ * Scans an array for a single free index, starting with the lowest numbered index. 
+ 
+bool FreeIndex(int arr, int index)
+ * Determines if a specific array index is free.
+ * For use with Malloc()
+ 
+void MallocArray(int arr)
+ * Initialises, or mallocs a full array. 
+
+void MallocArray(int arr, onlyvalue)
+ * Mallocs an entire array, but only indices that have the value specified by 'onlyvalue'.

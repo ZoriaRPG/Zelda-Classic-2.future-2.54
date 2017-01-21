@@ -1,0 +1,209 @@
+
+//21-March
+//Advanced tracing
+
+//Traces a float, or int; whether a variable, an internal variable, array index, or other
+//along with a given string in one function.
+void TraceStr(int string, int value){
+    TraceNL(); TraceS(string); Trace(value); TraceNL();
+}
+
+//This is where having char would be nice.
+
+//As TraceStr, but for boolean values.
+void TraceStrB(int string, bool val){
+    TraceNL(); TraceS(string); TraceB(val); TraceNL();
+}
+
+
+void TraceA(bool arr,int size, bool verbose){TraceArrayB(arr,size,verbose);}
+void TraceA(float arr, bool verbose){TraceArray(arr,verbose);}
+
+
+//Trace the indices of an array, with a space between each. max 20 per line. 
+//NOT overloaded to accept all array types. Trace() does nto work on ffc, item, itemdata, lweapon, or eweapon!
+//Mayne next version. 
+void TraceArray(int arr){
+	TraceNL();
+	int _spc[2]=" ";
+	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+		Trace(arr[q]); TraceS(_spc);
+		if ( q % 10 == 0 ) TraceNL();
+	}
+}
+
+//Trace the indices of a Boolean array, with a space between each. max 20 per line. 
+void TraceArrayB(bool arr, int size){
+	TraceNL();
+	int _spc[2]=" ";
+	for ( int q = 0; q < size; q++ ) {
+		TraceB(arr[q]); TraceS(_spc);
+		if ( q % 10 == 0 ) TraceNL();
+	}
+}
+
+void TraceArray(int arr, bool verbose){
+	if ( verbose ) 	{
+		int str[]="Tracing array with Pointer: ";
+		TraceNL(); TraceS(str); Trace(arr); TraceNL();
+
+		for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+			int str2[]="Index: ";
+			int str3[]="is : ";
+			TraceS(str2); Trace(q); TraceS(str3); Trace(arr[q]);
+			TraceNL();
+		}
+	}
+	else {
+		TraceNL();
+		int _spc[2]=" ";
+		for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+			Trace(arr[q]); TraceS(_spc);
+			if ( q % 10 == 0 ) TraceNL();
+		}
+	}
+}
+
+//Trace the indices of a Boolean array, allows verbose logging.
+void TraceArrayB(bool arr, int size, bool verbose){
+	if ( verbose ) {
+		//ZScript has no facility to read a pointer ID of an array with a type of bool, ffc, item, *weapon, or itemdata.
+		//int str[]="Tracing array with Pointer: ";
+		int str[]="Tracing Boolean Array: ";
+		TraceNL(); TraceS(str); TraceNL();
+		
+		int _spc[2]=" ";
+		for ( int q = 0; q < size; q++ ) {
+			int str2[]="Index: ";
+			int str3[]="is : ";
+			TraceS(str2); Trace(q); TraceS(str3); TraceB(arr[q]); TraceS(_spc);
+			TraceNL();
+		}
+	}
+	else {
+		TraceNL();
+		int _spc[2]=" ";
+		for ( int q = 0; q < size; q++ ) {
+			TraceB(arr[q]); TraceS(_spc);
+			if ( q % 10 == 0 ) TraceNL();
+		}	
+	}
+}
+
+//This doesn't work, as ZScript reads an invalid index as false, rather than not being able to read it. :(
+//int SizeOfArrayB(bool arr){
+//	int pass; 
+//	for ( int q = 0; q < 214747; q++ ) {
+//		int val = -1;
+//		if ( arr[q] == true ) val = 1;
+//		if ( arr[q] == false ) val = 0;
+//		if ( arr[q] != true && arr[q] != false ) return pass;
+//		pass++;
+//	}
+//}
+		
+
+//void TraceArray(float arr){
+//	TraceNL();
+//	int _spc[2]=" ";
+//	for ( int q = 0; q < SizeOfArray(arr); q++ ) {
+//		Trace(arr[q]); TraceS(_spc);
+//		if ( q % 10 == 0 ) TraceNL();
+//	}
+//}
+
+//void TraceArray(lweapon arr, int size){
+//	TraceNL();
+//	int _spc[2]=" ";
+//	for ( int q = 0; q < size; q++ ) {
+//		int id = arr[q];
+//		Trace(id); TraceS(_spc);
+//		if ( q % 10 == 0 ) TraceNL();
+//	}
+//}
+
+//void TraceArray(eweapon arr, int size){
+//	TraceNL();
+//	int _spc[2]=" ";
+//	for ( int q = 0; q < size; q++ ) {
+//		Trace(arr[q]); TraceS(_spc);
+//		if ( q % 10 == 0 ) TraceNL();
+//	}
+//}
+
+//void TraceArray(npc arr, int size){
+//	TraceNL();
+//	int _spc[2]=" ";
+//	for ( int q = 0; q < size; q++ ) {
+//		Trace(arr[q]); TraceS(_spc);
+//		if ( q % 10 == 0 ) TraceNL();
+//	}
+//}
+
+//void TraceArray(ffc arr, int size){
+///	TraceNL();
+//	int _spc[2]=" ";
+//	for ( int q = 0; q < size; q++ ) {
+//		Trace(arr[q]); TraceS(_spc);
+//		if ( q % 10 == 0 ) TraceNL();
+//	}
+//}
+
+//void TraceArray(item arr, int size){
+//	TraceNL();
+//	int _spc[2]=" ";
+//	for ( int q = 0; q < size; q++ ) {
+//		Trace(arr[q]); TraceS(_spc);
+//		if ( q % 10 == 0 ) TraceNL();
+//	}
+//}
+
+//void TraceArray(itemdata arr, int size){
+//	TraceNL();
+//	int _spc[2]=" ";
+//	for ( int q = 0; q < size; q++ ) {
+//		Trace(arr[q]); TraceS(_spc);
+//		if ( q % 10 == 0 ) TraceNL();
+//	}
+//}
+
+
+//Trace each index of an array, and print strings to make them legible.
+//void TraceArray(int arr){
+//	int str[]="Tracing array with Pointer: ";
+//	int bufferPointer[7]=" ";
+//	itoa(arr,bufferPointer);
+//	int mainBuffer[40]=" ";
+//	strcat(str,mainBuffer);
+//	strcat(bufferPointer,mainBuffer);
+//	TraceNL();
+//	TraceS(mainBuffer);
+//	TraceNL();
+
+//	for ( int q = 0; q <= SizeOfArray(arr); q++ ) {
+//		int str2[]="Index: ";
+//		int str3[]="is : ";
+//		int buffer[22]=" ";
+//		int bufferAmt[7]=" ";
+//		int bufferIndex[7]=" ";
+//		itoa(arr[q],bufferAmt);
+//		itoa(q,bufferIndex);
+//		strcat(str2,buffer);
+//		strcat(bufferIndex,buffer);
+//		strcat(str3,buffer);
+//		strcat(bufferAmt,buffer);
+//		TraceS(buffer);
+//		TraceNL();
+//	}
+//}
+
+//Shorthand for TraceArray()
+void TraceA(bool arr,int size){TraceArrayB(arr,size);}
+void TraceA(float arr){TraceArray(arr);}
+//void TraceA(npc arr,int size){TraceArray(arr,size);}
+//void TraceA(ffc arr,int size){TraceArray(arr,size);}
+//void TraceA(lweapon arr,int size){TraceArray(arr,size);}
+//void TraceA(eweapon arr,int size){TraceArray(arr,size);}
+//void TraceA(item arr,int size){TraceArray(arr,size);}
+//void TraceA(itemdata arr,int size){TraceArray(arr,size);}
+

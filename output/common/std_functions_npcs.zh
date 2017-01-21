@@ -1,0 +1,49 @@
+//Returns true if an npc's Misc. flag is set.
+bool GetNPCMiscFlag(npc e, int flag) {
+	return (e->MiscFlags&flag) != 0;
+}
+
+//Create an NPC and set its X and Y position in one command
+npc CreateNPCAt(int id, int x, int y) {
+	npc nme = Screen->CreateNPC(id);
+	if(nme->isValid()) {
+		nme->X = x;
+		nme->Y = y;
+	}
+	return nme;
+}
+
+// Returns the first NPC of the given type. Use the NPCT_ constants.
+// If none exist, it returns an uninitialised pointer.
+npc LoadNPCOfType(int type) {
+	npc n;
+	for (int i=1; i <= Screen->NumNPCs(); i++) {
+		n = Screen->LoadNPC(i);
+		if (n->Type == type) return n;
+	}
+	npc n2;
+	return n2;
+}
+
+// Returns the first NPC of the given ID. Use the NPC_ constants.
+// If none exist, it returns an uninitialised pointer.
+npc LoadNPCOf(int type) {
+	npc n;
+	for (int i=1; i <= Screen->NumNPCs(); i++) {
+		n = Screen->LoadNPC(i);
+		if (n->ID == type) return n;
+	}
+	npc n2;
+	return n2;
+}
+
+int NumNPCsOf(int type) {
+	int ret = 0;
+	npc n;
+	for (int i = Screen->NumNPCs(); i > 0 ; i--) {
+		n = Screen->LoadNPC(i);
+		if (n->ID == type)
+		ret++;
+	}
+	return ret;
+}

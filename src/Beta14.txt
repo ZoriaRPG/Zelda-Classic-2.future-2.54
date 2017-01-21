@@ -1,0 +1,9 @@
+Beta 14
+Expanded Link->Misc[16] to Link->Misc[32]
+Expanded lweapon->Misc[16] to lweapon->Misc[32]
+Expanded eweapon->Misc[16] to eweapon->Misc[32]
+Expanded item->Misc[16] to item->Misc[32]
+Expanded npc->Misc[16] to npc->Misc[32]
+
+Modified 'Item Editor' so that no options are greyed out (disabled), allowing the user to set values to
+work in conjunction with the new itemdata entries, in scripts. 

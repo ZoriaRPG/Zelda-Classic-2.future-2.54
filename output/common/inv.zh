@@ -1,0 +1,30 @@
+void InvertedCircle(int bitmapID, int layer, int x, int y, int radius, int scale, int fillcolor, int rot){
+	
+	Screen->SetRenderTarget(bitmapID);     //Set the render target to the bitmap.
+	Screen->Rectangle(layer, 0, 0, 256, 176, fillcolor, 1, 0, 0, 0, true, 128); //Cover the screen
+	Screen->Circle(layer, x, y, radius, 0, scale, 0, 0, 0, true, 128); //Draw a transparent circle.
+	Screen->SetRenderTarget(RT_SCREEN); //Set the render target back to the screen.
+	//if ( Version() < 250.2 ) Screen->DrawBitmap(layer, bitmapID, 0, 0, 256, 176, 0, 56, 256, 176, rot, true); //Draw the bitmap for 2.50.0/1
+	
+	Screen->DrawBitmap(layer, bitmapID, 0, 0, 256, 176, 0, 0, 256, 176, rot, true); //Draw the bitmap for 2.50.2
+	
+}
+
+void Shadow(int bitmapID, int layer){
+	Screen->SetRenderTarget(bitmapID);     //Set the render target to the bitmap.
+	Screen->Rectangle(layer, 0, 0, 256, 176, 0x0F, 1, 0, 0, 0, true, 128); //Cover the screen
+	Screen->SetRenderTarget(RT_SCREEN); //Set the render target back to the screen.
+	Screen->DrawBitmapEx(layer, bitmapID, 0, 0, 256, 176, 0, 0, 256, 176, 0, 1, true); //Draw the bitmap for 2.50.2
+}
+
+void InvertedCircleEx(int bitmapID, int layer, int x, int y, int radius, int scale, int fillcolor, int rot, int mode){
+	
+	Screen->SetRenderTarget(bitmapID);     //Set the render target to the bitmap.
+	Screen->Rectangle(layer, 0, 0, 256, 176, fillcolor, 1, 0, 0, 0, true, 128); //Cover the screen
+	Screen->Circle(layer, x, y, radius, 0, scale, 0, 0, 0, true, 128); //Draw a transparent circle.
+	Screen->SetRenderTarget(RT_SCREEN); //Set the render target back to the screen.
+	//if ( Version() < 250.2 ) Screen->DrawBitmap(layer, bitmapID, 0, 0, 256, 176, 0, 56, 256, 176, rot, true); //Draw the bitmap for 2.50.0/1
+	
+	Screen->DrawBitmapEx(layer, bitmapID, 0, 0, 256, 176, 0, 0, 256, 176, rot, mode, true); //Draw the bitmap for 2.50.2
+	
+}

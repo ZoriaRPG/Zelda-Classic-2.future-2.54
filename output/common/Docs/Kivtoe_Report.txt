@@ -1,0 +1,41 @@
+Kivtoe RoH Quest REPORT 1; 3rd-Dec-2016
+
+Playing RoH Open Beta, Demo 1
+Quest has no header, title, author.
+Screen 39 (with shop cave): Player can enter without a sword, and goryias?
+---> Player with no sword can be boxed in by tough enemies, meaning death, if they enter the cave hoping to find a sword.
+Screen 48: Put the tops of the trees on layer 3, to allow walking behind them. :p
+2B: String in shop is not set up so that words do not break on lines. Also, silly.
+2B: Warp return from shop is not set properly. Move the warp return to be over the cave combo.
+2A: Warp return from shop is not set properly (again) . Move the warp return to be over the cave combo.
+L1: Really, bait rooms in L1?
+L1: Serious bug: If you go to the goriya without bait, and backtrack, the spikes aren't down.
+---> That room needs to be a permanent trigger.
+L1 Passageway from start to spike room: The combos used for a background are walkable.
+
+[img]http://timelord.insomnia247.nl/zc/Kivtoe_RoH_Demo1_CoboError.png[/img]
+---> You need to make the top row of 'background bricks' solid, and the bottom row solid on the top.
+---> The 'walkable row' combos should have solidity like this, where the X are solid quadrants:
+   [x][x]
+   [ ][ ]
+4B: Why is the bomerang trigger a tree?
+4B: Warp return from Potion or Heart, isn't near the cave combo. Move to be over the cave combo.
+West, North, East, West; No hint?
+
+I've been on every screen in the game that I can access. Is there no sword? What am I missing here?
+
+The dungeon requires the sword to progress, or the bait; but you start with no money, and there is no way to
+kill enemies to make money to buy the bait.
+
+So, if the sword is in L1, as I expected, then get rid of the bait room.
+
+Playing Beta 0.01.4.2
+
+Trying this, as it might be newer?
+Screen 4A: Walk to the right (4B) into darkness. Is this older than the public demo?
+
+It sure is.
+
+You should put version IDs on the public demos in the same way as the beta, so that it's possible to know what is newer.
+
+##30##

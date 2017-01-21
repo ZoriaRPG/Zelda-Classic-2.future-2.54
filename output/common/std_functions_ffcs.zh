@@ -1,0 +1,56 @@
+//Returns the number of an FFC, and -1 for a non-valid FFC (which should never happen)
+int FFCNum(ffc f) {
+	for(int i=1; i<=32; i++)
+		if(f == Screen->LoadFFC(i))
+		return i;
+	return -1; //! Returning -1 is DANGEROUS as hell here, unless setting REFFC is vbounded. 
+}
+
+
+//Terminate an FFC, and set all its properties to 0. 
+void EndFFC(int ffc_id){
+	ffc f = Screen->LoadFFC(ffc_id);
+	f->Data = 0;
+	f->Script = 0;
+	f->CSet = 0;
+	f->Delay = 0;
+	f->X = 0;
+	f->Y = 0;
+	f->Vx = 0;
+	f->Vy = 0;
+	f->Ax = 0;
+	f->Ay = 0;
+	for ( int q = 0; q < 10; q++ ) f->Flags[q] = 0;
+	f->TileWidth = 0;
+	f->TileHeight = 0;
+	f->EffectWidth = 0;
+	f->EffectHeight = 0;
+	f->Link = 0;
+	for ( int q = 0; q < 15; q++ ) f->Misc[q] = 0;
+	//Quit(); If this is called from a global script, it would be bad. 
+}
+
+
+//Terminate an FFC, and set all its properties to 0. 
+void EndFFC(ffc f){
+	f->Data = 0;
+	f->Script = 0;
+	f->CSet = 0;
+	f->Delay = 0;
+	f->X = 0;
+	f->Y = 0;
+	f->Vx = 0;
+	f->Vy = 0;
+	f->Ax = 0;
+	f->Ay = 0;
+	for ( int q = 0; q < 10; q++ ) f->Flags[q] = 0;
+	f->TileWidth = 0;
+	f->TileHeight = 0;
+	f->EffectWidth = 0;
+	f->EffectHeight = 0;
+	f->Link = 0;
+	for ( int q = 0; q < 15; q++ ) f->Misc[q] = 0;
+	//Quit(); If this is called from a global script, it would be bad. 
+}
+
+

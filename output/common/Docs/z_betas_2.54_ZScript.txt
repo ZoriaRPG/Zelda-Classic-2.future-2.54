@@ -1,0 +1,75 @@
+//Game->
+
+//Returns Screen->Door[index] for a given DMap and Screen
+int GetDMapScreenDoor( int dmap, int screen, int index )
+
+
+//Sets Screen->Door[index] for a given DMap and Screen to 'value'
+void SetDMapScreenDoor( int dmap, int screen, int index, int value)
+
+
+//Returns Screen->State[index] for a given DMap and Screen
+bool GetDMapScreenState( int dmap, int screen, int index )
+
+
+//Sets Screen->State[index] for a given DMap and Screen to 'value'
+void SetDMapScreenState( int dmap, int screen, int index, bool value)
+
+//Returns if the 'Cap FPS' setting is enabled.
+//! At present you may only check, but not set this value.
+		
+bool CappedFPS		ZASM: THROTTLEFPS
+
+
+//Global
+
+/************************************************************************************************************/
+ 
+void OverlayTile(int firsttile, int secondtile);		ZASM Instruction:
+								OVERLAYTILEVV
+								OVERLAYTILEVR
+								OVERLAYTILERV
+								OVERLAYTILERR
+/**
+* Overlays secondtile onto firsttile, ignoring all pixels of colour 0.  
+* The valid tile value range is 0 to 65519.
+* This change is *TEMPORARY* within the quest file
+* and will not be retained when saving the game.
+*
+*/ Example Use:
+
+
+//Screen
+
+void Quad	( int layer, 
+			int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4,
+			int w, int h, int cset, int flip, int texture, int render_mode);
+	
+					ZASM Instruction: 
+					QUADR
+	
+	/**
+	* Draws a quad on the specified layer with the corners x1,y1 through x4,y4.
+	* Corners are drawn in a counterclockwise order starting from x1,y1. ( So
+	* if you draw a "square" for example starting from the bottom-right corner
+	* instead of the usual top-left, the the image will be textured onto the
+	* quad so it appears upside-down. -yes, these are rotatable. )
+	*
+	* From there a single or block of tiles, combos **or a bitmap** is then texture mapped
+	* onto the quad using the arguments w, h, cset, flip, and render_mode.
+	* A positive vale in texture will draw the image from the tilesheet pages,
+	* whereas a negative value will be drawn from the combo page. 0 will draw combo number 0.
+	* Both w and h are undefined unless 1 <= blockh, blockw <= 16, and it is a power of
+	* two. ie: 1, 2 are acceptable, but 2, 15 are not.
+	*
+	* To specify a bitmap as a texture, sum 65520 with the bitmap ID, or use the constant TEX_BITMAP + Bitmap
+	* Example: Screen->Quad(6, 0, 0, 40, 25, 18, 50, 60, 110, 0, 0, 0, 0, TEX_BITMAP+RT_BITMAP0, PT_TEXTURE);
+	*
+	*
+	* Flip specifies how the tiles/combos should be flipped when drawn:
+	* 0: No flip
+	* 1: Horizontal flip
+	* 2: Vertical flip
+	* 3: Both (180 degree rotation)
+	*	(!)  See std.zh for a list of all available render_mode arguments.
+	*/ Example Use: !#!

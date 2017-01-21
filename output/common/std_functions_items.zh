@@ -1,0 +1,102 @@
+
+//Returns true if an item's Pickup state is set
+//Use the IP_ constants for the 'pickup' argument of this function
+bool GetItemPickup(item i, int pickup) {
+	return (i->Pickup&pickup) != 0;
+}
+
+//Sets an item's Pickup state to 'state'
+void SetItemPickup(item i, int pickup, bool state) {
+	if(state) i->Pickup |= pickup;
+	else i->Pickup &= ~pickup;
+}
+
+//Create an Item and set its X and Y position in one command
+item CreateItemAt(int id, int x, int y) {
+	item it = Screen->CreateItem(id);
+	if(it->isValid()) {
+		it->X = x;
+		it->Y = y;
+	}
+	return it;
+}
+
+
+//Creates a timeout item (like a rupee or heart)
+item CreateTimeoutItem(int id, int x, int y) {
+	item Spawn = Screen->CreateItem(id);
+	SetItemPickup(Spawn, IP_TIMEOUT, true);
+	Spawn->HitWidth = 16; Spawn->HitHeight = 16;
+	Spawn->X = x; Spawn->Y = y;
+}
+
+//Creates a timeout item (like a rupee or heart)
+//Allows constraining the HitWidth and HitHeight
+item CreateTimeoutItem(int id, int x, int y, int width, int height) {
+	item Spawn = Screen->CreateItem(id);
+	SetItemPickup(Spawn, IP_TIMEOUT, true);
+	Spawn->HitWidth = width; Spawn->HitHeight = height;
+	Spawn->X = x; Spawn->Y = y;
+}
+
+// Use the I_ constants.
+// Warning: these iterate over every onscreen item.
+// Iterating over every onscreen lweapon multiple times per frame may
+// cause slowdown in Zelda Classic.
+int NumItemsOf(int type) {
+	int ret = 0;
+	item it;
+	for (int i = Screen->NumItems(); i >0 ; i--) {
+		it = Screen->LoadItem(i);
+		if (it->ID == type)
+		ret++;
+	}
+	return ret;
+}
+//Safely sets an equipment item, without lagging ZC. 
+//Sets an item 'itm' true if it is false, and false if it is true.
+void SetLinkItem(int itm){
+	if ( !Link->Item[itm] ) Link->Item[itm] = true;
+	else if ( Link->Item[itm] ) Link->Item[itm] = false;
+}
+
+//Sets an item 'itm' to the boolean value of 'state'.
+void SetLinkItem(int itm, bool state){
+	if ( !Link->Item[itm] && state ) Link->Item[itm] = true;
+	else if ( Link->Item[itm] && !state ) Link->Item[itm] = false;
+}
+
+
+//Creates an item ont he screen at link's 
+//position, giving it to him,a nd running its pick-up script.
+//itm_id is the item ID number
+//if holdtype is set to a Link->Action for holding up an item
+//then Link will hold the item up as desired.
+
+
+void GiveLinkItem(int itm_id, int holdtype){
+    item i = Screen->CreateItem(itm_id);
+    i->X = Link->X;
+    i->Y = Link->Y;
+    i->Z = Link->Z;
+    if ( holdtype == LA_HOLD1LAND || holdtype == LA_HOLD2LAND || holdtype == LA_HOLD1WATER || holdtype == LA_HOLD2WATER ) {
+        Link->HeldItem = itm_id;
+        Link->Action = holdtype;
+    }
+}
+
+//Creates an item ont he screen at link's 
+//position, giving it to him,a nd running its pick-up script.
+//itm_id is the item ID number
+//Link does not hold up this item.
+void GiveLinkItem(int itm_id){
+    GiveLinkItem(itm_id,0);
+}
+
+
+
+//Returns true if Link is using item 'id'
+//Deprecated by Link->UsingItem
+bool LinkUsingItem(int id){
+	return (GetEquipmentA() == id && (Link->InputA || Link->PressA )) || (GetEquipmentB() == id && (Link->InputB || Link->PressB));
+}

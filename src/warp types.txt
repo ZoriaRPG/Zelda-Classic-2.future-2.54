@@ -1,0 +1,7 @@
+wtSCROLL = 7
+wtIWARP = 1
+wtIWARPBLK = 2
+wtIWARPOPEN = 3
+wtIWARPWAVE = 5
+wtIWARPZAP = 4
+wtNOWARP = 6 //cancel warp

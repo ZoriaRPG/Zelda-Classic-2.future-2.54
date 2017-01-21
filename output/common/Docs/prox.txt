@@ -1,0 +1,45 @@
+-------
+
+int ProximityX(*ptr a, *ptr b) 
+int ProximityX(int combo, *ptr)
+int ProximityX(*ptr int combo)
+int ProximityX(int comboA, int comboB)
+int ProximityX(*ptr a, *ptr b, bool fromcentre) 
+int ProximityX(int combo, *ptr, bool fromcentre)
+int ProximityX(*ptr int combo, bool fromcentre)
+int ProximityX(int comboA, int comboB, bool fromcentre)
+
+ * Returns the X-axis proximity of two pointers, or one pointer and one combo, in pixels.
+ * Overloaded to support all pointer types (npc, item, *weapon, ffc), and combo positions. 
+ * The value it returns is an absolute; not a relative value. 
+ * You mnay optionally set fromcentre to 'true' to return the proximity of the centre of both objects.
+ 
+
+int ProximityX(*ptr)
+int ProximityX(int combo)
+
+ * Returns the X-axis proximity of any pointer, and Link.
+ * Overloaded to accept all pointer types (npc, item, *weapon, ffc), and combo positions.
+ * The value it returns is an absolute; not a relative value. 
+ 
+int ProximityY(*ptr a, *ptr b) 
+int ProximityY(int combo, *ptr)
+int ProximityY(*ptr int combo)
+int ProximityY(int comboA, int comboB)
+int ProximityY(*ptr a, *ptr b, bool fromcentre) 
+int ProximityY(int combo, *ptr, bool fromcentre)
+int ProximityY(*ptr int combo, bool fromcentre)
+int ProximityY(int comboA, int comboB, bool fromcentre)
+
+ * Returns the Y-axis proximity of two pointers, or one pointer and one combo, in pixels.
+ * Overloaded to support all pointer types (npc, item, *weapon, ffc), and combo positions. 
+ * The value it returns is an absolute; not a relative value. 
+ * You mnay optionally set fromcentre to 'true' to return the proximity of the centre of both objects.
+ 
+ 
+int ProximityY(*ptr)
+int ProximityY(int combo)
+
+ * Returns the Y-axis proximity of any pointer, and Link.
+ * Overloaded to accept all pointer types (npc, item, *weapon, ffc), and combo positions.
+ * The value it returns is an absolute; not a relative value. 

@@ -1,0 +1,139 @@
+
+//Extended Map 
+
+
+
+const int CHAR_CEDILLA 		= 128; //Uppercase Cedilla (Ç) 
+const int CHAR_uUMLAT 		= 129; //Lowercase ü with Umlat
+const int CHAR_ 		= 130; //Lowercase é eith Grave
+const int CHAR_ 		= 131; //Lowercase â with Circumflex Accent
+const int CHAR_ 		= 132; //Lowercase ä with Umlat
+const int CHAR_ 		= 133; //Lowercase à with Grave
+const int CHAR_ 		= 134; //Lowercase å with Ring
+const int CHAR_ 		= 135; //Lowercase ç Cedilla
+const int CHAR_ 		= 136; //Lowercase ê with Circumflex Accent
+const int CHAR_ 		= 137; //Lowercase ë with Umlat
+const int CHAR_ 		= 138; //Lowercase è with Grave
+const int CHAR_ 		= 139; //Lowercase ï with Umlat
+const int CHAR_ 		= 140; //Lowercase î with Circumflex Accent
+const int CHAR_ 		= 141; //Lowercase ì with Grave
+const int CHAR_ 		= 142; //Uppercase Ä with Umlat
+const int CHAR_ 		= 143; //Uppercase Å with Ring
+const int CHAR_ 		= 144; //Uppercase É with Grave
+const int CHAR_ 		= 145; //Lowercase æ Dipthong
+const int CHAR_ 		= 146; //Uppercase Æ Dipthong
+const int CHAR_ 		= 147; //Lowercase ô with Circumflex Accent
+const int CHAR_ 		= 148; //Lowercase ö with Umlat
+const int CHAR_ 		= 149; //Lowercase ò with Grave
+const int CHAR_ 		= 150; //Lowercase û with Circumflex Accent
+const int CHAR_ 		= 151; //Lowercase ù with Grave
+const int CHAR_ 		= 152; //Lowercase ÿ with Umlat
+const int CHAR_ 		= 153; //Uppercase Ö with Umlat
+const int CHAR_ 		= 154; //Uppercase Ü with Umlat
+const int CHAR_ 		= 155; //Cents Sign (also Lowercase o with diagonal line)
+const int CHAR_ 		= 156; //Pounds Sign £
+const int CHAR_ 		= 157; //Yen Sign ¥ (also Uppercase O with diagonal line)
+const int CHAR_ 		= 158; //Sumbol P (also Multiplication x sign)
+const int CHAR_ 		= 159; //Florin Symbol ƒ
+const int CHAR_ 		= 160; //Lowercase á with Grave
+const int CHAR_ 		= 161; //Lowercase í with Grave
+const int CHAR_ 		= 162; //Lowercase ó with Grave
+const int CHAR_ 		= 163; //Lowercase ú with Grave
+const int CHAR_ 		= 164; //Lowercase ñ with Tilde (enye)
+const int CHAR_ 		= 165; //Uppercase Ñ with Tilde (Enye)
+const int CHAR_ 		= 166; //Ordinal ª (Feminine)
+const int CHAR_ 		= 167; //Ordinal º (Masculine)
+const int CHAR_ 		= 168; //Inverted Question Mark Sign ¿
+const int CHAR_ 		= 169; //Notational Not ¬
+const int CHAR_ 		= 170; //Notational Not 2 ¬
+const int CHAR_ 		= 171; //Fractional One Half ½
+const int CHAR_ 		= 172; //Fractional One Quarter ¼
+const int CHAR_ 		= 173; //Inverse Bang ¡
+const int CHAR_ 		= 174; //Much less than «
+const int CHAR_ 		= 175; //Much more than »
+const int CHAR_ 		= 176; //Broken Vertical Bar ¦
+const int CHAR_ 		= 177; //Broken Vertical Bar ¦
+const int CHAR_ 		= 178; //Broken Vertical Bar ¦
+const int CHAR_ 		= 179; //Broken Vertical Bar ¦
+const int CHAR_ 		= 180; //Broken Vertical Bar ¦
+const int CHAR_ 		= 181; //Broken Vertical Bar ¦
+const int CHAR_ 		= 182; //Broken Vertical Bar ¦
+const int CHAR_ 		= 183; //Plus Sign +
+const int CHAR_ 		= 184; //Plus Sign +
+const int CHAR_ 		= 185; //Broken Vertical Bar ¦
+const int CHAR_ 		= 186; //Broken Vertical Bar ¦
+const int CHAR_ 		= 187; //Plus Sign +
+const int CHAR_ 		= 188; //Plus Sign +
+const int CHAR_ 		= 189; //Plus Sign +
+const int CHAR_ 		= 190; //Plus Sign +
+const int CHAR_ 		= 191; //Plus Sign +
+const int CHAR_ 		= 192; //Plus Sign +
+const int CHAR_ 		= 193; //Minus Sign -
+const int CHAR_ 		= 194; //Minus Sign -
+const int CHAR_ 		= 195; //Plus Sign +
+const int CHAR_ 		= 196; //Minus Sign -
+const int CHAR_ 		= 197; //Plus Sign +
+const int CHAR_ 		= 198; //Broken Vertical Bar ¦
+const int CHAR_ 		= 199; //Broken Vertical Bar ¦
+const int CHAR_ 		= 200; //Plus Sign +
+const int CHAR_ 		= 201; //Plus Sign +
+const int CHAR_ 		= 202; //Minus Sign -
+const int CHAR_ 		= 203; //Minus Sign -
+const int CHAR_ 		= 204; //Broken Vertical Bar ¦
+const int CHAR_ 		= 205; //Minus Sign -
+const int CHAR_ 		= 206; //Plus Sign +
+const int CHAR_ 		= 207; //Minus Sign -
+const int CHAR_ 		= 208; //Minus Sign -
+const int CHAR_ 		= 209; //Minus Sign -
+const int CHAR_ 		= 210; //Minus Sign -
+const int CHAR_ 		= 211; //Plus Sign +
+const int CHAR_ 		= 212; //Plus Sign +
+const int CHAR_ 		= 213; //Plus Sign +
+const int CHAR_ 		= 214; //Plus Sign +
+const int CHAR_ 		= 215; //Plus Sign +
+const int CHAR_ 		= 216; //Plus Sign +
+const int CHAR_ 		= 217; //Plus Sign +
+const int CHAR_ 		= 218; //Plus Sign +
+const int CHAR_ 		= 219; //Broken Vertical Bar ¦
+const int CHAR_ 		= 220; //Underscore
+const int CHAR_ 		= 221; //Broken Vertical Bar ¦
+const int CHAR_ 		= 222; //Broken Vertical Bar ¦
+const int CHAR_ 		= 223; //Overscore ¯ (Macron)
+const int CHAR_ 		= 224; //Alpha a
+const int CHAR_ 		= 225; //Beta ß
+const int CHAR_ 		= 226; //Gamma G
+const int CHAR_ 		= 227; //Pi p
+const int CHAR_ 		= 228; //Sigma Uppercase S
+const int CHAR_ 		= 229; //Sigma Lowerrcase s
+const int CHAR_ 		= 230; //Mu (Micro) µ
+const int CHAR_ 		= 231; //Tau t
+const int CHAR_ 		= 232; //Uppercase Phi F
+const int CHAR_ 		= 233; //Theta T
+const int CHAR_ 		= 234; //Omega O
+const int CHAR_ 		= 235; //Delta d
+const int CHAR_ 		= 236; //Infinity 8
+const int CHAR_ 		= 237; //Lowercae Phi f
+const int CHAR_ 		= 238; //Epsilon e
+const int CHAR_ 		= 239; //Intersection/Set n (Greek n?)
+const int CHAR_ 		= 240; //Exactly Equals =
+const int CHAR_ 		= 241; //Tolerance +/- ±
+const int CHAR_ 		= 242; //Greater Than or Equals =
+const int CHAR_ 		= 243; //Less Than or Equals =
+const int CHAR_ 		= 244; //Left Paren (
+const int CHAR_ 		= 245; //Right Paren )
+const int CHAR_ 		= 246; //Division Sign ÷
+const int CHAR_ 		= 247; //Approximation Sign ˜
+const int CHAR_ 		= 248; //Degrees Sign °
+const int CHAR_ 		= 249; //Multiplication Dot ·
+const int CHAR_ 		= 250; //Multiplication Dot ·
+const int CHAR_ 		= 251; //Root Sign v
+const int CHAR_ 		= 252; //N Sign (maths) n
+const int CHAR_ 		= 252; //Squared ²
+const int CHAR_ 		= 254; //Broken Vertical Bar ¦
+const int CHAR_ 		= 255;
+
+
+//€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²²´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²²´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ
+
+//Extended Map (ISO 8859-1, Old Latin-1)
+//Extended Map (ISO 8859-15, New Latin-1)
